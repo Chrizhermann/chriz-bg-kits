@@ -1,0 +1,72 @@
+@1   = ~chriz-bg-kits requires BG2:EE or EET with EEex v1.2.0+ (extra_pattern_dbs + M___EEex.lua).~
+@2   = ~chriz-bg-kits replaces ArtisansKitpack and BardicWonders and cannot be installed alongside them.~
+@3   = ~Requires Component 100 (Core EEex Kit Kernel) to be installed first.~
+
+@100 = ~Core EEex Kit Kernel (Weapon Usability, Multiclass Kit Proficiencies, Spec APR, Bard Spells, Strength Floor)~
+@200 = ~Cleric Overhaul: Priest of Tempus~
+@300 = ~Standalone Fighter Kit: Bloodrager~
+@310 = ~Bard Overhaul: Jester & Skald~
+@320 = ~Core Kit & HLA Fixes (Archer Called Shot, Physical Hardiness, Resist Magic, Deathblows, Dual-Class Kit Names)~
+
+@201 = ~Holy Power~
+@202 = ~Holy Power
+Through this prayer, the Priest of Tempus channels divine battle-prowess, gaining Fighter THAC0 progression, temporary Strength floor scaling up to 21 at level 15 (without lowering stronger Strength buffs), and +1 Hit Point per level (max 20). Does not stack with other transformation magic.~
+@203 = ~Chaos of Battle~
+@204 = ~Chaos of Battle
+The Priest of Tempus unleashes battle-luck across allies (+1 to +3 Luck) while cursing nearby enemies (-1 to -3 THAC0 and Saving Throws, Save vs. Spell negates).~
+@205 = ~PRIEST OF TEMPUS: Champions of the Lord of Battles relish honorable melee combat and shun sneaky divination magic.
+Advantages:
+- Automatically receives 1 Battle Axe proficiency at 1st level in addition to starting pips, and may place 2 pips in Long Sword, Battle Axe, Crossbow, standard cleric weapons, and all fighting styles.
+- Gains +1/2 attack per round when wielding a weapon in which the priest holds 2 or more proficiency pips (without double-stacking on Warrior multiclasses).
+- Casts Chaos of Battle and an enhanced non-lowering Holy Power.
+Disadvantages:
+- Divination Toll: Tempus strips all Divination priest spells from the cleric's spellbook.~
+
+@301 = ~Enrage~
+@302 = ~Enrage
+Enters a blood-fueled frenzy for 5 rounds (+2 melee THAC0, +2 melee damage, -2 Armor Class penalty, +15 temporary Hit Points with no end-of-rage backlash), shielding the mind against Charm, Fear, Hold, Sleep, and Stun. Each melee hit sustains the frenzy up to a 10-round maximum (20 rounds with Extend Rage). When Enrage ends, the Bloodrager is Winded for 5 rounds (-2 THAC0, -2 damage, +2 AC penalty).~
+@303 = ~Extend Rage~
+@304 = ~Extend Rage (HLA)
+Doubles the maximum sustained duration of Enrage from 10 rounds to 20 rounds.~
+@305 = ~bloodrager~
+@306 = ~Bloodrager~
+@307 = ~BLOODRAGER: A savage frontline warrior whose fury intensifies as wounds accumulate.
+Advantages:
+- In Extremis: Gains +1 melee damage and +1 Save vs. Death at <76%, <50%, and <26% Hit Points (doubled while Enraged); at level 14+, each threshold also grants +5% physical resistance (doubled to +10%/+20%/+30% while Enraged).
+- May Enrage 1/day per 4 levels (focused mind-shield, temporary Hit Points, melee-hit duration refresh up to hard cap).
+Disadvantages:
+- Suffers a permanent -4 THAC0 penalty with ranged weapons.
+- Cannot place proficiency pips in or equip ranged missile weapons (Crossbow, Longbow, Shortbow, Dart, Sling).~
+
+@401 = ~Piercing Mockery~
+@402 = ~Piercing Mockery
+The Jester's song unnerves enemies (Save vs. Spell with scaling penalty up to -4), inflicting Confusion, Slow at high levels, and -1/-2 penalties to THAC0 and Saving Throws.~
+@403 = ~Heckle~
+@404 = ~Heckle
+Mocks a single foe (-2 THAC0, -2 Armor Class, 35% spell failure for 3 rounds, Save vs. Spell negates).~
+@405 = ~Mad Ramble~
+@406 = ~Mad Ramble
+Broadcasts disorienting nonsense around the Jester (25% spell failure and -1 Luck to nearby enemies, Save vs. Spell negates).~
+@407 = ~The Fool's Journey~
+@408 = ~The Fool's Journey (HLA)
+Permanent +1 Luck, +2 Saving Throws, and a non-stacking aura granting allies +1 Luck and +1 THAC0.~
+@409 = ~JESTER: Uses biting mockery (Heckle, Mad Ramble, Piercing Mockery) and un-nerfed IWD spell progression up to 7th level.~
+@410 = ~SKALD: Inspires allies in combat and may place up to 2 proficiency pips in every weapon and fighting style, while casting BG2 bard spells up to 6th level.~
+
+@501 = ~Hardiness (HLA): Grants 40% resistance to all physical damage types for 1 turn.~
+@502 = ~Resist Magic (HLA): Sets Magic Resistance to a minimum floor of 50% for 4 rounds without lowering higher existing Magic Resistance.~
+@503 = ~Deathblow (HLA): Automatically slays struck creatures of 12 Hit Dice or fewer for 2 rounds.~
+@504 = ~Greater Deathblow (HLA): Automatically slays struck creatures of 16 Hit Dice or fewer for 2 rounds.~
+
+@511 = ~Mage~
+@512 = ~Fighter~
+@513 = ~Cleric~
+@514 = ~Thief~
+@515 = ~Druid~
+@516 = ~Ranger~
+@521 = ~mage~
+@522 = ~fighter~
+@523 = ~cleric~
+@524 = ~thief~
+@525 = ~druid~
+@526 = ~ranger~

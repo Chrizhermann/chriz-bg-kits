@@ -1,0 +1,23 @@
+// Component 100: Core EEex Kit Kernel (Clean-Room, Coexistent with chriz-bg-rebalance & chriz-bg-magic)
+
+DEFINE_ACTION_FUNCTION cbk_install_kernel BEGIN
+  LAF cbk_ensure_splstate STR_VAR symbol = ~CBM_STR_FLOOR~ RET CBM_STR_FLOOR_STATE = state END
+  LAF cbk_ensure_splstate STR_VAR symbol = ~CBR_TEMPUS_SPEC_APR~ RET CBK_APR_STATE_ID = state END
+  LAF cbk_ensure_splstate STR_VAR symbol = ~CBK_STR_CLAMP_1~ RET CBK_STR_CLAMP_1_STATE = state END
+
+  MKDIR ~EEex_scripts/extra_pattern_dbs~
+  COPY ~%MOD_FOLDER%/patterns/CBKWPN.db~ ~EEex_scripts/extra_pattern_dbs/CBKWPN.db~
+  COPY ~%MOD_FOLDER%/patterns/CBKKP.db~ ~EEex_scripts/extra_pattern_dbs/CBKKP.db~
+  COPY ~%MOD_FOLDER%/patterns/CBKSP.db~ ~EEex_scripts/extra_pattern_dbs/CBKSP.db~
+
+  ACTION_FOR_EACH tbl IN ~CBKWPN~ ~CBKAPKIT~ ~CBRKPKIT~ ~CBRSPVER~ ~CBRSPKIT~ ~CBRBG6~ ~CBRIWD7~ ~CBRIWD8~ BEGIN
+    ACTION_IF !(FILE_EXISTS_IN_GAME ~%tbl%.2DA~) BEGIN
+      COPY ~%MOD_FOLDER%/2da/%tbl%.2DA~ ~override/%tbl%.2DA~
+    END
+  END
+
+  ACTION_FOR_EACH lua_file IN ~M_CBKWPN.lua~ ~M_CBKKP.lua~ ~M_CBKAPR.lua~ ~M_CBKSP.lua~ ~M_CBKSTR.lua~ BEGIN
+    COPY ~%MOD_FOLDER%/lua/%lua_file%~ ~override/%lua_file%~
+      EVALUATE_BUFFER
+  END
+END

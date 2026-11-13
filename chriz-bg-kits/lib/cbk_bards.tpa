@@ -1,0 +1,137 @@
+// Component 310: Bard Overhaul (Jester + Skald + CBRSP progression).
+
+DEFINE_ACTION_FUNCTION cbk_install_bards BEGIN
+  LAF cbk_install_res_bards END
+
+  COPY_EXISTING ~SPCL751A.SPL~ ~override~
+    SAY NAME1 @401
+    SAY UNIDENTIFIED_DESC @402
+  BUT_ONLY
+  COPY_EXISTING ~CBKJES1.SPL~ ~override~
+    SAY NAME1 @403
+    SAY UNIDENTIFIED_DESC @404
+  BUT_ONLY
+  COPY_EXISTING ~CBKJES2.SPL~ ~override~
+    SAY NAME1 @405
+    SAY UNIDENTIFIED_DESC @406
+  BUT_ONLY
+  COPY_EXISTING ~CBKJES3.SPL~ ~override~
+    SAY NAME1 @407
+    SAY UNIDENTIFIED_DESC @408
+  BUT_ONLY
+
+  // 1. Overwrite CLABBA03.2DA (Jester: SPCL751 song + GA_CBKJES1 + GA_CBKJES2)
+  OUTER_SPRINT h ~2DA V1.0%WNL%****%WNL%            ~
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT h ~%h%%lv%          ~
+  END
+  OUTER_SPRINT r1 ~ABILITY1    AP_SPCL751  ~
+  OUTER_SPRINT r2 ~ABILITY2    GA_CBKJES1  ~
+  OUTER_SPRINT r3 ~ABILITY3    GA_CBKJES2  ~
+  OUTER_FOR (lv = 2; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT r1 ~%r1%****        ~
+    ACTION_IF ((lv MODULO 5) = 0) BEGIN
+      OUTER_SPRINT r2 ~%r2%GA_CBKJES1  ~
+    END ELSE BEGIN
+      OUTER_SPRINT r2 ~%r2%****        ~
+    END
+    ACTION_IF (lv = 3 OR lv = 9 OR lv = 15 OR lv = 21) BEGIN
+      OUTER_SPRINT r3 ~%r3%GA_CBKJES2  ~
+    END ELSE BEGIN
+      OUTER_SPRINT r3 ~%r3%****        ~
+    END
+  END
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CLABBA03.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    SPRINT jbody ~%h%%WNL%%r1%%WNL%%r2%%WNL%%r3%%WNL%~
+    INSERT_BYTES 0 (STRING_LENGTH ~%jbody%~)
+    WRITE_ASCIIE 0 ~%jbody%~
+    PRETTY_PRINT_2DA
+
+  // 2. Clone LUBA2 -> LUCBKJ (if LUABBR shares Ba2 with other bards) and replace ALL SPCL920 rows cleanly
+  OUTER_SPRINT jester_lu ~Ba2~
+  OUTER_SET shared_lu = 0
+  COPY_EXISTING ~LUABBR.2DA~ ~override~
+    READ_2DA_ENTRIES_NOW la_rows 2
+    FOR (r = 0; r < la_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER la_rows r 0 cls
+      READ_2DA_ENTRY_FORMER la_rows r 1 abb
+      PATCH_IF (~%cls%~ STR_EQ ~JESTER~) BEGIN SPRINT jester_lu ~%abb%~ END
+    END
+    FOR (r = 0; r < la_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER la_rows r 0 cls
+      READ_2DA_ENTRY_FORMER la_rows r 1 abb
+      PATCH_IF (~%abb%~ STR_EQ ~%jester_lu%~) AND !(~%cls%~ STR_EQ ~JESTER~) BEGIN
+        SET shared_lu = 1
+      END
+    END
+  BUT_ONLY
+
+  ACTION_IF (shared_lu = 1) BEGIN
+    COPY_EXISTING ~LU%jester_lu%.2DA~ ~override/LUCBKJ.2DA~
+    COPY_EXISTING ~LUABBR.2DA~ ~override~
+      REPLACE_TEXTUALLY ~^[ %TAB%]*JESTER[ %TAB%].*$~ ~JESTER CBKJ~
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+    OUTER_SPRINT target_lu_file ~LUCBKJ~
+  END ELSE BEGIN
+    OUTER_SPRINT target_lu_file ~LU%jester_lu%~
+  END
+
+  COPY_EXISTING ~%target_lu_file%.2DA~ ~override~
+    READ_2DA_ENTRIES_NOW hl_rows 10
+    SET placed_jes3 = 0
+    FOR (r = 0; r < hl_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER hl_rows r 1 ab
+      PATCH_IF (~%ab%~ STRING_CONTAINS_REGEXP ~SPCL920~ = 0) OR (~%ab%~ STR_EQ ~AP_CBKJES3~) BEGIN
+        PATCH_IF (placed_jes3 = 0) BEGIN
+          SET_2DA_ENTRY_LATER hl_o r 1 ~AP_CBKJES3~
+          SET_2DA_ENTRY_LATER hl_o r 4 ~1~
+          SET_2DA_ENTRY_LATER hl_o r 5 ~99~
+          SET_2DA_ENTRY_LATER hl_o r 6 ~1~
+          SET placed_jes3 = 1
+        END ELSE BEGIN
+          SET_2DA_ENTRY_LATER hl_o r 1 ~*~
+        END
+      END
+    END
+    PATCH_IF (placed_jes3 = 0) BEGIN
+      INSERT_2DA_ROW hl_rows 10 ~%hl_rows% AP_CBKJES3 * * 1 99 1 * * *~
+    END ELSE BEGIN
+      SET_2DA_ENTRIES_NOW hl_o 10
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
+
+  // 3. Skald: WEAPPROF 2 pips on all weapons (89..107, 115) & styles (111..114)
+  LAF cbk_get_kit_info STR_VAR kit_name = ~SKALD~ RET skald_ids = kit_ids skald_prof = kit_prof END
+  ACTION_IF (skald_prof >= 0) BEGIN
+    OUTER_FOR (p = 89; p <= 115; ++p) BEGIN
+      OUTER_SET $cbk_sk_wp(~%p%~) = 2
+    END
+    LAF cbk_set_weapprof_col INT_VAR col_idx = (skald_prof + 1) STR_VAR prof_map_prefix = ~cbk_sk_wp~ END
+  END
+
+  // 4. Register Bard / Jester -> CBRIWD7, Blade / Skald -> CBRBG6 in CBRSPKIT.2DA
+  LAF cbk_set_cbrspkit_row INT_VAR class_id = 5 STR_VAR row_label = ~BARD~ kit_id = ~16384~ table_name = ~CBRIWD7~ END
+  LAF cbk_get_kit_info STR_VAR kit_name = ~JESTER~ RET jester_ids = kit_ids END
+  ACTION_IF (jester_ids >= 0) BEGIN
+    OUTER_PATCH ~~ BEGIN SPRINTF j_dec ~%d~ (jester_ids) END
+    LAF cbk_set_cbrspkit_row INT_VAR class_id = 5 STR_VAR row_label = ~JESTER~ kit_id = EVAL ~%j_dec%~ table_name = ~CBRIWD7~ END
+  END
+  LAF cbk_get_kit_info STR_VAR kit_name = ~BLADE~ RET blade_ids = kit_ids END
+  ACTION_IF (blade_ids >= 0) BEGIN
+    OUTER_PATCH ~~ BEGIN SPRINTF b_dec ~%d~ (blade_ids) END
+    LAF cbk_set_cbrspkit_row INT_VAR class_id = 5 STR_VAR row_label = ~BLADE~ kit_id = EVAL ~%b_dec%~ table_name = ~CBRBG6~ END
+  END
+  ACTION_IF (skald_ids >= 0) BEGIN
+    OUTER_PATCH ~~ BEGIN SPRINTF s_dec ~%d~ (skald_ids) END
+    LAF cbk_set_cbrspkit_row INT_VAR class_id = 5 STR_VAR row_label = ~SKALD~ kit_id = EVAL ~%s_dec%~ table_name = ~CBRBG6~ END
+  END
+
+  // 5. Update KITLIST help strings + CLASTEXT DESCSTR for Jester & Skald
+  OUTER_SET jester_desc = RESOLVE_STR_REF (@409)
+  OUTER_SET skald_desc = RESOLVE_STR_REF (@410)
+  LAF cbk_update_kit_desc INT_VAR desc_strref = jester_desc STR_VAR kit_name = ~JESTER~ END
+  LAF cbk_update_kit_desc INT_VAR desc_strref = skald_desc STR_VAR kit_name = ~SKALD~ END
+END

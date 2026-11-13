@@ -1,0 +1,211 @@
+// Common helpers for chriz-bg-kits (Clean-Room, We Overwrite)
+
+DEFINE_ACTION_FUNCTION cbk_ensure_splstate
+  STR_VAR symbol = ~~
+  RET state
+BEGIN
+  OUTER_SET state = IDS_OF_SYMBOL (~splstate~ ~%symbol%~)
+  ACTION_IF (state < 0) BEGIN
+    ACTION_CLEAR_ARRAY cbk_used_states
+    COPY_EXISTING ~SPLSTATE.IDS~ ~override~
+      COUNT_2DA_ROWS 2 rcnt
+      FOR (i = 0; i < rcnt; ++i) BEGIN
+        READ_2DA_ENTRY i 0 2 id_tok
+        PATCH_IF (IS_AN_INT id_tok) BEGIN
+          SET $cbk_used_states(~%id_tok%~) = 1
+        END
+      END
+    BUT_ONLY
+    OUTER_SET cand = 128
+    OUTER_WHILE (VARIABLE_IS_SET $cbk_used_states(~%cand%~)) BEGIN
+      OUTER_SET cand += 1
+    END
+    APPEND ~SPLSTATE.IDS~ ~%cand% %symbol%~
+    OUTER_SET state = cand
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_ensure_splprot
+  STR_VAR
+    label = ~~
+    stat = ~0~
+    value = ~0~
+    relation = ~1~
+  RET row
+BEGIN
+  OUTER_SET row = 0 - 1
+  COPY_EXISTING ~SPLPROT.2DA~ ~override~
+    COUNT_2DA_COLS cols
+    READ_2DA_ENTRIES_NOW cbk_sp_rows 4
+    FOR (r = 0; r < cbk_sp_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER cbk_sp_rows r 0 cur_lbl
+      PATCH_IF (~%cur_lbl%~ STR_EQ ~%label%~) BEGIN
+        SET row = r
+        SET_2DA_ENTRY_LATER cbk_sp_out r 1 ~%stat%~
+        SET_2DA_ENTRY_LATER cbk_sp_out r 2 ~%value%~
+        SET_2DA_ENTRY_LATER cbk_sp_out r 3 ~%relation%~
+      END
+    END
+    PATCH_IF (row >= 0) BEGIN
+      SET_2DA_ENTRIES_NOW cbk_sp_out 4
+    END ELSE BEGIN
+      SET row = cbk_sp_rows
+      INSERT_2DA_ROW cbk_sp_rows 4 ~%label% %stat% %value% %relation%~
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION cbk_append_2da_row_unique
+  INT_VAR
+    cols = 2
+  STR_VAR
+    file = ~~
+    row_line = ~~
+    match_key = ~~
+BEGIN
+  OUTER_SET found = 0
+  COPY_EXISTING ~%file%~ ~override~
+    COUNT_2DA_ROWS cols rcnt
+    FOR (r = 0; r < rcnt; ++r) BEGIN
+      READ_2DA_ENTRY r 0 cols c0
+      PATCH_IF (~%c0%~ STR_EQ ~%match_key%~) BEGIN
+        SET found = 1
+      END
+    END
+    PATCH_IF (found = 0) BEGIN
+      INSERT_2DA_ROW rcnt cols ~%row_line%~
+      PRETTY_PRINT_2DA
+    END
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION cbk_set_cbrspkit_row
+  INT_VAR
+    class_id = 5
+  STR_VAR
+    row_label = ~~
+    kit_id = ~~
+    table_name = ~~
+BEGIN
+  OUTER_SET updated = 0
+  COPY_EXISTING ~CBRSPKIT.2DA~ ~override~
+    READ_2DA_ENTRIES_NOW cbk_rsp_rows 4
+    FOR (r = 0; r < cbk_rsp_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER cbk_rsp_rows r 0 lbl
+      READ_2DA_ENTRY_FORMER cbk_rsp_rows r 1 c_col
+      READ_2DA_ENTRY_FORMER cbk_rsp_rows r 2 k_col
+      PATCH_IF (~%lbl%~ STR_EQ ~%row_label%~) OR ((~%c_col%~ STR_EQ ~%class_id%~) AND (~%k_col%~ STR_EQ ~%kit_id%~)) BEGIN
+        SET_2DA_ENTRY_LATER cbk_rsp_out r 1 ~%class_id%~
+        SET_2DA_ENTRY_LATER cbk_rsp_out r 2 ~%kit_id%~
+        SET_2DA_ENTRY_LATER cbk_rsp_out r 3 ~%table_name%~
+        SET updated = 1
+      END
+    END
+    PATCH_IF (updated = 1) BEGIN
+      SET_2DA_ENTRIES_NOW cbk_rsp_out 4
+    END ELSE BEGIN
+      INSERT_2DA_ROW cbk_rsp_rows 4 ~%row_label% %class_id% %kit_id% %table_name%~
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION cbk_get_kit_info
+  STR_VAR kit_name = ~~
+  RET kit_ids kit_prof kit_class kit_clab kit_mixed kit_lower
+BEGIN
+  OUTER_SET kit_ids = 0 - 1
+  OUTER_SET kit_prof = 0 - 1
+  OUTER_SET kit_class = 0 - 1
+  OUTER_SPRINT kit_clab ~~
+  OUTER_SET kit_mixed = 0 - 1
+  OUTER_SET kit_lower = 0 - 1
+  COPY_EXISTING ~KITLIST.2DA~ ~override~
+    COUNT_2DA_ROWS 10 krows
+    FOR (r = 0; r < krows; ++r) BEGIN
+      READ_2DA_ENTRY r 1 10 rname
+      PATCH_IF (~%rname%~ STR_EQ ~%kit_name%~) BEGIN
+        READ_2DA_ENTRY r 2 10 kit_lower
+        READ_2DA_ENTRY r 3 10 kit_mixed
+        READ_2DA_ENTRY r 5 10 kit_clab
+        READ_2DA_ENTRY r 6 10 kit_prof
+        READ_2DA_ENTRY r 8 10 kit_class
+        READ_2DA_ENTRY r 9 10 kit_ids
+      END
+    END
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION cbk_set_weapprof_col
+  INT_VAR
+    col_idx = 0
+  STR_VAR
+    prof_map_prefix = ~~
+    default_val = ~-1~
+BEGIN
+  COPY_EXISTING ~WEAPPROF.2DA~ ~override~
+    READ_2DA_ENTRIES_NOW cbk_wp_rows 64
+    // Note: READ_2DA_ENTRIES_NOW with col_count=1 or explicit COUNT_2DA_COLS avoids column loss
+    COUNT_2DA_COLS wp_cols
+  BUT_ONLY
+  COPY_EXISTING ~WEAPPROF.2DA~ ~override~
+    COUNT_2DA_COLS wp_cols
+    READ_2DA_ENTRIES_NOW cbk_wp_rows wp_cols
+    FOR (r = 0; r < cbk_wp_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER cbk_wp_rows r 1 pid
+      PATCH_IF (IS_AN_INT pid) BEGIN
+        SPRINT var_name ~%prof_map_prefix%_%pid%~
+        PATCH_IF (VARIABLE_IS_SET EVAL ~%var_name%~) BEGIN
+          SET val = EVAL ~%%var_name%%~
+          SET_2DA_ENTRY_LATER cbk_wp_out r col_idx ~%val%~
+        END ELSE PATCH_IF (~%default_val%~ STR_CMP ~-1~) BEGIN
+          SET_2DA_ENTRY_LATER cbk_wp_out r col_idx ~%default_val%~
+        END
+      END
+    END
+    SET_2DA_ENTRIES_NOW cbk_wp_out wp_cols
+    PRETTY_PRINT_2DA
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION cbk_update_kit_desc
+  INT_VAR
+    desc_strref = 0
+  STR_VAR
+    kit_name = ~~
+BEGIN
+  COPY_EXISTING ~KITLIST.2DA~ ~override~
+    SET kl_upd = 0
+    READ_2DA_ENTRIES_NOW kl 10
+    FOR (r = 0; r < kl; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER kl r 1 rn
+      PATCH_IF (~%rn%~ STR_EQ ~%kit_name%~) BEGIN
+        SET_2DA_ENTRY_LATER kl_o r 4 ~%desc_strref%~
+        SET kl_upd = 1
+      END
+    END
+    PATCH_IF (kl_upd = 1) BEGIN
+      SET_2DA_ENTRIES_NOW kl_o 10
+      PRETTY_PRINT_2DA
+    END
+  BUT_ONLY
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CLASTEXT.2DA~) BEGIN
+    COPY_EXISTING ~CLASTEXT.2DA~ ~override~
+      COUNT_2DA_COLS ct_cols
+      SET ct_upd = 0
+      READ_2DA_ENTRIES_NOW ct ct_cols
+      FOR (r = 0; r < ct; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER ct r 0 rn
+        PATCH_IF (~%rn%~ STR_EQ ~%kit_name%~) BEGIN
+          SET_2DA_ENTRY_LATER ct_o r 4 ~%desc_strref%~
+          SET ct_upd = 1
+        END
+      END
+      PATCH_IF (ct_upd = 1) BEGIN
+        SET_2DA_ENTRIES_NOW ct_o ct_cols
+        PRETTY_PRINT_2DA
+      END
+    BUT_ONLY
+  END
+END

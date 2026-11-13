@@ -1,0 +1,16 @@
+; Three CInfGame::CheckItemUsableByClass call sites (BG2:EE / EET 2.7.3.0).
+; Before CALL: rdx=CItem*, r8d=nClass, r9d=nRace, [rsp+0x30]=pStrref, [rsp+0x38]=nKit.
+[CBK-CheckItemUsable-CS1]
+Pattern=488BD54489642438498BCD4889742430895C242888442420E8????????8BF885C0751F
+Operations=ADD 24
+NoCache=1
+
+[CBK-CheckItemUsable-CS2]
+Pattern=0FB64424544C89742430895C242888442420E8????????8BF085C07532
+Operations=ADD 18
+NoCache=1
+
+[CBK-CheckItemUsable-CS3]
+Pattern=488BCB4889442430897C24284088742420E8????????85C0
+Operations=ADD 17
+NoCache=1

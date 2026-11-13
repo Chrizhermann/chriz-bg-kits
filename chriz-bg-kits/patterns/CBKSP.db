@@ -1,0 +1,4 @@
+; Shared BG2EE/IWDEE bard C2DArray table lookup (EBX = kit ID, RCX = C2DArray*).
+[CBR-BardSpellTable]
+Pattern=488D8E380700004C8D45F0488D55F8E8????????4C8D45E4
+NoCache=1

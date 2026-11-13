@@ -1,0 +1,52 @@
+BACKUP ~weidu_external/backup/chriz-bg-kits~
+SUPPORT ~https://github.com/Chrizhermann/chriz-bg-kits~
+VERSION ~v0.1.0~
+
+ALWAYS
+  OUTER_SPRINT MOD_FOLDER ~chriz-bg-kits~
+  ACTION_IF !(VARIABLE_IS_SET cbk_always_done) BEGIN
+    OUTER_SET cbk_always_done = 1
+    INCLUDE ~chriz-bg-kits/lib/cbk_common.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_resources.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_kernel.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_add_kit.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_tempus.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_bloodrager.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_bards.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_core_fixes.tpa~
+  END
+END
+
+LANGUAGE ~English~ ~english~
+  ~chriz-bg-kits/languages/english/setup.tra~
+  ~chriz-bg-kits/languages/english/resources.tra~
+
+BEGIN @100 DESIGNATED 100
+LABEL ~chriz_bg_kits_kernel~
+REQUIRE_PREDICATE (GAME_IS ~bg2ee eet~ AND FILE_EXISTS_IN_GAME ~M___EEex.lua~ AND DIRECTORY_EXISTS ~EEex_scripts/extra_pattern_dbs~) @1
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_kernel END
+
+BEGIN @200 DESIGNATED 200
+LABEL ~chriz_bg_kits_tempus~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_tempus END
+
+BEGIN @300 DESIGNATED 300
+LABEL ~chriz_bg_kits_bloodrager~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_bloodrager END
+
+BEGIN @310 DESIGNATED 310
+LABEL ~chriz_bg_kits_bards~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBRSPKIT.2DA~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_bards END
+
+BEGIN @320 DESIGNATED 320
+LABEL ~chriz_bg_kits_core_fixes~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~M_CBKSTR.lua~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_core_fixes END

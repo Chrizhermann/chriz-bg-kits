@@ -1,0 +1,110 @@
+// Component 300: Standalone Fighter Kit Bloodrager (CBKBLDRG). Vanilla BERSERKER & Korgan untouched.
+
+DEFINE_ACTION_FUNCTION cbk_install_bloodrager BEGIN
+  LAF cbk_install_res_bloodrager END
+
+  COPY_EXISTING ~CBKBR00.SPL~ ~override~
+    SAY NAME1 @301
+    SAY UNIDENTIFIED_DESC @302
+  BUT_ONLY
+  COPY_EXISTING ~CBKBRH1.SPL~ ~override~
+    SAY NAME1 @303
+    SAY UNIDENTIFIED_DESC @304
+  BUT_ONLY
+
+  // Build CBKBR0.2DA (Bloodrager CLAB)
+  OUTER_SPRINT h ~2DA V1.0%WNL%****%WNL%            ~
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT h ~%h%%lv%          ~
+  END
+  OUTER_SPRINT r1 ~ABILITY1    GA_CBKBR00  ~
+  OUTER_SPRINT r2 ~ABILITY2    AP_CBKBR1X  ~
+  OUTER_SPRINT r3 ~ABILITY3    AP_CBKBR2X  ~
+  OUTER_SPRINT r4 ~ABILITY4    AP_CBKBR3X  ~
+  OUTER_SPRINT r5 ~ABILITY5    AP_CBKBR07  ~
+  OUTER_FOR (lv = 2; lv <= 50; ++lv) BEGIN
+    ACTION_IF (lv = 4 OR lv = 8 OR lv = 12 OR lv = 16 OR lv = 20 OR lv = 24 OR lv = 28 OR lv = 32 OR lv = 36 OR lv = 40) BEGIN
+      OUTER_SPRINT r1 ~%r1%GA_CBKBR00  ~
+    END ELSE BEGIN
+      OUTER_SPRINT r1 ~%r1%****        ~
+    END
+    OUTER_SPRINT r2 ~%r2%****        ~
+    OUTER_SPRINT r3 ~%r3%****        ~
+    OUTER_SPRINT r4 ~%r4%****        ~
+    OUTER_SPRINT r5 ~%r5%****        ~
+  END
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKBR0.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    SPRINT body ~%h%%WNL%%r1%%WNL%%r2%%WNL%%r3%%WNL%%r4%%WNL%%r5%%WNL%~
+    INSERT_BYTES 0 (STRING_LENGTH ~%body%~)
+    WRITE_ASCIIE 0 ~%body%~
+    PRETTY_PRINT_2DA
+
+  // Build LUCBK.2DA cloning LUFI0.2DA (adds GA_SPCL907 Hardiness + AP_CBKBRH1 Extend Rage)
+  COPY_EXISTING ~LUFI0.2DA~ ~override/LUCBK.2DA~
+    READ_2DA_ENTRIES_NOW lu_rows 10
+    SET has_ext = 0
+    SET has_hard = 0
+    SET free_slot = 0 - 1
+    FOR (r = 0; r < lu_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER lu_rows r 1 ab
+      PATCH_IF (~%ab%~ STR_EQ ~AP_CBKBRH1~) BEGIN SET has_ext = 1 END
+      PATCH_IF (~%ab%~ STR_EQ ~GA_SPCL907~) BEGIN SET has_hard = 1 END
+      PATCH_IF (~%ab%~ STR_EQ ~*~) AND (free_slot < 0) BEGIN SET free_slot = r END
+    END
+    PATCH_IF (has_ext = 0 AND free_slot >= 0) BEGIN
+      SET_2DA_ENTRY_LATER lu_o free_slot 1 ~AP_CBKBRH1~
+      SET_2DA_ENTRY_LATER lu_o free_slot 4 ~1~
+      SET_2DA_ENTRY_LATER lu_o free_slot 5 ~99~
+      SET_2DA_ENTRY_LATER lu_o free_slot 6 ~1~
+      SET_2DA_ENTRIES_NOW lu_o 10
+      SET has_ext = 1
+    END
+    PATCH_IF (has_hard = 0) BEGIN
+      INSERT_2DA_ROW lu_rows 10 ~%lu_rows% GA_SPCL907 * * 1 99 20 * * *~
+      SET lu_rows += 1
+    END
+    PATCH_IF (has_ext = 0) BEGIN
+      INSERT_2DA_ROW lu_rows 10 ~%lu_rows% AP_CBKBRH1 * * 1 99 1 * * *~
+    END
+    PRETTY_PRINT_2DA
+
+  OUTER_SET lower_s = RESOLVE_STR_REF (@305)
+  OUTER_SET mixed_s = RESOLVE_STR_REF (@306)
+  OUTER_SET help_s  = RESOLVE_STR_REF (@307)
+  LAF cbk_register_fighter_kit
+    INT_VAR lower_ref = lower_s mixed_ref = mixed_s help_ref = help_s unusable_mask = 0x00000001
+    STR_VAR
+      kit_name = ~CBKBLDRG~
+      clab = ~CBKBR0~
+      lua_abbr = ~Cbk~
+      abclasrq_row = ~15 0 15 0 0 0~
+      dualclas_row = ~0 0 1 1 0 0~
+    RET br_ids = kit_ids br_prof = kit_prof br_data_col = kit_data_col
+  END
+
+  // WEAPPROF: 5 pips melee, 0 pips all ranged (103..107)
+  OUTER_FOR (p = 89; p <= 102; ++p) BEGIN
+    OUTER_SET $cbk_br_wp(~%p%~) = 5
+  END
+  OUTER_SET cbk_br_wp_115 = 5
+  OUTER_SET cbk_br_wp_111 = 2
+  OUTER_SET cbk_br_wp_112 = 2
+  OUTER_SET cbk_br_wp_113 = 2
+  OUTER_SET cbk_br_wp_114 = 3
+  OUTER_FOR (p = 103; p <= 107; ++p) BEGIN
+    OUTER_SET $cbk_br_wp(~%p%~) = 0
+  END
+  LAF cbk_set_weapprof_col INT_VAR col_idx = br_data_col STR_VAR prof_map_prefix = ~cbk_br_wp~ END
+
+  OUTER_PATCH ~~ BEGIN SPRINTF br_dec ~%d~ (br_ids) END
+  ACTION_FOR_EACH pid IN ~103~ ~104~ ~105~ ~106~ ~107~ BEGIN
+    LAF cbk_append_2da_row_unique
+      INT_VAR cols = 6
+      STR_VAR
+        file = ~CBKWPN.2DA~
+        match_key = EVAL ~CBKBLDRG_DENY%pid%~
+        row_line = EVAL ~CBKBLDRG_DENY%pid% * %br_dec% PROF %pid% DENY~
+    END
+  END
+END

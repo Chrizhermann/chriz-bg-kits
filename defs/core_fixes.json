@@ -1,0 +1,148 @@
+{
+  "states": [
+    "CBK_STR_CLAMP_1"
+  ],
+  "splprots": {
+    "CBK_STR_GE_2": {
+      "stat": 36,
+      "value": 2,
+      "relation": 4
+    },
+    "CBK_RESISTMAGIC_GE_50": {
+      "stat": 18,
+      "value": 50,
+      "relation": 4
+    }
+  },
+  "resources": [
+    {
+      "file": "ARCHSLOW.EFF",
+      "opcode": 326,
+      "target": 2,
+      "p1": 0,
+      "p2": {
+        "splprot": "CBK_STR_GE_2"
+      },
+      "timing": 1,
+      "dispel": 2,
+      "resource": "CBKARCSL"
+    },
+    {
+      "file": "CBKARCSL.SPL",
+      "spell_type": 4,
+      "flags": 0,
+      "school": 0,
+      "sectype": 0,
+      "level": 1,
+      "icon": "",
+      "casting_effects": [],
+      "abilities": [
+        {
+          "location": 4,
+          "target": 1,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 44,
+              "target": 2,
+              "power": 0,
+              "p1": -1,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 2,
+              "duration": 10,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            },
+            {
+              "opcode": 328,
+              "target": 2,
+              "power": 0,
+              "p1": 0,
+              "p2": {
+                "state": "CBK_STR_CLAMP_1"
+              },
+              "timing": 0,
+              "dispel": 2,
+              "duration": 10,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKRSMG.SPL",
+      "spell_type": 4,
+      "flags": 0,
+      "school": 0,
+      "sectype": 0,
+      "level": 1,
+      "icon": "SPCL904B",
+      "casting_effects": [],
+      "abilities": [
+        {
+          "location": 4,
+          "icon": "SPCL904B",
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 318,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": {
+                "splprot": "CBK_RESISTMAGIC_GE_50"
+              },
+              "timing": 0,
+              "dispel": 0,
+              "duration": 1,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "CBKRSMG",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            },
+            {
+              "opcode": 166,
+              "target": 1,
+              "power": 0,
+              "p1": 50,
+              "p2": 1,
+              "timing": 0,
+              "dispel": 0,
+              "duration": 24,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

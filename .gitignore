@@ -1,0 +1,14 @@
+# WeiDU backups and debug logs
+*.DEBUG
+backup/
+weidu.conf
+
+# Python cache and temp artifacts
+__pycache__/
+*.pyc
+.pytest_cache/
+.work/
+
+# OS / Editor
+.DS_Store
+Thumbs.db

@@ -1,0 +1,320 @@
+// Clean-room WeiDU kit registrar with dynamic COUNT_2DA_COLS (safe with chriz-bg-playable-races).
+// Supports clean overwrite if kit_name already exists in KITLIST.2DA.
+
+DEFINE_ACTION_FUNCTION cbk_ensure_kit_table_row
+  INT_VAR
+    expected_cols = 7
+  STR_VAR
+    table_file = ~~
+    row_key = ~~
+    row_values = ~~
+BEGIN
+  OUTER_SET updated = 0
+  COPY_EXISTING ~%table_file%~ ~override~
+    COUNT_2DA_COLS tcols
+    READ_2DA_ENTRIES_NOW cur_rows tcols
+    FOR (r = 0; r < cur_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER cur_rows r 0 k
+      PATCH_IF (~%k%~ STR_EQ ~%row_key%~) BEGIN
+        INNER_PATCH ~%row_values%~ BEGIN
+          // Tokenize row_values dynamically
+        END
+        SET updated = 1
+      END
+    END
+    PATCH_IF (updated = 1) BEGIN
+      // Replace whole line cleanly on raw text
+      REPLACE_TEXTUALLY ~^[ %TAB%]*%row_key%[ %TAB%].*$~ ~%row_key% %row_values%~
+    END ELSE BEGIN
+      INSERT_2DA_ROW cur_rows tcols ~%row_key% %row_values%~
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
+END
+
+DEFINE_ACTION_FUNCTION cbk_append_weapprof_col
+  STR_VAR
+    kit_name = ~~
+    clone_col = ~BERSERKER~
+  RET prof_index data_col_index
+BEGIN
+  OUTER_SET prof_index = 0 - 1
+  OUTER_SET data_col_index = 0 - 1
+  COPY_EXISTING ~WEAPPROF.2DA~ ~override~
+    COUNT_2DA_COLS wp_cols
+    // Header has wp_cols - 1 tokens; check if kit_name already exists
+    SET existing_hdr = 0 - 1
+    SET clone_hdr = 0 - 1
+    READ_2DA_ENTRIES_NOW wp_rows (wp_cols - 1)
+    // Wait: READ_2DA_ENTRIES_NOW with 1 reads ALL lines? Let's scan line 2 directly on text!
+    SPRINT col_str ~$ $ %kit_name%~
+    FOR (c = 0; c < wp_cols - 1; ++c) BEGIN
+      READ_2DA_ENTRY_FORMER wp_rows 0 c tok
+      PATCH_IF (~%tok%~ STR_EQ ~%kit_name%~) BEGIN
+        SET existing_hdr = c
+      END
+      PATCH_IF (~%tok%~ STR_EQ ~%clone_col%~) BEGIN
+        SET clone_hdr = c
+      END
+    END
+    PATCH_IF (existing_hdr >= 0) BEGIN
+      SET prof_index = existing_hdr
+      SET data_col_index = existing_hdr + 1
+    END ELSE BEGIN
+      PATCH_IF (clone_hdr < 0) BEGIN SET clone_hdr = 4 END // FIGHTER fallback
+      SET clone_data = clone_hdr + 1
+      READ_2DA_ENTRIES_NOW wp_data wp_cols
+      FOR (r = 0; r < wp_data; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER wp_data r clone_data v
+        SPRINT col_str ~%col_str% %v%~
+      END
+      SET prof_index = wp_cols - 1
+      SET data_col_index = wp_cols
+    END
+  BUT_ONLY
+  ACTION_IF (existing_hdr < 0) BEGIN
+    APPEND_COL ~WEAPPROF.2DA~ ~%col_str%~
+    COPY_EXISTING ~WEAPPROF.2DA~ ~override~
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_append_25stweap_col
+  STR_VAR
+    kit_name = ~~
+    clone_col = ~BERSERKER~
+BEGIN
+  OUTER_SET already = 0
+  OUTER_SPRINT col_str ~$ $ %kit_name%~
+  COPY_EXISTING ~25STWEAP.2DA~ ~override~
+    COUNT_2DA_COLS st_cols
+    READ_2DA_ENTRIES_NOW st_hdr (st_cols - 1)
+    SET clone_h = 0 - 1
+    FOR (c = 0; c < st_cols - 1; ++c) BEGIN
+      READ_2DA_ENTRY_FORMER st_hdr 0 c tok
+      PATCH_IF (~%tok%~ STR_EQ ~%kit_name%~) BEGIN SET already = 1 END
+      PATCH_IF (~%tok%~ STR_EQ ~%clone_col%~) BEGIN SET clone_h = c END
+    END
+    PATCH_IF (already = 0) BEGIN
+      PATCH_IF (clone_h < 0) BEGIN SET clone_h = 4 END
+      SET clone_d = clone_h + 1
+      READ_2DA_ENTRIES_NOW st_data st_cols
+      FOR (r = 0; r < st_data; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER st_data r clone_d v
+        SPRINT col_str ~%col_str% %v%~
+      END
+    END
+  BUT_ONLY
+  ACTION_IF (already = 0) BEGIN
+    APPEND_COL ~25STWEAP.2DA~ ~%col_str%~
+    COPY_EXISTING ~25STWEAP.2DA~ ~override~
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbk_fmt_hex
+  INT_VAR
+    val = 0
+    width = 8
+  RET out
+BEGIN
+  SPRINTF raw ~%x~ (val)
+  INNER_PATCH_SAVE clean ~%raw%~ BEGIN
+    REPLACE_TEXTUALLY ~^0[xX]~ ~~
+  END
+  WHILE (STRING_LENGTH ~%clean%~ < width) BEGIN
+    SPRINT clean ~0%clean%~
+  END
+  SPRINT out ~0x%clean%~
+END
+
+DEFINE_ACTION_FUNCTION cbk_register_fighter_kit
+  INT_VAR
+    lower_ref = 0
+    mixed_ref = 0
+    help_ref = 0
+    unusable_mask = 0x00000001
+  STR_VAR
+    kit_name = ~~
+    clab = ~~
+    lua_abbr = ~Cb0~
+    clasweap_row = ~1 1 1 1 1 1 1 1~
+    abclasrq_row = ~12 0 12 0 0 0~
+    abclsmod_row = ~0 0 0 0 0 0~
+    abcdsrq_row  = ~15 0 0 0 0 0~
+    abdcsrq_row  = ~15 0 0 0 0 0~
+    alignmnt_row = ~0 1 1 0 1 1 0 1 1~
+    dualclas_row = ~0 1 1 1 1 0~
+  RET kit_ids kit_prof kit_data_col
+BEGIN
+  LAF cbk_append_weapprof_col STR_VAR kit_name = EVAL ~%kit_name%~ clone_col = ~BERSERKER~ RET kit_prof = prof_index kit_data_col = data_col_index END
+  LAF cbk_append_25stweap_col STR_VAR kit_name = EVAL ~%kit_name%~ clone_col = ~BERSERKER~ END
+
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~CLASWEAP.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%clasweap_row%~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~ABCLASRQ.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%abclasrq_row%~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~ABCLSMOD.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%abclsmod_row%~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~ABDCDSRQ.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%abcdsrq_row%~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~ABDCSCRQ.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%abdcsrq_row%~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~ALIGNMNT.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%alignmnt_row%~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~DUALCLAS.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%dualclas_row%~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~LUABBR.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%lua_abbr%~ END
+
+  // Register or overwrite KITLIST.2DA + KIT.IDS (class = 2 Fighter)
+  OUTER_SET max_kit_num = 0
+  OUTER_SET found_row = 0 - 1
+  OUTER_SET kit_num = 0 - 1
+  OUTER_SET kit_ids = 0 - 1
+  COPY_EXISTING ~KITLIST.2DA~ ~override~
+    READ_2DA_ENTRIES_NOW kl_rows 10
+    FOR (r = 0; r < kl_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER kl_rows r 0 rnum
+      READ_2DA_ENTRY_FORMER kl_rows r 1 rname
+      PATCH_IF (IS_AN_INT rnum AND rnum > max_kit_num) BEGIN
+        SET max_kit_num = rnum
+      END
+      PATCH_IF (~%rname%~ STR_EQ ~%kit_name%~) BEGIN
+        SET found_row = r
+        SET kit_num = rnum
+        READ_2DA_ENTRY_FORMER kl_rows r 9 existing_ids
+        SET kit_ids = existing_ids
+      END
+    END
+    PATCH_IF (found_row < 0) BEGIN
+      SET kit_num = max_kit_num + 1
+      SET kit_ids = 0x4000 + kit_num
+      LPF cbk_fmt_hex INT_VAR val = kit_ids width = 8 RET hex_ids = out END
+      LPF cbk_fmt_hex INT_VAR val = unusable_mask width = 8 RET hex_unusable = out END
+      INSERT_2DA_ROW kl_rows 10 ~%kit_num% %kit_name% %lower_ref% %mixed_ref% %help_ref% %clab% %kit_prof% %hex_unusable% 2 %hex_ids%~
+    END ELSE BEGIN
+      LPF cbk_fmt_hex INT_VAR val = kit_ids width = 8 RET hex_ids = out END
+      LPF cbk_fmt_hex INT_VAR val = unusable_mask width = 8 RET hex_unusable = out END
+      SET_2DA_ENTRY_LATER kl_out found_row 2 ~%lower_ref%~
+      SET_2DA_ENTRY_LATER kl_out found_row 3 ~%mixed_ref%~
+      SET_2DA_ENTRY_LATER kl_out found_row 4 ~%help_ref%~
+      SET_2DA_ENTRY_LATER kl_out found_row 5 ~%clab%~
+      SET_2DA_ENTRY_LATER kl_out found_row 6 ~%kit_prof%~
+      SET_2DA_ENTRY_LATER kl_out found_row 7 ~%hex_unusable%~
+      SET_2DA_ENTRY_LATER kl_out found_row 8 ~2~
+      SET_2DA_ENTRY_LATER kl_out found_row 9 ~%hex_ids%~
+      SET_2DA_ENTRIES_NOW kl_out 10
+    END
+    PRETTY_PRINT_2DA
+  BUT_ONLY
+
+  // KIT.IDS
+  OUTER_PATCH ~~ BEGIN LPF cbk_fmt_hex INT_VAR val = kit_ids width = 4 RET kit_ids_hex = out END END
+  OUTER_SET in_ids = 0
+  COPY_EXISTING ~KIT.IDS~ ~override~
+    COUNT_2DA_ROWS 2 ids_rows
+    FOR (r = 0; r < ids_rows; ++r) BEGIN
+      READ_2DA_ENTRY r 1 2 ksym
+      PATCH_IF (~%ksym%~ STR_EQ ~%kit_name%~) BEGIN SET in_ids = 1 END
+    END
+  BUT_ONLY
+  ACTION_IF (in_ids = 0) BEGIN
+    APPEND ~KIT.IDS~ ~%kit_ids_hex% %kit_name%~
+  END
+
+  // Add kit_num to all Fighter race kit tables dynamically from KITTABLE.2DA (H, D, G, E, HE, HL, HO, and any mod race like HG)
+  ACTION_CLEAR_ARRAY cbk_f_tables
+  COPY_EXISTING ~KITTABLE.2DA~ ~override~
+    COUNT_2DA_COLS kt_cols
+    READ_2DA_ENTRIES_NOW kt_rows kt_cols
+    FOR (r = 0; r < kt_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER kt_rows r 0 cls_lbl
+      PATCH_IF (~%cls_lbl%~ STR_EQ ~FIGHTER~) BEGIN
+        FOR (c = 1; c < kt_cols; ++c) BEGIN
+          READ_2DA_ENTRY_FORMER kt_rows r c tbl_name
+          PATCH_IF !(~%tbl_name%~ STR_EQ ~*~) AND !(~%tbl_name%~ STR_EQ ~~) BEGIN
+            SET $cbk_f_tables(~%tbl_name%~) = 1
+          END
+        END
+      END
+    END
+  BUT_ONLY
+
+  ACTION_PHP_EACH cbk_f_tables AS tbl_name => _unused BEGIN
+    ACTION_IF (FILE_EXISTS_IN_GAME ~%tbl_name%.2DA~) BEGIN
+      OUTER_SET has_kit = 0
+      COPY_EXISTING ~%tbl_name%.2DA~ ~override~
+        READ_2DA_ENTRIES_NOW rf_rows 2
+        FOR (rr = 0; rr < rf_rows; ++rr) BEGIN
+          READ_2DA_ENTRY_FORMER rf_rows rr 1 kid
+          PATCH_IF (~%kid%~ STR_EQ ~%kit_num%~) BEGIN SET has_kit = 1 END
+        END
+        PATCH_IF (has_kit = 0) BEGIN
+          SET next_num = rf_rows + 1
+          INSERT_2DA_ROW rf_rows 2 ~%next_num% %kit_num%~
+          PRETTY_PRINT_2DA
+        END
+      BUT_ONLY
+    END
+  END
+
+  // Register kit in CLSRCREQ.2DA cloning BERSERKER (fallback FIGHTER) dynamically across all race columns
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CLSRCREQ.2DA~) BEGIN
+    OUTER_SPRINT rc_vals ~~
+    COPY_EXISTING ~CLSRCREQ.2DA~ ~override~
+      COUNT_2DA_COLS rc_cols
+      READ_2DA_ENTRIES_NOW rc_rows rc_cols
+      SET clone_row = 0 - 1
+      SET fallback_row = 0 - 1
+      FOR (r = 0; r < rc_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER rc_rows r 0 rn
+        PATCH_IF (~%rn%~ STR_EQ ~BERSERKER~) BEGIN SET clone_row = r END
+        PATCH_IF (~%rn%~ STR_EQ ~FIGHTER~) BEGIN SET fallback_row = r END
+      END
+      PATCH_IF (clone_row < 0) BEGIN SET clone_row = fallback_row END
+      FOR (c = 1; c < rc_cols; ++c) BEGIN
+        PATCH_IF (clone_row >= 0) BEGIN
+          READ_2DA_ENTRY_FORMER rc_rows clone_row c rv
+        END ELSE BEGIN
+          SPRINT rv ~1~
+        END
+        PATCH_IF (c = 1) BEGIN
+          SPRINT rc_vals ~%rv%~
+        END ELSE BEGIN
+          SPRINT rc_vals ~%rc_vals% %rv%~
+        END
+      END
+    BUT_ONLY
+    LAF cbk_ensure_kit_table_row STR_VAR table_file = ~CLSRCREQ.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%rc_vals%~ END
+  END
+
+  // Register kit in CLASTEXT.2DA cloning trailing cols from BERSERKER (fallback FIGHTER)
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CLASTEXT.2DA~) BEGIN
+    OUTER_SPRINT ct_tail ~~
+    COPY_EXISTING ~CLASTEXT.2DA~ ~override~
+      COUNT_2DA_COLS ct_cols
+      READ_2DA_ENTRIES_NOW ct_rows ct_cols
+      SET clone_row = 0 - 1
+      SET fallback_row = 0 - 1
+      FOR (r = 0; r < ct_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER ct_rows r 0 rn
+        PATCH_IF (~%rn%~ STR_EQ ~BERSERKER~) BEGIN SET clone_row = r END
+        PATCH_IF (~%rn%~ STR_EQ ~FIGHTER~) BEGIN SET fallback_row = r END
+      END
+      PATCH_IF (clone_row < 0) BEGIN SET clone_row = fallback_row END
+      FOR (c = 6; c < ct_cols; ++c) BEGIN
+        PATCH_IF (clone_row >= 0) BEGIN
+          READ_2DA_ENTRY_FORMER ct_rows clone_row c tv
+        END ELSE BEGIN
+          SPRINT tv ~-1~
+        END
+        PATCH_IF (c = 6) BEGIN
+          SPRINT ct_tail ~%tv%~
+        END ELSE BEGIN
+          SPRINT ct_tail ~%ct_tail% %tv%~
+        END
+      END
+    BUT_ONLY
+    ACTION_IF (~%ct_tail%~ STR_EQ ~~) BEGIN
+      OUTER_SPRINT ct_vals ~2 %kit_num% %lower_ref% %help_ref% %mixed_ref%~
+    END ELSE BEGIN
+      OUTER_SPRINT ct_vals ~2 %kit_num% %lower_ref% %help_ref% %mixed_ref% %ct_tail%~
+    END
+    LAF cbk_ensure_kit_table_row STR_VAR table_file = ~CLASTEXT.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%ct_vals%~ END
+  END
+END
