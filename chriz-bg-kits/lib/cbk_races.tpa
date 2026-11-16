@@ -1,0 +1,856 @@
+// Components 110 & 111: Racial Class, Kit, Dual-Class & Multiclass Rules
+//   110 (unlock_all = 0): Forgotten Realms Racial Class, Kit & Multiclass Rules (Recommended)
+//   111 (unlock_all = 1): Unlock All Classes, Kits, Dual-Classes & Multiclasses for All Races
+
+DEFINE_PATCH_FUNCTION cbk_race_fr_rule
+  INT_VAR
+    has_stonefire = 0
+  STR_VAR
+    entry = ~~
+    entry_cls = ~~
+    race = ~~
+  RET allowed is_explicit
+BEGIN
+  SET allowed = 0
+  SET is_explicit = 1
+  TO_UPPER entry
+  TO_UPPER race
+
+  PATCH_IF (~%race%~ STR_EQ ~HUMAN~) BEGIN
+    PATCH_IF (~%entry%~ STR_EQ ~DWARVEN_DEFENDER~ OR ~%entry%~ STR_EQ ~CBK_STONEFIRE~) BEGIN
+      SET allowed = 0
+    END ELSE BEGIN
+      SET allowed = 1
+    END
+  END ELSE PATCH_IF (~%race%~ STR_EQ ~DWARF~) BEGIN
+    PATCH_MATCH ~%entry%~ WITH
+      ~FIGHTER~ ~CLERIC~ ~THIEF~ ~PALADIN~ ~RANGER~ ~BARD~ ~MAGE~ ~BARBARIAN~
+      ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~CLERIC_THIEF~ ~FIGHTER_MAGE~ ~CLERIC_MAGE~ ~DUALCLASS~
+      ~ABJURER~ ~INVOKER~ ~TRANSMUTER~
+      ~CAVALIER~ ~UNDEAD_HUNTER~ ~BLACKGUARD~
+      ~STALKER~ ~BEASTMASTER~
+      ~SKALD~ ~DWARVEN_DEFENDER~ ~CBKBLDRG~ ~CBK_STONEFIRE~ BEGIN
+        SET allowed = 1
+      END
+      ~SORCERER~ BEGIN
+        SET allowed = has_stonefire
+      END
+      ~INQUISITOR~ ~FERALAN~ ~BLADE~ ~JESTER~ ~DRAGON_DISCIPLE~
+      ~CONJURER~ ~DIVINER~ ~ENCHANTER~ ~ILLUSIONIST~ ~NECROMANCER~ ~WILDMAGE~
+      ~DRUID~ ~MONK~ ~SHAMAN~ ~CBK_ELEMENTALIST~ BEGIN
+        SET allowed = 0
+      END
+      DEFAULT
+        PATCH_IF (~%entry_cls%~ STR_EQ ~2~ OR ~%entry_cls%~ STR_EQ ~3~ OR ~%entry_cls%~ STR_EQ ~4~) BEGIN
+          SET allowed = 1
+        END ELSE BEGIN
+          SET is_explicit = 0
+        END
+    END
+  END ELSE PATCH_IF (~%race%~ STR_EQ ~ELF~) BEGIN
+    PATCH_MATCH ~%entry%~ WITH
+      ~FIGHTER~ ~MAGE~ ~CLERIC~ ~THIEF~ ~BARD~ ~PALADIN~ ~DRUID~ ~RANGER~ ~SORCERER~ ~MONK~ ~BARBARIAN~
+      ~FIGHTER_MAGE~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~FIGHTER_MAGE_THIEF~ ~MAGE_THIEF~
+      ~CLERIC_MAGE~ ~CLERIC_THIEF~ ~FIGHTER_DRUID~ ~FIGHTER_MAGE_CLERIC~ ~CLERIC_RANGER~ ~DUALCLASS~
+      ~ABJURER~ ~CONJURER~ ~DIVINER~ ~ENCHANTER~ ~INVOKER~ ~TRANSMUTER~ ~WILDMAGE~
+      ~BLADE~ ~CAVALIER~ ~UNDEAD_HUNTER~ ~SUN_SOUL~ ~DRAGON_DISCIPLE~ ~CBKBLDRG~ ~CBK_ELEMENTALIST~ BEGIN
+        SET allowed = 1
+      END
+      ~ILLUSIONIST~ ~NECROMANCER~ ~JESTER~ ~SKALD~ ~INQUISITOR~ ~BLACKGUARD~ ~DARK_MOON~
+      ~DWARVEN_DEFENDER~ ~CBK_STONEFIRE~ ~SHAMAN~ BEGIN
+        SET allowed = 0
+      END
+      DEFAULT
+        PATCH_IF (~%entry_cls%~ STR_EQ ~2~ OR ~%entry_cls%~ STR_EQ ~3~ OR ~%entry_cls%~ STR_EQ ~4~
+               OR ~%entry_cls%~ STR_EQ ~11~ OR ~%entry_cls%~ STR_EQ ~12~) BEGIN
+          SET allowed = 1
+        END ELSE BEGIN
+          SET is_explicit = 0
+        END
+    END
+  END ELSE PATCH_IF (~%race%~ STR_EQ ~HALF_ELF~) BEGIN
+    PATCH_MATCH ~%entry%~ WITH
+      ~DWARVEN_DEFENDER~ ~CBK_STONEFIRE~ ~BLACKGUARD~ BEGIN
+        SET allowed = 0
+      END
+      DEFAULT
+        SET allowed = 1
+    END
+  END ELSE PATCH_IF (~%race%~ STR_EQ ~GNOME~) BEGIN
+    PATCH_MATCH ~%entry%~ WITH
+      ~FIGHTER~ ~MAGE~ ~CLERIC~ ~THIEF~ ~BARD~ ~RANGER~ ~SORCERER~ ~BARBARIAN~
+      ~FIGHTER_MAGE~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~MAGE_THIEF~ ~CLERIC_MAGE~ ~CLERIC_THIEF~
+      ~FIGHTER_MAGE_THIEF~ ~FIGHTER_MAGE_CLERIC~ ~DUALCLASS~
+      ~ILLUSIONIST~ ~DIVINER~ ~TRANSMUTER~ ~WILDMAGE~
+      ~JESTER~ ~BEASTMASTER~ ~CBKBLDRG~ BEGIN
+        SET allowed = 1
+      END
+      ~ABJURER~ ~CONJURER~ ~ENCHANTER~ ~INVOKER~ ~NECROMANCER~
+      ~BLADE~ ~SKALD~ ~FERALAN~ ~STALKER~ ~DRAGON_DISCIPLE~ ~CBK_STONEFIRE~ ~DWARVEN_DEFENDER~
+      ~PALADIN~ ~CAVALIER~ ~INQUISITOR~ ~UNDEAD_HUNTER~ ~BLACKGUARD~
+      ~DRUID~ ~TOTEMIC_DRUID~ ~SHAPESHIFTER~ ~BEAST_FRIEND~ ~CBK_ELEMENTALIST~
+      ~MONK~ ~DARK_MOON~ ~SUN_SOUL~ ~SHAMAN~ ~FIGHTER_DRUID~ ~CLERIC_RANGER~ BEGIN
+        SET allowed = 0
+      END
+      DEFAULT
+        PATCH_IF (~%entry_cls%~ STR_EQ ~2~ OR ~%entry_cls%~ STR_EQ ~3~ OR ~%entry_cls%~ STR_EQ ~4~) BEGIN
+          SET allowed = 1
+        END ELSE BEGIN
+          SET is_explicit = 0
+        END
+    END
+  END ELSE PATCH_IF (~%race%~ STR_EQ ~HALFLING~) BEGIN
+    PATCH_MATCH ~%entry%~ WITH
+      ~FIGHTER~ ~MAGE~ ~CLERIC~ ~THIEF~ ~BARD~ ~PALADIN~ ~DRUID~ ~RANGER~ ~BARBARIAN~
+      ~FIGHTER_MAGE~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~FIGHTER_MAGE_THIEF~
+      ~MAGE_THIEF~ ~CLERIC_MAGE~ ~CLERIC_THIEF~ ~FIGHTER_DRUID~ ~CLERIC_RANGER~ ~DUALCLASS~
+      ~ABJURER~ ~CONJURER~ ~DIVINER~ ~ENCHANTER~ ~ILLUSIONIST~ ~INVOKER~ ~TRANSMUTER~ ~WILDMAGE~
+      ~JESTER~ ~CAVALIER~ ~UNDEAD_HUNTER~ ~CBK_ELEMENTALIST~ BEGIN
+        SET allowed = 1
+      END
+      ~NECROMANCER~ ~SORCERER~ ~DRAGON_DISCIPLE~ ~CBK_STONEFIRE~
+      ~BLADE~ ~SKALD~ ~INQUISITOR~ ~BLACKGUARD~
+      ~DWARVEN_DEFENDER~ ~CBKBLDRG~ ~MONK~ ~DARK_MOON~ ~SUN_SOUL~ ~SHAMAN~ ~FIGHTER_MAGE_CLERIC~ BEGIN
+        SET allowed = 0
+      END
+      DEFAULT
+        PATCH_IF (~%entry_cls%~ STR_EQ ~2~ OR ~%entry_cls%~ STR_EQ ~3~ OR ~%entry_cls%~ STR_EQ ~4~
+               OR ~%entry_cls%~ STR_EQ ~11~ OR ~%entry_cls%~ STR_EQ ~12~) BEGIN
+          SET allowed = 1
+        END ELSE BEGIN
+          SET is_explicit = 0
+        END
+    END
+  END ELSE PATCH_IF (~%race%~ STR_EQ ~HALFORC~) BEGIN
+    PATCH_MATCH ~%entry%~ WITH
+      ~FIGHTER~ ~CLERIC~ ~THIEF~ ~BARD~ ~PALADIN~ ~DRUID~ ~RANGER~ ~SORCERER~ ~SHAMAN~ ~BARBARIAN~
+      ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~CLERIC_THIEF~ ~FIGHTER_DRUID~ ~DUALCLASS~
+      ~INQUISITOR~ ~UNDEAD_HUNTER~ ~BLACKGUARD~ ~SKALD~ ~DRAGON_DISCIPLE~
+      ~CBKBLDRG~ ~CBK_ELEMENTALIST~ BEGIN
+        SET allowed = 1
+      END
+      ~CAVALIER~ ~BLADE~ ~JESTER~ ~DWARVEN_DEFENDER~ ~CBK_STONEFIRE~
+      ~MAGE~ ~ABJURER~ ~CONJURER~ ~DIVINER~ ~ENCHANTER~ ~ILLUSIONIST~ ~INVOKER~ ~NECROMANCER~ ~TRANSMUTER~ ~WILDMAGE~
+      ~MONK~ ~DARK_MOON~ ~SUN_SOUL~
+      ~FIGHTER_MAGE~ ~FIGHTER_MAGE_THIEF~ ~MAGE_THIEF~ ~CLERIC_MAGE~ ~FIGHTER_MAGE_CLERIC~ ~CLERIC_RANGER~ BEGIN
+        SET allowed = 0
+      END
+      DEFAULT
+        PATCH_IF (~%entry_cls%~ STR_EQ ~2~ OR ~%entry_cls%~ STR_EQ ~3~ OR ~%entry_cls%~ STR_EQ ~4~
+               OR ~%entry_cls%~ STR_EQ ~11~ OR ~%entry_cls%~ STR_EQ ~12~ OR ~%entry_cls%~ STR_EQ ~21~) BEGIN
+          SET allowed = 1
+        END ELSE BEGIN
+          SET is_explicit = 0
+        END
+    END
+  END ELSE PATCH_IF (~%race%~ STR_EQ ~HOBGOBLIN~) BEGIN
+    PATCH_MATCH ~%entry%~ WITH
+      ~FIGHTER~ ~BARBARIAN~ ~THIEF~ ~CLERIC~ ~RANGER~ ~PALADIN~ ~BARD~ ~SHAMAN~ ~MONK~ ~MAGE~
+      ~FIGHTER_MAGE~ ~MAGE_THIEF~ ~FIGHTER_MAGE_THIEF~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~CLERIC_THIEF~ ~DUALCLASS~
+      ~ASSASIN~ ~BOUNTY_HUNTER~ ~SHADOWDANCER~
+      ~FERALAN~ ~STALKER~
+      ~INQUISITOR~ ~BLACKGUARD~
+      ~SKALD~ ~DARK_MOON~
+      ~ABJURER~ ~CONJURER~ ~INVOKER~ BEGIN
+        SET allowed = 1
+      END
+      ~DWARVEN_DEFENDER~ ~CBKBLDRG~ ~CBK_STONEFIRE~ ~CBK_ELEMENTALIST~
+      ~SWASHBUCKLER~ ~BEASTMASTER~ ~CAVALIER~ ~UNDEAD_HUNTER~ ~BLADE~ ~JESTER~ ~SUN_SOUL~
+      ~DIVINER~ ~ENCHANTER~ ~ILLUSIONIST~ ~NECROMANCER~ ~TRANSMUTER~ ~WILDMAGE~
+      ~DRUID~ ~TOTEMIC_DRUID~ ~SHAPESHIFTER~ ~BEAST_FRIEND~
+      ~SORCERER~ ~DRAGON_DISCIPLE~
+      ~FIGHTER_DRUID~ ~CLERIC_MAGE~ ~FIGHTER_MAGE_CLERIC~ ~CLERIC_RANGER~ BEGIN
+        SET allowed = 0
+      END
+      DEFAULT
+        PATCH_IF (~%entry_cls%~ STR_EQ ~2~ OR ~%entry_cls%~ STR_EQ ~3~ OR ~%entry_cls%~ STR_EQ ~21~) BEGIN
+          SET allowed = 1
+        END ELSE BEGIN
+          SET allowed = 0
+        END
+    END
+  END ELSE BEGIN
+    SET is_explicit = 0
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbk_race_allows_unkitted
+  INT_VAR
+    unlock_all = 0
+  STR_VAR
+    cls_label = ~~
+    race = ~~
+  RET allow_zero
+BEGIN
+  SET allow_zero = 1
+  TO_UPPER cls_label
+  TO_UPPER race
+  PATCH_IF (unlock_all = 0) BEGIN
+    PATCH_IF (~%cls_label%~ STR_EQ ~MAGE~ AND (~%race%~ STR_EQ ~DWARF~ OR ~%race%~ STR_EQ ~GNOME~)) BEGIN
+      SET allow_zero = 0
+    END
+    PATCH_IF (~%cls_label%~ STR_EQ ~SORCERER~ AND ~%race%~ STR_EQ ~DWARF~) BEGIN
+      SET allow_zero = 0
+    END
+    PATCH_IF (~%cls_label%~ STR_EQ ~BARD~ AND (~%race%~ STR_EQ ~DWARF~ OR ~%race%~ STR_EQ ~HALFORC~ OR ~%race%~ STR_EQ ~HOBGOBLIN~)) BEGIN
+      SET allow_zero = 0
+    END
+    PATCH_IF (~%cls_label%~ STR_EQ ~PALADIN~ AND ~%race%~ STR_EQ ~HOBGOBLIN~) BEGIN
+      SET allow_zero = 0
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_update_racetext_file
+  STR_VAR
+    file = ~~
+BEGIN
+  ACTION_IF (FILE_EXISTS_IN_GAME ~%file%~) BEGIN
+    COPY_EXISTING ~%file%~ ~override~
+      COUNT_2DA_COLS rt_cols
+      READ_2DA_ENTRIES_NOW rt_rows rt_cols
+      SET rt_changed = 0
+      FOR (r = 0; r < rt_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER rt_rows r 0 rname
+        READ_2DA_ENTRY_FORMER rt_rows r 3 dref
+        TO_UPPER rname
+        PATCH_IF (IS_AN_INT dref AND dref >= 0) BEGIN
+          SPRINT addon ~~
+          PATCH_IF (~%rname%~ STR_EQ ~HUMAN~) BEGIN
+            SPRINT addon ~Second Wind (1/rest: automatically heals 20% Max HP and clears Fatigue and Fear when dropping below 25% HP).~
+          END ELSE PATCH_IF (~%rname%~ STR_EQ ~ELF~) BEGIN
+            SPRINT addon ~+1 bonus to Saving Throws vs. Spell.~
+          END ELSE PATCH_IF (~%rname%~ STR_EQ ~HALF_ELF~) BEGIN
+            SPRINT addon ~Silver Tongue (+1 Charisma, +10 Lore, 50% resistance to Sleep and Charm).~
+          END ELSE PATCH_IF (~%rname%~ STR_EQ ~DWARF~) BEGIN
+            SPRINT addon ~Maximum starting Charisma increased to 17.~
+          END ELSE PATCH_IF (~%rname%~ STR_EQ ~HALFLING~) BEGIN
+            SPRINT addon ~+1 THAC0 with Slings, Darts, Daggers, and Short Swords; Halfling Finesse (uses Dexterity instead of Strength for melee THAC0 and damage with Daggers, Short Swords, Clubs, and Scimitars when Dexterity exceeds Strength).~
+          END
+          PATCH_IF !(~%addon%~ STR_EQ ~~) BEGIN
+            GET_STRREF dref old_txt
+            INNER_PATCH_SAVE clean_txt ~%old_txt%~ BEGIN
+              REPLACE_TEXTUALLY ~[%WNL%]+Racial Traits (Chriz's Kit & Class Pack):.*~ ~~
+            END
+            SPRINT new_txt ~%clean_txt%%WNL%%WNL%Racial Traits (Chriz's Kit & Class Pack): %addon%~
+            SET new_ref = RESOLVE_STR_REF (~%new_txt%~)
+            SET_2DA_ENTRY_LATER rt_out r 3 ~%new_ref%~
+            SET rt_changed = 1
+          END
+        END
+      END
+      PATCH_IF (rt_changed = 1) BEGIN
+        SET_2DA_ENTRIES_NOW rt_out rt_cols
+        PRETTY_PRINT_2DA
+      END
+    BUT_ONLY
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_install_races
+  INT_VAR
+    unlock_all = 0
+BEGIN
+  LAF cbk_install_res_races END
+  LAF cbk_ensure_splstate STR_VAR symbol = ~CBK_RAC_RESOLVED~ RET CBK_RAC_RESOLVED_STATE = state END
+
+  OUTER_SET mode_val = (unlock_all = 1) ? 111 : 110
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKRACMD.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    SPRINT md_txt ~2DA V1.0%WNL%*%WNL%        VAL%WNL%MODE    %mode_val%%WNL%~
+    INSERT_BYTES 0 (STRING_LENGTH ~%md_txt%~)
+    WRITE_ASCIIE 0 ~%md_txt%~
+    PRETTY_PRINT_2DA
+
+  // 1. Collect all kits from KITLIST.2DA (excluding RESERVE, LATHANDER_X, GRIZZLY_BEAR)
+  ACTION_CLEAR_ARRAY cbk_kit_name_by_num
+  ACTION_CLEAR_ARRAY cbk_kit_cls_by_num
+  ACTION_CLEAR_ARRAY cbk_kit_cls_by_name
+  OUTER_SET has_stonefire = 0
+  OUTER_SET stonefire_num = 0 - 1
+  COPY_EXISTING ~KITLIST.2DA~ ~override~
+    READ_2DA_ENTRIES_NOW kl_rows 10
+    FOR (r = 0; r < kl_rows; ++r) BEGIN
+      READ_2DA_ENTRY_FORMER kl_rows r 0 knum
+      READ_2DA_ENTRY_FORMER kl_rows r 1 kname
+      READ_2DA_ENTRY_FORMER kl_rows r 8 kcls
+      TO_UPPER kname
+      PATCH_IF (IS_AN_INT knum AND knum > 0 AND IS_AN_INT kcls
+                AND !(~%kname%~ STR_EQ ~RESERVE~)
+                AND !(~%kname%~ STR_EQ ~LATHANDER_X~)
+                AND !(~%kname%~ STR_EQ ~GRIZZLY_BEAR~)) BEGIN
+        SPRINT $cbk_kit_name_by_num(~%knum%~) ~%kname%~
+        SPRINT $cbk_kit_cls_by_num(~%knum%~) ~%kcls%~
+        SPRINT $cbk_kit_cls_by_name(~%kname%~) ~%kcls%~
+        PATCH_IF (~%kname%~ STR_EQ ~CBK_STONEFIRE~) BEGIN
+          SET has_stonefire = 1
+          SET stonefire_num = knum
+        END
+      END
+    END
+  BUT_ONLY
+
+  // 2. MGSRCREQ.2DA: keep ILLUSIONIST right under MAGE so Gnome multiclasses stay Illusionists;
+  //    keep DWARF MAGE=0 in 110 so Dwarf F/M & C/M hit ABJURER first.
+  ACTION_IF (FILE_EXISTS_IN_GAME ~MGSRCREQ.2DA~) BEGIN
+    COPY_EXISTING ~MGSRCREQ.2DA~ ~override~
+      COUNT_2DA_COLS mg_cols
+      READ_2DA_ENTRIES_NOW mg_hdr (mg_cols - 1)
+      READ_2DA_ENTRIES_NOW mg_rows mg_cols
+      SPRINT hdr_line ~                CLASS~
+      FOR (c = 1; c < mg_cols - 1; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER mg_hdr 0 c rcol
+        TO_UPPER rcol
+        SPRINT $mg_race_col(~%c%~) ~%rcol%~
+        SPRINT hdr_line ~%hdr_line% %rcol%~
+      END
+      FOR (r = 0; r < mg_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER mg_rows r 0 hex_id
+        READ_2DA_ENTRY_FORMER mg_rows r 1 sname
+        TO_UPPER sname
+        SPRINT $mg_hex(~%sname%~) ~%hex_id%~
+        SET $mg_seen(~%sname%~) = 1
+        SPRINT row_str ~%hex_id% %sname%~
+        FOR (c = 2; c < mg_cols; ++c) BEGIN
+          SET hc = c - 1
+          SPRINT rcol $mg_race_col(~%hc%~)
+          READ_2DA_ENTRY_FORMER mg_rows r c old_v
+          PATCH_IF (unlock_all = 1) BEGIN
+            SET new_v = 1
+          END ELSE BEGIN
+            PATCH_IF (~%sname%~ STR_EQ ~MAGE~) BEGIN
+              PATCH_IF (~%rcol%~ STR_EQ ~HUMAN~ OR ~%rcol%~ STR_EQ ~ELF~ OR ~%rcol%~ STR_EQ ~HALF_ELF~
+                     OR ~%rcol%~ STR_EQ ~HALFLING~ OR ~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN
+                SET new_v = 1
+              END ELSE PATCH_IF (~%rcol%~ STR_EQ ~DWARF~ OR ~%rcol%~ STR_EQ ~GNOME~) BEGIN
+                SET new_v = 0
+              END ELSE BEGIN
+                SET new_v = (IS_AN_INT old_v AND old_v > 0) ? 1 : 0
+              END
+            END ELSE BEGIN
+              LPF cbk_race_fr_rule INT_VAR has_stonefire = has_stonefire STR_VAR entry = EVAL ~%sname%~ entry_cls = ~1~ race = EVAL ~%rcol%~ RET fr_v = allowed is_exp = is_explicit END
+              PATCH_IF (~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN
+                SET new_v = fr_v
+              END ELSE PATCH_IF (is_exp = 1) BEGIN
+                SET new_v = (fr_v = 1 OR (IS_AN_INT old_v AND old_v > 0)) ? 1 : 0
+              END ELSE BEGIN
+                SET new_v = (IS_AN_INT old_v AND old_v > 0) ? 1 : 0
+              END
+            END
+          END
+          SPRINT row_str ~%row_str% %new_v%~
+        END
+        SPRINT $mg_built(~%sname%~) ~%row_str%~
+      END
+      SPRINT mg_out ~2DA V1.0%WNL%1%WNL%%hdr_line%%WNL%~
+      PATCH_FOR_EACH ord_s IN ~MAGE~ ~ILLUSIONIST~ ~ABJURER~ ~CONJURER~ ~DIVINER~ ~ENCHANTER~ ~INVOKER~ ~NECROMANCER~ ~TRANSMUTER~ ~WILDMAGE~ BEGIN
+        PATCH_IF (VARIABLE_IS_SET $mg_built(~%ord_s%~)) BEGIN
+          SPRINT ln $mg_built(~%ord_s%~)
+          SPRINT mg_out ~%mg_out%%ln%%WNL%~
+          SET $mg_emitted(~%ord_s%~) = 1
+        END
+      END
+      FOR (r = 0; r < mg_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER mg_rows r 1 sname
+        TO_UPPER sname
+        PATCH_IF !(VARIABLE_IS_SET $mg_emitted(~%sname%~)) BEGIN
+          SPRINT ln $mg_built(~%sname%~)
+          SPRINT mg_out ~%mg_out%%ln%%WNL%~
+          SET $mg_emitted(~%sname%~) = 1
+        END
+      END
+      DELETE_BYTES 0 BUFFER_LENGTH
+      INSERT_BYTES 0 (STRING_LENGTH ~%mg_out%~)
+      WRITE_ASCIIE 0 ~%mg_out%~
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+  END
+
+  // 3. CLSRCREQ.2DA: ensure standard classes/multiclasses/DUALCLASS exist and apply 110 vs 111 matrix
+  OUTER_SET has_hobgoblin_col = 0
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CLSRCREQ.2DA~) BEGIN
+    COPY_EXISTING ~CLSRCREQ.2DA~ ~override~
+      COUNT_2DA_COLS rc_cols
+      READ_2DA_ENTRIES_NOW rc_hdr (rc_cols - 1)
+      FOR (c = 1; c < rc_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER rc_hdr 0 (c - 1) rcol
+        TO_UPPER rcol
+        PATCH_IF (~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN SET has_hobgoblin_col = 1 END
+      END
+    BUT_ONLY
+
+    // Ensure all core class/multiclass/DUALCLASS rows exist before updating values
+    COPY_EXISTING ~CLSRCREQ.2DA~ ~override~
+      COUNT_2DA_COLS rc_cols
+      READ_2DA_ENTRIES_NOW rc_rows rc_cols
+      FOR (r = 0; r < rc_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER rc_rows r 0 rn
+        TO_UPPER rn
+        SET $rc_row_exists(~%rn%~) = 1
+      END
+      SPRINT zero_vals ~0~
+      FOR (c = 2; c < rc_cols; ++c) BEGIN
+        SPRINT zero_vals ~%zero_vals% 0~
+      END
+      PATCH_FOR_EACH req_rn IN
+        ~MAGE~ ~FIGHTER~ ~CLERIC~ ~THIEF~ ~BARD~ ~PALADIN~ ~DRUID~ ~RANGER~ ~SORCERER~ ~MONK~ ~SHAMAN~ ~BARBARIAN~
+        ~FIGHTER_MAGE~ ~FIGHTER_CLERIC~ ~FIGHTER_THIEF~ ~FIGHTER_MAGE_THIEF~ ~MAGE_THIEF~
+        ~CLERIC_MAGE~ ~CLERIC_THIEF~ ~FIGHTER_DRUID~ ~FIGHTER_MAGE_CLERIC~ ~CLERIC_RANGER~ ~DUALCLASS~
+      BEGIN
+        PATCH_IF !(VARIABLE_IS_SET $rc_row_exists(~%req_rn%~)) BEGIN
+          INSERT_2DA_ROW rc_rows rc_cols ~%req_rn% %zero_vals%~
+          SET rc_rows += 1
+          SET $rc_row_exists(~%req_rn%~) = 1
+        END
+      END
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+
+    COPY_EXISTING ~CLSRCREQ.2DA~ ~override~
+      COUNT_2DA_COLS rc_cols
+      READ_2DA_ENTRIES_NOW rc_hdr (rc_cols - 1)
+      READ_2DA_ENTRIES_NOW rc_rows rc_cols
+      FOR (c = 1; c < rc_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER rc_hdr 0 (c - 1) rcol
+        TO_UPPER rcol
+        SPRINT $rc_col_name(~%c%~) ~%rcol%~
+      END
+      FOR (r = 0; r < rc_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER rc_rows r 0 rn
+        TO_UPPER rn
+        SPRINT ecls ~~
+        PATCH_IF (VARIABLE_IS_SET $cbk_kit_cls_by_name(~%rn%~)) BEGIN
+          SPRINT ecls $cbk_kit_cls_by_name(~%rn%~)
+        END
+        FOR (c = 1; c < rc_cols; ++c) BEGIN
+          SPRINT rcol $rc_col_name(~%c%~)
+          READ_2DA_ENTRY_FORMER rc_rows r c old_v
+          PATCH_IF (unlock_all = 1) BEGIN
+            SET new_v = 1
+          END ELSE BEGIN
+            LPF cbk_race_fr_rule INT_VAR has_stonefire = has_stonefire STR_VAR entry = EVAL ~%rn%~ entry_cls = EVAL ~%ecls%~ race = EVAL ~%rcol%~ RET fr_v = allowed is_exp = is_explicit END
+            PATCH_IF (~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN
+              SET new_v = fr_v
+            END ELSE PATCH_IF (~%rn%~ STR_EQ ~CBK_STONEFIRE~ OR ~%rn%~ STR_EQ ~CBKBLDRG~ OR ~%rn%~ STR_EQ ~CBK_ELEMENTALIST~) BEGIN
+              SET new_v = fr_v
+            END ELSE PATCH_IF (is_exp = 1) BEGIN
+              // Never stricter than Vanilla on the 7 standard races
+              SET new_v = (fr_v = 1 OR (IS_AN_INT old_v AND old_v > 0)) ? 1 : 0
+            END ELSE BEGIN
+              SET new_v = (IS_AN_INT old_v AND old_v > 0) ? 1 : 0
+            END
+          END
+          SET_2DA_ENTRY_LATER rc_out r c ~%new_v%~
+        END
+      END
+      SET_2DA_ENTRIES_NOW rc_out rc_cols
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+  END
+
+  // 4. KITTABLE.2DA & K_*_*.2DA (including dedicated K_*_HB tables for HOBGOBLIN when present)
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY cbk_cls_id_map BEGIN
+    ~MAGE~ => ~1~
+    ~FIGHTER~ => ~2~
+    ~CLERIC~ => ~3~
+    ~THIEF~ => ~4~
+    ~BARD~ => ~5~
+    ~PALADIN~ => ~6~
+    ~FIGHTER_MAGE~ => ~7~
+    ~FIGHTER_CLERIC~ => ~8~
+    ~FIGHTER_THIEF~ => ~9~
+    ~FIGHTER_MAGE_THIEF~ => ~10~
+    ~DRUID~ => ~11~
+    ~RANGER~ => ~12~
+    ~MAGE_THIEF~ => ~13~
+    ~CLERIC_MAGE~ => ~14~
+    ~CLERIC_THIEF~ => ~15~
+    ~FIGHTER_DRUID~ => ~16~
+    ~FIGHTER_MAGE_CLERIC~ => ~17~
+    ~CLERIC_RANGER~ => ~18~
+    ~SORCERER~ => ~19~
+    ~MONK~ => ~20~
+    ~SHAMAN~ => ~21~
+  END
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY cbk_cls_prefix_map BEGIN
+    ~MAGE~ => ~M~
+    ~FIGHTER~ => ~F~
+    ~CLERIC~ => ~C~
+    ~THIEF~ => ~T~
+    ~BARD~ => ~B~
+    ~PALADIN~ => ~P~
+    ~DRUID~ => ~D~
+    ~RANGER~ => ~R~
+    ~FIGHTER_MAGE~ => ~FM~
+    ~FIGHTER_CLERIC~ => ~FC~
+    ~FIGHTER_THIEF~ => ~FT~
+    ~FIGHTER_MAGE_THIEF~ => ~FMT~
+    ~MAGE_THIEF~ => ~MT~
+    ~CLERIC_MAGE~ => ~CM~
+    ~CLERIC_THIEF~ => ~CT~
+    ~FIGHTER_DRUID~ => ~FD~
+    ~FIGHTER_MAGE_CLERIC~ => ~FMC~
+    ~CLERIC_RANGER~ => ~CR~
+    ~SORCERER~ => ~S~
+    ~MONK~ => ~MN~
+    ~BARBARIAN~ => ~BN~
+    ~BLACKGUARD~ => ~F~
+    ~SHAMAN~ => ~SH~
+  END
+
+  ACTION_IF (FILE_EXISTS_IN_GAME ~KITTABLE.2DA~) BEGIN
+    // Ensure HOBGOBLIN column in KITTABLE uses dedicated K_*_HB tables if HOBGOBLIN exists
+    OUTER_SET kt_has_hb = 0
+    COPY_EXISTING ~KITTABLE.2DA~ ~override~
+      COUNT_2DA_COLS kt_cols
+      READ_2DA_ENTRIES_NOW kt_hdr (kt_cols - 1)
+      FOR (c = 1; c < kt_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER kt_hdr 0 (c - 1) rcol
+        TO_UPPER rcol
+        PATCH_IF (~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN SET kt_has_hb = c END
+      END
+      PATCH_IF (kt_has_hb > 0) BEGIN
+        READ_2DA_ENTRIES_NOW kt_rows kt_cols
+        FOR (r = 0; r < kt_rows; ++r) BEGIN
+          READ_2DA_ENTRY_FORMER kt_rows r 0 cls_lbl
+          TO_UPPER cls_lbl
+          PATCH_IF (VARIABLE_IS_SET $cbk_cls_prefix_map(~%cls_lbl%~)) BEGIN
+            SPRINT pfx $cbk_cls_prefix_map(~%cls_lbl%~)
+            SET_2DA_ENTRY_LATER kt_hb_out r kt_has_hb ~K_%pfx%_HB~
+          END
+        END
+        SET_2DA_ENTRIES_NOW kt_hb_out kt_cols
+        PRETTY_PRINT_2DA
+      END
+    BUT_ONLY
+
+    ACTION_IF (has_hobgoblin_col = 1 AND kt_has_hb = 0) BEGIN
+      OUTER_SPRINT hb_col ~$ $ HOBGOBLIN~
+      COPY_EXISTING ~KITTABLE.2DA~ ~override~
+        COUNT_2DA_COLS kt_cols
+        READ_2DA_ENTRIES_NOW kt_rows kt_cols
+        FOR (r = 0; r < kt_rows; ++r) BEGIN
+          READ_2DA_ENTRY_FORMER kt_rows r 0 cls_lbl
+          TO_UPPER cls_lbl
+          PATCH_IF (VARIABLE_IS_SET $cbk_cls_prefix_map(~%cls_lbl%~)) BEGIN
+            SPRINT pfx $cbk_cls_prefix_map(~%cls_lbl%~)
+            SPRINT hb_col ~%hb_col% K_%pfx%_HB~
+          END ELSE BEGIN
+            SPRINT hb_col ~%hb_col% *~
+          END
+        END
+      BUT_ONLY
+      APPEND_COL ~KITTABLE.2DA~ ~%hb_col%~
+      COPY_EXISTING ~KITTABLE.2DA~ ~override~
+        PRETTY_PRINT_2DA
+      BUT_ONLY
+    END
+
+    // Collect every (cls_lbl, rcol => tbl_name) cell from KITTABLE.2DA
+    ACTION_CLEAR_ARRAY cbk_kt_cells
+    COPY_EXISTING ~KITTABLE.2DA~ ~override~
+      COUNT_2DA_COLS kt_cols
+      READ_2DA_ENTRIES_NOW kt_hdr (kt_cols - 1)
+      READ_2DA_ENTRIES_NOW kt_rows kt_cols
+      FOR (c = 1; c < kt_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER kt_hdr 0 (c - 1) rcol
+        TO_UPPER rcol
+        SPRINT $kt_c_name(~%c%~) ~%rcol%~
+      END
+      FOR (r = 0; r < kt_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER kt_rows r 0 cls_lbl
+        TO_UPPER cls_lbl
+        PATCH_IF !(~%cls_lbl%~ STR_EQ ~BLACKGUARD~) BEGIN
+          FOR (c = 1; c < kt_cols; ++c) BEGIN
+            SPRINT rcol $kt_c_name(~%c%~)
+            READ_2DA_ENTRY_FORMER kt_rows r c tbl_name
+            PATCH_IF !(~%tbl_name%~ STR_EQ ~*~) AND !(~%tbl_name%~ STR_EQ ~~) BEGIN
+              SPRINT $cbk_kt_cells(~%cls_lbl%~ ~%rcol%~) ~%tbl_name%~
+            END
+          END
+        END
+      END
+    BUT_ONLY
+
+    ACTION_PHP_EACH cbk_kt_cells AS cell => tbl_name BEGIN
+      OUTER_SPRINT cls_lbl ~%cell_0%~
+      OUTER_SPRINT rcol ~%cell_1%~
+
+      // Read any existing kits in tbl_name.2DA so we never drop vanilla 1s
+      ACTION_CLEAR_ARRAY cur_tbl_kits
+      ACTION_IF (FILE_EXISTS_IN_GAME ~%tbl_name%.2DA~) BEGIN
+        COPY_EXISTING ~%tbl_name%.2DA~ ~override~
+          READ_2DA_ENTRIES_NOW tk_rows 2
+          FOR (tr = 0; tr < tk_rows; ++tr) BEGIN
+            READ_2DA_ENTRY_FORMER tk_rows tr 1 kid
+            PATCH_IF (IS_AN_INT kid) BEGIN
+              SET $cur_tbl_kits(~%kid%~) = 1
+            END
+          END
+        BUT_ONLY
+      END
+
+      // Special case: BARBARIAN row in KITTABLE (K_BN_*)
+      ACTION_IF (~%cls_lbl%~ STR_EQ ~BARBARIAN~) BEGIN
+        OUTER_SPRINT k_body ~2DA V1.0%WNL%*%WNL%    KIT%WNL%1   31%WNL%~
+        COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/%tbl_name%.2DA~
+          DELETE_BYTES 0 BUFFER_LENGTH
+          INSERT_BYTES 0 (STRING_LENGTH ~%k_body%~)
+          WRITE_ASCIIE 0 ~%k_body%~
+          PRETTY_PRINT_2DA
+      END ELSE ACTION_IF (VARIABLE_IS_SET $cbk_cls_id_map(~%cls_lbl%~)) BEGIN
+        OUTER_SPRINT target_cls_id $cbk_cls_id_map(~%cls_lbl%~)
+        OUTER_SET is_multiclass = (target_cls_id >= 7 AND target_cls_id <= 10) OR (target_cls_id >= 13 AND target_cls_id <= 18)
+
+        // Check if this class is allowed at all for this race
+        OUTER_PATCH ~~ BEGIN
+          PATCH_IF (unlock_all = 1) BEGIN
+            SET cls_ok = 1
+          END ELSE BEGIN
+            LPF cbk_race_fr_rule INT_VAR has_stonefire = has_stonefire STR_VAR entry = EVAL ~%cls_lbl%~ entry_cls = EVAL ~%target_cls_id%~ race = EVAL ~%rcol%~ RET cls_ok = allowed dummy_e = is_explicit END
+          END
+        END
+
+        ACTION_IF (is_multiclass = 1) BEGIN
+          ACTION_IF (cls_ok = 1 OR VARIABLE_IS_SET $cur_tbl_kits(~0~)) BEGIN
+            COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/%tbl_name%.2DA~
+              DELETE_BYTES 0 BUFFER_LENGTH
+              SPRINT mc_body ~2DA V1.0%WNL%*%WNL%    KIT%WNL%1   0%WNL%~
+              INSERT_BYTES 0 (STRING_LENGTH ~%mc_body%~)
+              WRITE_ASCIIE 0 ~%mc_body%~
+              PRETTY_PRINT_2DA
+          END
+        END ELSE BEGIN
+          // Single class kit table
+          OUTER_SET out_idx = 0
+          OUTER_SPRINT k_body ~2DA V1.0%WNL%*%WNL%    KIT%WNL%~
+
+          // Row 0 (Trueclass)
+          OUTER_PATCH ~~ BEGIN
+            LPF cbk_race_allows_unkitted INT_VAR unlock_all = unlock_all STR_VAR cls_label = EVAL ~%cls_lbl%~ race = EVAL ~%rcol%~ RET allow_z = allow_zero END
+          END
+          ACTION_IF (cls_ok = 1 AND (allow_z = 1 OR (VARIABLE_IS_SET $cur_tbl_kits(~0~) AND !(~%cls_lbl%~ STR_EQ ~SORCERER~ AND ~%rcol%~ STR_EQ ~DWARF~ AND unlock_all = 0) AND !(~%rcol%~ STR_EQ ~HOBGOBLIN~)))) BEGIN
+            OUTER_SET out_idx += 1
+            OUTER_SPRINT k_body ~%k_body%%out_idx%   0%WNL%~
+          END
+
+          // Iterate all registered playable kits of target_cls_id
+          ACTION_PHP_EACH cbk_kit_name_by_num AS knum => kname BEGIN
+            OUTER_SPRINT kcls $cbk_kit_cls_by_num(~%knum%~)
+            ACTION_IF (~%kcls%~ STR_EQ ~%target_cls_id%~) BEGIN
+              OUTER_SET want_k = 0
+              ACTION_IF (unlock_all = 1) BEGIN
+                OUTER_SET want_k = 1
+              END ELSE BEGIN
+                OUTER_PATCH ~~ BEGIN
+                  LPF cbk_race_fr_rule INT_VAR has_stonefire = has_stonefire STR_VAR entry = EVAL ~%kname%~ entry_cls = EVAL ~%kcls%~ race = EVAL ~%rcol%~ RET fr_k = allowed exp_k = is_explicit END
+                END
+                ACTION_IF (~%rcol%~ STR_EQ ~HOBGOBLIN~ OR ~%kname%~ STR_EQ ~DWARVEN_DEFENDER~ OR ~%kname%~ STR_EQ ~CBK_STONEFIRE~ OR ~%kname%~ STR_EQ ~CBKBLDRG~ OR ~%kname%~ STR_EQ ~CBK_ELEMENTALIST~) BEGIN
+                  OUTER_SET want_k = fr_k
+                END ELSE ACTION_IF (fr_k = 1 OR VARIABLE_IS_SET $cur_tbl_kits(~%knum%~)) BEGIN
+                  OUTER_SET want_k = 1
+                END
+              END
+              ACTION_IF (want_k = 1) BEGIN
+                OUTER_SET out_idx += 1
+                OUTER_SPRINT k_body ~%k_body%%out_idx%   %knum%%WNL%~
+              END
+            END
+          END
+
+          ACTION_IF (out_idx > 0 OR FILE_EXISTS_IN_GAME ~%tbl_name%.2DA~) BEGIN
+            COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/%tbl_name%.2DA~
+              DELETE_BYTES 0 BUFFER_LENGTH
+              INSERT_BYTES 0 (STRING_LENGTH ~%k_body%~)
+              WRITE_ASCIIE 0 ~%k_body%~
+              PRETTY_PRINT_2DA
+          END
+        END
+      END
+    END
+  END
+
+  // 5. ABRACEAD.2DA & ABRACERQ.2DA adjustments
+  //    DWARF MOD_CHR = -1 (allows 17 CHA), HALF_ELF MOD_CHR = 1 (19 CHA Silver Tongue);
+  //    in 111 Unlock-All, ensure no race has MOD_CHR < -1 or impossible stat caps so every class can be rolled.
+  ACTION_IF (FILE_EXISTS_IN_GAME ~ABRACEAD.2DA~) BEGIN
+    COPY_EXISTING ~ABRACEAD.2DA~ ~override~
+      COUNT_2DA_COLS ad_cols
+      READ_2DA_ENTRIES_NOW ad_rows ad_cols
+      FOR (r = 0; r < ad_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER ad_rows r 0 rname
+        TO_UPPER rname
+        READ_2DA_ENTRY_FORMER ad_rows r 6 cur_chr
+        PATCH_IF (~%rname%~ STR_EQ ~DWARF~) BEGIN
+          SET_2DA_ENTRY_LATER ad_out r 6 ~-1~
+        END ELSE PATCH_IF (~%rname%~ STR_EQ ~HALF_ELF~) BEGIN
+          SET_2DA_ENTRY_LATER ad_out r 6 ~1~
+        END ELSE PATCH_IF (unlock_all = 1 AND IS_AN_INT cur_chr AND cur_chr < (0 - 1)) BEGIN
+          SET_2DA_ENTRY_LATER ad_out r 6 ~-1~
+        END
+      END
+      SET_2DA_ENTRIES_NOW ad_out ad_cols
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+  END
+
+  ACTION_IF (unlock_all = 1 AND FILE_EXISTS_IN_GAME ~ABRACERQ.2DA~) BEGIN
+    COPY_EXISTING ~ABRACERQ.2DA~ ~override~
+      COUNT_2DA_COLS rq_cols
+      READ_2DA_ENTRIES_NOW rq_rows rq_cols
+      FOR (r = 0; r < rq_rows; ++r) BEGIN
+        FOR (c = 2; c < rq_cols; c += 2) BEGIN
+          READ_2DA_ENTRY_FORMER rq_rows r c max_v
+          PATCH_IF (IS_AN_INT max_v AND max_v > 0 AND max_v < 18) BEGIN
+            SET_2DA_ENTRY_LATER rq_out r c ~18~
+          END
+        END
+      END
+      SET_2DA_ENTRIES_NOW rq_out rq_cols
+      PRETTY_PRINT_2DA
+    BUT_ONLY
+  END
+
+  // 6. RACETHAC.2DA: Halfling +1 THAC0 on Short Sword (91), Dagger (96), Dart (106), Sling (107)
+  ACTION_IF (FILE_EXISTS_IN_GAME ~RACETHAC.2DA~) BEGIN
+    COPY_EXISTING ~RACETHAC.2DA~ ~override~
+      COUNT_2DA_COLS rt_cols
+      READ_2DA_ENTRIES_NOW rt_hdr (rt_cols - 1)
+      READ_2DA_ENTRIES_NOW rt_rows rt_cols
+      SET hl_col = 0 - 1
+      FOR (c = 1; c < rt_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER rt_hdr 0 (c - 1) htok
+        TO_UPPER htok
+        PATCH_IF (~%htok%~ STR_EQ ~HALFLING~) BEGIN
+          SET hl_col = c
+        END
+      END
+      PATCH_IF (hl_col > 0) BEGIN
+        FOR (r = 0; r < rt_rows; ++r) BEGIN
+          READ_2DA_ENTRY_FORMER rt_rows r 0 pid
+          PATCH_IF (~%pid%~ STR_EQ ~91~ OR ~%pid%~ STR_EQ ~96~ OR ~%pid%~ STR_EQ ~106~ OR ~%pid%~ STR_EQ ~107~) BEGIN
+            SET_2DA_ENTRY_LATER rt_th_out r hl_col ~1~
+          END
+        END
+        SET_2DA_ENTRIES_NOW rt_th_out rt_cols
+        PRETTY_PRINT_2DA
+      END
+    BUT_ONLY
+  END
+
+  // 7. Half-Elf Silver Tongue: upgrade 30% Sleep/Charm resistance (op324/op318 p2=19) to 50%
+  COPY_EXISTING_REGEXP GLOB ~^.+\.\(spl\|itm\)$~ ~override~
+    PATCH_IF (SOURCE_SIZE >= 0x72) BEGIN
+      READ_ASCII 0x00 sig (4)
+      SET is_spl = (~%sig%~ STR_EQ ~SPL ~)
+      SET is_itm = (~%sig%~ STR_EQ ~ITM ~)
+      PATCH_IF (is_spl OR is_itm) BEGIN
+        READ_LONG  0x64 ab_off
+        READ_SHORT 0x68 ab_num
+        READ_LONG  0x6a fx_off
+        READ_SHORT 0x70 eq_cnt
+        SET ab_sz = is_spl ? 0x28 : 0x38
+        SET total_fx = eq_cnt
+        FOR (a = 0; a < ab_num; ++a) BEGIN
+          SET ao = ab_off + (a * ab_sz)
+          PATCH_IF (ao + ab_sz <= SOURCE_SIZE) BEGIN
+            READ_SHORT (ao + 0x1e) fcnt
+            READ_SHORT (ao + 0x20) fidx
+            PATCH_IF (fidx + fcnt > total_fx) BEGIN
+              SET total_fx = fidx + fcnt
+            END
+          END
+        END
+        FOR (f = 0; f < total_fx; ++f) BEGIN
+          SET fo = fx_off + (f * 0x30)
+          PATCH_IF (fo + 0x30 <= SOURCE_SIZE) BEGIN
+            READ_SHORT fo op
+            READ_LONG  (fo + 0x08) p2
+            READ_BYTE  (fo + 0x12) pr1
+            READ_BYTE  (fo + 0x13) pr2
+            PATCH_IF ((op = 324 OR op = 318) AND p2 = 19 AND pr1 > 0 AND pr1 < 100 AND pr2 = 0) BEGIN
+              WRITE_BYTE (fo + 0x12) 50
+            END
+          END
+        END
+      END
+    END
+  BUT_ONLY
+
+  // 8. Barbarian Dual-Classing in DUALCLAS.2DA, ABDCDSRQ.2DA, ABDCSCRQ.2DA
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~DUALCLAS.2DA~ row_key = ~BARBARIAN~ row_values = ~0 1 1 1 1 0~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~ABDCDSRQ.2DA~ row_key = ~BARBARIAN~ row_values = ~15 0 0 0 0 0~ END
+  LAF cbk_ensure_kit_table_row STR_VAR table_file = ~ABDCSCRQ.2DA~ row_key = ~BARBARIAN~ row_values = ~15 0 0 0 0 0~ END
+
+  // 9. Missing Vanilla Animation Clones (Halfling Mage & Non-Human Monks)
+  ACTION_CLEAR_ARRAY cbk_anim_clones
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY cbk_anim_clones BEGIN
+    ~6001~ , ~6501~ => ~monk_male_elf~
+    ~6002~ , ~6502~ => ~monk_male_dwarf~
+    ~6003~ , ~6503~ => ~monk_male_halfling~
+    ~6004~ , ~6504~ => ~monk_male_gnome~
+    ~6005~ , ~6505~ => ~monk_male_halforc~
+    ~6011~ , ~6511~ => ~monk_female_elf~
+    ~6012~ , ~6512~ => ~monk_female_dwarf~
+    ~6013~ , ~6513~ => ~monk_female_halfling~
+    ~6014~ , ~6514~ => ~monk_female_gnome~
+    ~6015~ , ~6515~ => ~monk_female_halforc~
+    ~6003~ , ~6203~ => ~mage_male_halfling~
+    ~6013~ , ~6213~ => ~mage_female_halfling~
+  END
+  ACTION_PHP_EACH cbk_anim_clones AS pair => anim_sym BEGIN
+    ACTION_IF (FILE_EXISTS_IN_GAME ~ANIMATE.IDS~) BEGIN
+      APPEND ~ANIMATE.IDS~ ~0x%pair_1% %anim_sym%~ UNLESS ~^0x%pair_1%~
+    END
+    ACTION_IF (FILE_EXISTS_IN_GAME ~%pair_0%.INI~) AND !(~%pair_1%~ STR_EQ ~6505~ AND FILE_EXISTS_IN_GAME ~6505.INI~) AND !(~%pair_1%~ STR_EQ ~6515~ AND FILE_EXISTS_IN_GAME ~6515.INI~) BEGIN
+      COPY_EXISTING ~%pair_0%.INI~ ~override/%pair_1%.INI~
+        REPLACE_TEXTUALLY ~^\(// [A-Z]+[ %TAB%]\)cleric_[a-z]+_[a-z]+$~ ~\1%anim_sym%~
+    END
+  END
+
+  // 10. Update RACETEXT.2DA (and BGRACTXT.2DA / SODRACE.2DA if present)
+  LAF cbk_update_racetext_file STR_VAR file = ~RACETEXT.2DA~ END
+  LAF cbk_update_racetext_file STR_VAR file = ~BGRACTXT.2DA~ END
+  LAF cbk_update_racetext_file STR_VAR file = ~SODRACE.2DA~ END
+
+  // 11. Refresh CBKDCNAM.2DA if Component 320 is installed
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CBKDCNAM.2DA~) BEGIN
+    LAF cbk_rebuild_dcnam END
+  END
+
+  // 12. Inject RACE.IDS & CLSRCREQ header metadata into M_CBKRAC.lua
+  OUTER_SPRINT CBK_EXTRA_RACE_IDS ~~
+  ACTION_IF (FILE_EXISTS_IN_GAME ~RACE.IDS~) BEGIN
+    COPY_EXISTING ~RACE.IDS~ ~override~
+      COUNT_2DA_ROWS 2 r_rows
+      FOR (r = 0; r < r_rows; ++r) BEGIN
+        READ_2DA_ENTRY r 0 2 rid
+        READ_2DA_ENTRY r 1 2 rsym
+        TO_UPPER rsym
+        PATCH_IF (IS_AN_INT rid AND rid > 0 AND rid < 255) BEGIN
+          SPRINT CBK_EXTRA_RACE_IDS ~%CBK_EXTRA_RACE_IDS%state.raceIdToCol[%rid%] = "%rsym%"%WNL%~
+        END
+      END
+    BUT_ONLY
+  END
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CLSRCREQ.2DA~) BEGIN
+    OUTER_SPRINT hdr_lua ~state.clsRcHdr = {~
+    COPY_EXISTING ~CLSRCREQ.2DA~ ~override~
+      COUNT_2DA_COLS rc_cols
+      READ_2DA_ENTRIES_NOW rc_hdr (rc_cols - 1)
+      FOR (c = 1; c < rc_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER rc_hdr 0 (c - 1) rcol
+        TO_UPPER rcol
+        PATCH_IF (c = 1) BEGIN
+          SPRINT hdr_lua ~%hdr_lua%"%rcol%"~
+        END ELSE BEGIN
+          SPRINT hdr_lua ~%hdr_lua%, "%rcol%"~
+        END
+      END
+    BUT_ONLY
+    OUTER_SPRINT CBK_EXTRA_RACE_IDS ~%CBK_EXTRA_RACE_IDS%%hdr_lua%}%WNL%~
+  END
+
+  COPY ~%MOD_FOLDER%/lua/M_CBKRAC.lua~ ~override/M_CBKRAC.lua~
+    EVALUATE_BUFFER
+END

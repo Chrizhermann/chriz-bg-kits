@@ -1,0 +1,20 @@
+; CGameEffect::CheckSave call sites in CGameSprite::AddEffect + CGameEffectDamage::ApplyEffect wrapper (BG2:EE / EET 2.7.3.0).
+[CBK-CheckSave-CS1]
+Pattern=4889442428488B4424704889442420E8????????85C07519
+Operations=ADD 15
+NoCache=1
+
+[CBK-CheckSave-CS2]
+Pattern=4889442428488B4424704889442420E8????????488B5C2450
+Operations=ADD 15
+NoCache=1
+
+[CBK-Damage-Before]
+Pattern=0FBF837C05000041BC010000004489A3B44B0000
+Operations=ADD 7
+NoCache=1
+
+[CBK-Damage-After]
+Pattern=448964242041FF92E8000000488BBC24D0000000
+Operations=ADD 12
+NoCache=1

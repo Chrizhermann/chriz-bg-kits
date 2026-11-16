@@ -1,0 +1,7349 @@
+{
+  "texts": {},
+  "states": [
+    "CBK_ELM_FIRE",
+    "CBK_ELM_WATER",
+    "CBK_ELM_AIR",
+    "CBK_ELM_EARTH",
+    "CBK_ELM_HLA",
+    "CBK_ELM_RESOLVED"
+  ],
+  "splprots": {
+    "CBK_STATE_ELM_HLA_EQ": {
+      "stat": "0x112",
+      "value": "STATE:CBK_ELM_HLA",
+      "relation": 1
+    }
+  },
+  "resources": [
+    {
+      "file": "CBKEL00.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 30,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 84,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 28,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 85,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 29,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 27,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELRM.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPCL611"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPCL612"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPCL613"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR402"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR410"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR501"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR602"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR604"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR319"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR517"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "SPPR717"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELFA.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 1,
+          "range": 10,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 0,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 1,
+              "sides": 6,
+              "save": 16777216
+            },
+            {
+              "opcode": 215,
+              "target": 2,
+              "p2": 1,
+              "timing": 1,
+              "resource": "ICFIRSDI"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELKD.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 1,
+          "range": 10,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 39,
+              "target": 2,
+              "power": 0,
+              "p1": 0,
+              "p2": 1,
+              "timing": 0,
+              "dispel": 0,
+              "duration": 6,
+              "save": 2,
+              "special": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELHLA.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "icon": "SPPR731C",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR731B",
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_HLA"
+              },
+              "timing": 9,
+              "special": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF11.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 1,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 6,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 25,
+          "p2": 1,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 3,
+          "thac0_bonus": 1,
+          "dice_sides": 6,
+          "dice_thrown": 1,
+          "damage_bonus": 1,
+          "damage_type": 3,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 1,
+              "sides": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF12.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 2,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 4,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 25,
+          "p2": 1,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 2,
+          "thac0_bonus": 2,
+          "dice_sides": 6,
+          "dice_thrown": 1,
+          "damage_bonus": 2,
+          "damage_type": 3,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 1,
+              "sides": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF13.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 3,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 2,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 25,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 232,
+          "target": 1,
+          "p1": 0,
+          "p2": 0,
+          "timing": 2,
+          "resource": "CBKELFA"
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 1,
+          "thac0_bonus": 3,
+          "dice_sides": 8,
+          "dice_thrown": 1,
+          "damage_bonus": 3,
+          "damage_type": 3,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 1,
+              "sides": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF14.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 4,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 0,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 25,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 232,
+          "target": 1,
+          "p1": 0,
+          "p2": 0,
+          "timing": 2,
+          "resource": "CBKELFA"
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 0,
+          "thac0_bonus": 4,
+          "dice_sides": 8,
+          "dice_thrown": 1,
+          "damage_bonus": 4,
+          "damage_type": 3,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 1,
+              "sides": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF21.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 1,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 6,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 2,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 3,
+          "thac0_bonus": 1,
+          "dice_sides": 6,
+          "dice_thrown": 1,
+          "damage_bonus": 1,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "file": "CBKEF22.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 2,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 4,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 98,
+          "target": 1,
+          "p1": 6,
+          "p2": 3,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 2,
+          "thac0_bonus": 2,
+          "dice_sides": 6,
+          "dice_thrown": 1,
+          "damage_bonus": 2,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "file": "CBKEF23.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 3,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 1,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 98,
+          "target": 1,
+          "p1": 6,
+          "p2": 3,
+          "timing": 2
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 1,
+          "thac0_bonus": 3,
+          "dice_sides": 8,
+          "dice_thrown": 1,
+          "damage_bonus": 3,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "file": "CBKEF24.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 4,
+      "icon": "FIRERN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": -1,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 98,
+          "target": 1,
+          "p1": 3,
+          "p2": 3,
+          "timing": 2
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "FIRERN",
+          "target": 1,
+          "range": 2,
+          "speed": 0,
+          "thac0_bonus": 4,
+          "dice_sides": 8,
+          "dice_thrown": 1,
+          "damage_bonus": 4,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "file": "CBKEF31.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 1,
+      "icon": "AIRRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 5,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 3,
+          "timing": 2
+        },
+        {
+          "opcode": 126,
+          "target": 1,
+          "p1": 3,
+          "p2": 0,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "AIRRN",
+          "target": 1,
+          "range": 2,
+          "speed": 3,
+          "thac0_bonus": 1,
+          "dice_sides": 4,
+          "dice_thrown": 1,
+          "damage_bonus": 1,
+          "damage_type": 2,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "file": "CBKEF32.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 2,
+      "icon": "AIRRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 3,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 3,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 3,
+          "timing": 2
+        },
+        {
+          "opcode": 126,
+          "target": 1,
+          "p1": 3,
+          "p2": 0,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "AIRRN",
+          "target": 1,
+          "range": 2,
+          "speed": 2,
+          "thac0_bonus": 2,
+          "dice_sides": 4,
+          "dice_thrown": 1,
+          "damage_bonus": 2,
+          "damage_type": 2,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "p1": 0,
+              "p2": 262144,
+              "timing": 1,
+              "dice": 1,
+              "sides": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF33.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 3,
+      "icon": "AIRRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 1,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 3,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 3,
+          "timing": 2
+        },
+        {
+          "opcode": 126,
+          "target": 1,
+          "p1": 3,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "AIRRN",
+          "target": 1,
+          "range": 2,
+          "speed": 1,
+          "thac0_bonus": 3,
+          "dice_sides": 6,
+          "dice_thrown": 1,
+          "damage_bonus": 3,
+          "damage_type": 2,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "p1": 0,
+              "p2": 262144,
+              "timing": 1,
+              "dice": 1,
+              "sides": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF34.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 4,
+      "icon": "AIRRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": -1,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 3,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 332,
+          "target": 1,
+          "p1": 20,
+          "p2": 3,
+          "timing": 2
+        },
+        {
+          "opcode": 126,
+          "target": 1,
+          "p1": 3,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "AIRRN",
+          "target": 1,
+          "range": 2,
+          "speed": 0,
+          "thac0_bonus": 4,
+          "dice_sides": 6,
+          "dice_thrown": 1,
+          "damage_bonus": 4,
+          "damage_type": 2,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "p1": 0,
+              "p2": 262144,
+              "timing": 1,
+              "dice": 1,
+              "sides": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF41.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 1,
+      "icon": "EARTHRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 7,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 235,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 39,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 14,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "EARTHRN",
+          "target": 1,
+          "range": 2,
+          "speed": 3,
+          "thac0_bonus": 1,
+          "dice_sides": 8,
+          "dice_thrown": 1,
+          "damage_bonus": 1,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 326,
+              "target": 1,
+              "p1": 0,
+              "p2": {
+                "splprot": "CBK_STATE_ELM_HLA_EQ"
+              },
+              "timing": 1,
+              "prob1": 19,
+              "prob2": 0,
+              "resource": "CBKELKD"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF42.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 2,
+      "icon": "EARTHRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 5,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 235,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 39,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 14,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "EARTHRN",
+          "target": 1,
+          "range": 2,
+          "speed": 2,
+          "thac0_bonus": 2,
+          "dice_sides": 8,
+          "dice_thrown": 1,
+          "damage_bonus": 2,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 326,
+              "target": 1,
+              "p1": 0,
+              "p2": {
+                "splprot": "CBK_STATE_ELM_HLA_EQ"
+              },
+              "timing": 1,
+              "prob1": 19,
+              "prob2": 0,
+              "resource": "CBKELKD"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF43.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 3,
+      "icon": "EARTHRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 3,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 235,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 39,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 14,
+          "timing": 2
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "EARTHRN",
+          "target": 1,
+          "range": 2,
+          "speed": 1,
+          "thac0_bonus": 3,
+          "dice_sides": 10,
+          "dice_thrown": 1,
+          "damage_bonus": 3,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 326,
+              "target": 1,
+              "p1": 0,
+              "p2": {
+                "splprot": "CBK_STATE_ELM_HLA_EQ"
+              },
+              "timing": 1,
+              "prob1": 19,
+              "prob2": 0,
+              "resource": "CBKELKD"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEF44.ITM",
+      "flags": 16785514,
+      "item_type": 28,
+      "proficiency": 0,
+      "enchantment": 4,
+      "icon": "EARTHRN",
+      "equipping_effects": [
+        {
+          "opcode": 0,
+          "target": 1,
+          "p1": 1,
+          "p2": 16,
+          "timing": 2
+        },
+        {
+          "opcode": 1,
+          "target": 1,
+          "p1": 2,
+          "p2": 1,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 235,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 39,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 14,
+          "timing": 2
+        },
+        {
+          "opcode": 120,
+          "target": 1,
+          "p1": 0,
+          "p2": 2,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 25,
+          "timing": 2
+        },
+        {
+          "opcode": 173,
+          "target": 1,
+          "p1": 100,
+          "p2": 0,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 6,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 45,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 210,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 55,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 109,
+          "timing": 2
+        },
+        {
+          "opcode": 101,
+          "target": 1,
+          "p1": 0,
+          "p2": 175,
+          "timing": 2
+        },
+        {
+          "opcode": 169,
+          "target": 1,
+          "p1": 0,
+          "p2": 13,
+          "timing": 2
+        }
+      ],
+      "abilities": [
+        {
+          "type": 1,
+          "location": 1,
+          "icon": "EARTHRN",
+          "target": 1,
+          "range": 2,
+          "speed": 0,
+          "thac0_bonus": 4,
+          "dice_sides": 10,
+          "dice_thrown": 1,
+          "damage_bonus": 4,
+          "damage_type": 1,
+          "charges": 1,
+          "overhand": 34,
+          "backhand": 33,
+          "thrust": 33,
+          "effects": [
+            {
+              "opcode": 326,
+              "target": 1,
+              "p1": 0,
+              "p2": {
+                "splprot": "CBK_STATE_ELM_HLA_EQ"
+              },
+              "timing": 1,
+              "prob1": 19,
+              "prob2": 0,
+              "resource": "CBKELKD"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELF0.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "icon": "SPCL611C",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPCL611B",
+          "target": 5,
+          "min_level": 1,
+          "speed": 0,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 0,
+              "p2": 2,
+              "timing": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELF1.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "icon": "SPPR732B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR732B",
+          "target": 5,
+          "min_level": 1,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_FIRE"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29488,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR732B",
+          "target": 5,
+          "min_level": 7,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_FIRE"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29488,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR732B",
+          "target": 5,
+          "min_level": 10,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_FIRE"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29488,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR732B",
+          "target": 5,
+          "min_level": 12,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_FIRE"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29489,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR732B",
+          "target": 5,
+          "min_level": 14,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_FIRE"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29489,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR732B",
+          "target": 5,
+          "min_level": 15,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_FIRE"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29489,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELF2.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "icon": "SPWI503B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 5,
+          "min_level": 1,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_WATER"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29490,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 5,
+          "min_level": 7,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_WATER"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29490,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 5,
+          "min_level": 10,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_WATER"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29490,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 5,
+          "min_level": 12,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_WATER"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29491,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 5,
+          "min_level": 14,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_WATER"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29491,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 5,
+          "min_level": 15,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_WATER"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29491,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELF3.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "icon": "SPWI308B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI308B",
+          "target": 5,
+          "min_level": 1,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_AIR"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29492,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI308B",
+          "target": 5,
+          "min_level": 7,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_AIR"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29492,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI308B",
+          "target": 5,
+          "min_level": 10,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_AIR"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29492,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI308B",
+          "target": 5,
+          "min_level": 12,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_AIR"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29493,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI308B",
+          "target": 5,
+          "min_level": 14,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_AIR"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29493,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI308B",
+          "target": 5,
+          "min_level": 15,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_AIR"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29493,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": 2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKELF4.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "icon": "SPPR731B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR731B",
+          "target": 5,
+          "min_level": 1,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_EARTH"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29494,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR731B",
+          "target": 5,
+          "min_level": 7,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_EARTH"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29494,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -2,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR731B",
+          "target": 5,
+          "min_level": 10,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_EARTH"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29494,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR731B",
+          "target": 5,
+          "min_level": 12,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_EARTH"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29495,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 189,
+              "target": 1,
+              "p1": -1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR731B",
+          "target": 5,
+          "min_level": 14,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_EARTH"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29495,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPPR731B",
+          "target": 5,
+          "min_level": 15,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF1"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF2"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF3"
+            },
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF4"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF11"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF12"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF13"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF14"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF21"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF22"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF23"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF24"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF31"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF32"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF33"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF34"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF41"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF42"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF43"
+            },
+            {
+              "opcode": 112,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 172,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_ELM_EARTH"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            },
+            {
+              "opcode": 53,
+              "target": 1,
+              "p1": 29495,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 111,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0,
+              "resource": "CBKEF44"
+            },
+            {
+              "opcode": 171,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKELF0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL11.SPL",
+      "spell_type": 2,
+      "level": 1,
+      "school": 8,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 5,
+          "min_level": 1,
+          "speed": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 1,
+              "p1": 4,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 1,
+              "sides": 3,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL12.SPL",
+      "spell_type": 2,
+      "level": 1,
+      "school": 8,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 2,
+          "min_level": 1,
+          "speed": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 1,
+              "p1": 4,
+              "p2": 262144,
+              "timing": 1,
+              "dice": 1,
+              "sides": 8,
+              "save": 16777216
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL21.SPL",
+      "spell_type": 2,
+      "level": 2,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 20,
+          "min_level": 1,
+          "speed": 2,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 3,
+              "sides": 6,
+              "save": 16777216
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL22.SPL",
+      "spell_type": 2,
+      "level": 2,
+      "school": 2,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 2,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 1,
+              "dice": 2,
+              "sides": 4,
+              "save": 16777216
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 6,
+              "dice": 2,
+              "sides": 4,
+              "save": 16777216
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL23.SPL",
+      "spell_type": 2,
+      "level": 2,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 1,
+          "speed": 2,
+          "projectile": {
+            "proj": "INAREAPA",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 3,
+              "sides": 3,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 4,
+          "speed": 2,
+          "projectile": {
+            "proj": "INAREAPA",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 4,
+              "sides": 3,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 5,
+          "speed": 2,
+          "projectile": {
+            "proj": "INAREAPA",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 5,
+              "sides": 3,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 6,
+          "speed": 2,
+          "projectile": {
+            "proj": "INAREAPA",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 6,
+              "sides": 3,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 7,
+          "speed": 2,
+          "projectile": {
+            "proj": "INAREAPA",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 7,
+              "sides": 3,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 8,
+          "speed": 2,
+          "projectile": {
+            "proj": "INAREAPA",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 2,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 8,
+              "sides": 3,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL31.SPL",
+      "spell_type": 2,
+      "level": 3,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 1,
+          "speed": 3,
+          "projectile": {
+            "proj": "FIREBALL",
+            "default": 38
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 8,
+              "sides": 6,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL32.SPL",
+      "spell_type": 2,
+      "level": 3,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 3,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 262144,
+              "timing": 1,
+              "dice": 8,
+              "sides": 6,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL33.SPL",
+      "spell_type": 2,
+      "level": 3,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 3,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 5,
+              "sides": 6,
+              "save": 16777216
+            },
+            {
+              "opcode": 45,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 18,
+              "save": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL41.SPL",
+      "spell_type": 2,
+      "level": 4,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 1,
+          "speed": 4,
+          "projectile": {
+            "proj": "ICESTORM",
+            "default": 96
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 2,
+              "sides": 8,
+              "save": 16777216
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL42.SPL",
+      "spell_type": 2,
+      "level": 4,
+      "school": 2,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 1,
+              "dice": 7,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 6,
+              "dice": 2,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 9,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 1,
+              "dice": 9,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 6,
+              "dice": 2,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 11,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 1,
+              "dice": 11,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 6,
+              "dice": 2,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 13,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 1,
+              "dice": 13,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 6,
+              "dice": 2,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 15,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 1,
+              "dice": 15,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 4,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 6,
+              "dice": 2,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL43.SPL",
+      "spell_type": 2,
+      "level": 4,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 5,
+          "range": 0,
+          "min_level": 1,
+          "speed": 4,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "timing": 1,
+              "resource": "CBKEL43"
+            },
+            {
+              "opcode": 30,
+              "target": 1,
+              "power": 4,
+              "p1": 50,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 60
+            },
+            {
+              "opcode": 84,
+              "target": 1,
+              "power": 4,
+              "p1": 50,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 60
+            },
+            {
+              "opcode": 232,
+              "target": 1,
+              "power": 4,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 60,
+              "resource": "CBKELFA"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL51.SPL",
+      "spell_type": 2,
+      "level": 5,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 20,
+          "min_level": 1,
+          "speed": 5,
+          "projectile": {
+            "proj": "CONECOLD",
+            "default": 255
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 5,
+              "p1": 10,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 10,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL52.SPL",
+      "spell_type": 2,
+      "level": 5,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 5,
+          "range": 0,
+          "min_level": 1,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 159
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 5,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 10,
+              "sides": 6,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL61.SPL",
+      "spell_type": 2,
+      "level": 6,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 5,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 6,
+              "p1": 0,
+              "p2": 262144,
+              "timing": 1,
+              "dice": 10,
+              "sides": 6,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL62.SPL",
+      "spell_type": 2,
+      "level": 6,
+      "school": 8,
+      "icon": "SPWI503B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI503B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 6,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 6,
+              "p1": 22,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 11,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI503B",
+          "target": 1,
+          "range": 40,
+          "min_level": 14,
+          "speed": 6,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 6,
+              "p1": 28,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 14,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI503B",
+          "target": 1,
+          "range": 40,
+          "min_level": 17,
+          "speed": 6,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 6,
+              "p1": 34,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 17,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI503B",
+          "target": 1,
+          "range": 40,
+          "min_level": 20,
+          "speed": 6,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 6,
+              "p1": 40,
+              "p2": 131072,
+              "timing": 1,
+              "dice": 20,
+              "sides": 4,
+              "save": 16777217
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL71.SPL",
+      "spell_type": 2,
+      "level": 7,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 1,
+          "speed": 7,
+          "projectile": {
+            "proj": "FIREBALL",
+            "default": 38
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 7,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 14,
+              "sides": 6,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL72.SPL",
+      "spell_type": 2,
+      "level": 7,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 1,
+          "speed": 7,
+          "projectile": {
+            "proj": "ICESTORM",
+            "default": 96
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 7,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 1,
+              "dice": 7,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 7,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 6,
+              "dice": 7,
+              "sides": 6,
+              "save": 16777217,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 7,
+              "p1": 0,
+              "p2": 65536,
+              "timing": 4,
+              "duration": 12,
+              "dice": 7,
+              "sides": 8,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKEL73.SPL",
+      "spell_type": 2,
+      "level": 7,
+      "school": 6,
+      "icon": "SPWI304B",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 40,
+          "min_level": 1,
+          "speed": 7,
+          "projectile": {
+            "proj": "ICESTORM",
+            "default": 96
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 7,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 14,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@ from collections import defaultdict
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 
-from resformat import StampRef, pack_eff, pack_spl  # noqa: E402
+from resformat import StampRef, pack_eff, pack_itm, pack_spl  # noqa: E402
 
 DEFS_DIR = ROOT / "defs"
 RES_DIR = ROOT / "chriz-bg-kits" / "res"
@@ -53,6 +53,8 @@ def render_outputs() -> dict[pathlib.Path, bytes]:
                 blob, stamps = pack_spl(res_spec, filename)
             elif ext == ".EFF":
                 blob, stamps = pack_eff(res_spec, filename)
+            elif ext == ".ITM":
+                blob, stamps = pack_itm(res_spec, filename)
             else:
                 raise ValueError(f"Unsupported resource extension in {def_path.name}: {filename}")
             all_stamps.extend(stamps)
@@ -113,8 +115,11 @@ def render_outputs() -> dict[pathlib.Path, bytes]:
                 elif st.kind == "splprot":
                     tpa.append(f"    {writer} {hex(st.offset)} cbk_splprot_{st.symbol}")
                 elif st.kind == "stat":
-                    tpa.append(f"    OUTER_SET _cbk_st = IDS_OF_SYMBOL (~stats~ ~{st.symbol}~)")
+                    tpa.append(f"    SET _cbk_st = IDS_OF_SYMBOL (~stats~ ~{st.symbol}~)")
                     tpa.append(f"    {writer} {hex(st.offset)} _cbk_st")
+                elif st.kind == "proj":
+                    tpa.append(f"    SET _cbk_pj = IDS_OF_SYMBOL (~projectl~ ~{st.symbol}~)")
+                    tpa.append(f"    PATCH_IF (_cbk_pj >= 0) BEGIN {writer} {hex(st.offset)} (_cbk_pj + 1) END")
                 else:
                     raise ValueError(f"Unsupported stamp kind: {st.kind}")
         tpa.append("END")

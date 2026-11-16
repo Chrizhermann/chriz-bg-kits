@@ -1,66 +1,6 @@
 // Component 320: Core Kit & HLA Fixes + Dual-Classes Keep Kit Names (pure EEex runtime).
 
-DEFINE_ACTION_FUNCTION cbk_install_core_fixes BEGIN
-  LAF cbk_install_res_core_fixes END
-
-  // 1. Hardiness SPCL907 + Wish Hardiness SPWISH12 -> 40% physical only (strip elemental 27..31, 84, 85)
-  ACTION_FOR_EACH hsp IN ~SPCL907~ ~SPWISH12~ BEGIN
-    ACTION_IF (FILE_EXISTS_IN_GAME ~%hsp%.SPL~) BEGIN
-      COPY_EXISTING ~%hsp%.SPL~ ~override~
-        PATCH_IF (~%hsp%~ STR_EQ ~SPCL907~) BEGIN
-          SAY UNIDENTIFIED_DESC @501
-        END
-        FOR (op = 27; op <= 31; ++op) BEGIN
-          LPF DELETE_EFFECT INT_VAR match_opcode = op END
-        END
-        LPF DELETE_EFFECT INT_VAR match_opcode = 84 END
-        LPF DELETE_EFFECT INT_VAR match_opcode = 85 END
-        // Ensure 40% on physical (86..89)
-        FOR (op = 86; op <= 89; ++op) BEGIN
-          LPF ALTER_EFFECT INT_VAR silent = 1 match_opcode = op parameter1 = 40 parameter2 = 0 END
-        END
-      BUT_ONLY
-    END
-  END
-
-  // 2. Resist Magic SPCL904 -> non-lowering 50% MR floor via CBKRSMG
-  ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL904.SPL~) BEGIN
-    COPY_EXISTING ~SPCL904.SPL~ ~override~
-      SAY UNIDENTIFIED_DESC @502
-      LPF DELETE_EFFECT INT_VAR match_opcode = 166 END
-      LPF DELETE_EFFECT INT_VAR match_opcode = 142 END
-      LPF ADD_SPELL_EFFECT INT_VAR opcode = 146 target = 1 parameter2 = 1 timing = 1 STR_VAR resource = ~CBKRSMG~ END
-    BUT_ONLY
-  END
-
-  // 3. Deathblow (SPCL902) / Greater Deathblow (SPCL903) -> 12 HD / 16 HD
-  ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL902.SPL~) BEGIN
-    COPY_EXISTING ~SPCL902.SPL~ ~override~
-      SAY UNIDENTIFIED_DESC @503
-      LPF ALTER_EFFECT INT_VAR silent = 1 match_opcode = 248 special = 12 END
-    BUT_ONLY
-    ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL902.EFF~) BEGIN
-      COPY_EXISTING ~SPCL902.EFF~ ~override~
-        WRITE_LONG 0x54 12 // min_level / HD threshold
-      BUT_ONLY
-    END
-  END
-  ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL903.SPL~) BEGIN
-    COPY_EXISTING ~SPCL903.SPL~ ~override~
-      SAY UNIDENTIFIED_DESC @504
-      LPF ALTER_EFFECT INT_VAR silent = 1 match_opcode = 248 special = 16 END
-    BUT_ONLY
-    ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL903.EFF~) BEGIN
-      COPY_EXISTING ~SPCL903.EFF~ ~override~
-        WRITE_LONG 0x54 16
-      BUT_ONLY
-    END
-  END
-
-  // 4. Dual-Classes Keep Kit Names: build CBKDCNAM.2DA across ALL kits in KITLIST.2DA + install M_CBKDCN.lua
-  // Orig flags: Fighter=8 (0x08), Mage=16 (0x10), Cleric=32 (0x20), Thief=64 (0x40), Druid=128 (0x80), Ranger=256 (0x100)
-  // Resulting dual classes in CLASS.IDS:
-  //   FM=7 (2+1), FC=8 (2+3), FT=9 (2+4), MT=13 (1+4), CM=14 (3+1), CT=15 (3+4), FD=16 (2+11), CR=18 (3+12)
+DEFINE_ACTION_FUNCTION cbk_rebuild_dcnam BEGIN
   ACTION_CLEAR_ARRAY cbk_cl_mixed
   ACTION_CLEAR_ARRAY cbk_cl_lower
   OUTER_SPRINT _t @511 OUTER_SPRINT $cbk_cl_mixed(~1~) ~%_t%~
@@ -104,6 +44,7 @@ DEFINE_ACTION_FUNCTION cbk_install_core_fixes BEGIN
     ~12_3~ => 18
   END
 
+  OUTER_SET has_barb_row = 0
   OUTER_SPRINT dcn_lines ~2DA V1.0%WNL%*%WNL%        CLASS   ORIG_FLAG       KIT     MIXED   LOWER%WNL%~
   COPY_EXISTING ~KITLIST.2DA~ ~override~
     READ_2DA_ENTRIES_NOW dk_rows 10
@@ -113,25 +54,30 @@ DEFINE_ACTION_FUNCTION cbk_install_core_fixes BEGIN
       READ_2DA_ENTRY_FORMER dk_rows r 3 k_mix_ref
       READ_2DA_ENTRY_FORMER dk_rows r 8 orig_cls
       READ_2DA_ENTRY_FORMER dk_rows r 9 k_ids_raw
-      PATCH_IF (IS_AN_INT orig_cls AND IS_AN_INT k_low_ref AND IS_AN_INT k_mix_ref AND IS_AN_INT k_ids_raw) BEGIN
-        PATCH_IF (VARIABLE_IS_SET $cbk_cl_flag(~%orig_cls%~)) BEGIN
-          SET orig_flag = $cbk_cl_flag(~%orig_cls%~)
-          GET_STRREF k_mix_ref kmix
-          GET_STRREF k_low_ref klow
-          SET k_ids_int = k_ids_raw
-          PATCH_IF (k_ids_int != 0x4000) BEGIN
-            PHP_EACH cbk_cl_flag AS second_cls => _unused BEGIN
-              SPRINT pair ~%orig_cls%_%second_cls%~
-              PATCH_IF (VARIABLE_IS_SET $cbk_dual_targets(~%pair%~)) BEGIN
-                SET dest_cls = $cbk_dual_targets(~%pair%~)
-                SPRINT smix $cbk_cl_mixed(~%second_cls%~)
-                SPRINT slow $cbk_cl_lower(~%second_cls%~)
-                SPRINT out_mix_txt ~%kmix% / %smix%~
-                SPRINT out_low_txt ~%klow% / %slow%~
-                SET out_mix = RESOLVE_STR_REF (~%out_mix_txt%~)
-                SET out_low = RESOLVE_STR_REF (~%out_low_txt%~)
-                SPRINT rk ~%rn%_%dest_cls%~
-                SPRINT dcn_lines ~%dcn_lines%%rk% %dest_cls% %orig_flag% %k_ids_int% %out_mix% %out_low%%WNL%~
+      PATCH_IF (~%rn%~ STR_EQ ~BARBARIAN~) BEGIN SET has_barb_row = 1 END
+      PATCH_IF !(~%rn%~ STR_EQ ~GRIZZLY_BEAR~) AND !(~%rn%~ STR_EQ ~LATHANDER_X~) AND !(~%rn%~ STR_EQ ~RESERVE~) BEGIN
+        PATCH_IF (IS_AN_INT orig_cls AND IS_AN_INT k_low_ref AND IS_AN_INT k_mix_ref AND IS_AN_INT k_ids_raw) BEGIN
+          PATCH_IF (VARIABLE_IS_SET $cbk_cl_flag(~%orig_cls%~)) BEGIN
+            SET orig_flag = $cbk_cl_flag(~%orig_cls%~)
+            GET_STRREF k_mix_ref kmix
+            GET_STRREF k_low_ref klow
+            SET k_ids_int = k_ids_raw
+            PATCH_IF (k_ids_int != 0x4000) BEGIN
+              PHP_EACH cbk_cl_flag AS second_cls => _unused BEGIN
+                SPRINT pair ~%orig_cls%_%second_cls%~
+                PATCH_IF (VARIABLE_IS_SET $cbk_dual_targets(~%pair%~)) BEGIN
+                  SET dest_cls = $cbk_dual_targets(~%pair%~)
+                  SPRINT smix $cbk_cl_mixed(~%second_cls%~)
+                  SPRINT slow $cbk_cl_lower(~%second_cls%~)
+                  SPRINT out_mix_txt ~%kmix% / %slow%~
+                  // Keep standard Capitalized / Capitalized in MIXED and lower / lower in LOWER:
+                  SPRINT out_mix_txt ~%kmix% / %smix%~
+                  SPRINT out_low_txt ~%klow% / %slow%~
+                  SET out_mix = RESOLVE_STR_REF (~%out_mix_txt%~)
+                  SET out_low = RESOLVE_STR_REF (~%out_low_txt%~)
+                  SPRINT rk ~%rn%_%dest_cls%~
+                  SPRINT dcn_lines ~%dcn_lines%%rk% %dest_cls% %orig_flag% %k_ids_int% %out_mix% %out_low%%WNL%~
+                END
               END
             END
           END
@@ -140,11 +86,84 @@ DEFINE_ACTION_FUNCTION cbk_install_core_fixes BEGIN
     END
   BUT_ONLY
 
+  // Ensure BARBARIAN (0x40000000 = 1073741824) dual-class names are always present even in minimal fakegames
+  ACTION_IF (has_barb_row = 0) BEGIN
+    OUTER_SPRINT bmix @517
+    OUTER_SPRINT blow @527
+    ACTION_FOR_EACH second_cls IN ~1~ ~3~ ~4~ ~11~ BEGIN
+      OUTER_SET dest_cls = $cbk_dual_targets(~2_%second_cls%~)
+      OUTER_SPRINT smix $cbk_cl_mixed(~%second_cls%~)
+      OUTER_SPRINT slow $cbk_cl_lower(~%second_cls%~)
+      OUTER_SET out_mix = RESOLVE_STR_REF (~%bmix% / %smix%~)
+      OUTER_SET out_low = RESOLVE_STR_REF (~%blow% / %slow%~)
+      OUTER_SPRINT dcn_lines ~%dcn_lines%BARBARIAN_%dest_cls% %dest_cls% 8 1073741824 %out_mix% %out_low%%WNL%~
+    END
+  END
+
   COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKDCNAM.2DA~
     DELETE_BYTES 0 BUFFER_LENGTH
     INSERT_BYTES 0 (STRING_LENGTH ~%dcn_lines%~)
     WRITE_ASCIIE 0 ~%dcn_lines%~
     PRETTY_PRINT_2DA
+END
 
+DEFINE_ACTION_FUNCTION cbk_install_core_fixes BEGIN
+  LAF cbk_install_res_core_fixes END
+
+  // 1. Hardiness SPCL907 + Wish Hardiness SPWISH12 -> 40% physical only (strip elemental 27..31, 84, 85)
+  ACTION_FOR_EACH hsp IN ~SPCL907~ ~SPWISH12~ BEGIN
+    ACTION_IF (FILE_EXISTS_IN_GAME ~%hsp%.SPL~) BEGIN
+      COPY_EXISTING ~%hsp%.SPL~ ~override~
+        PATCH_IF (~%hsp%~ STR_EQ ~SPCL907~) BEGIN
+          SAY UNIDENTIFIED_DESC @501
+        END
+        FOR (op = 27; op <= 31; ++op) BEGIN
+          LPF DELETE_EFFECT INT_VAR match_opcode = op END
+        END
+        LPF DELETE_EFFECT INT_VAR match_opcode = 84 END
+        LPF DELETE_EFFECT INT_VAR match_opcode = 85 END
+        FOR (op = 86; op <= 89; ++op) BEGIN
+          LPF ALTER_EFFECT INT_VAR silent = 1 match_opcode = op parameter1 = 40 parameter2 = 0 END
+        END
+      BUT_ONLY
+    END
+  END
+
+  // 2. Resist Magic SPCL904 -> non-lowering 50% MR floor via CBKRSMG
+  ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL904.SPL~) BEGIN
+    COPY_EXISTING ~SPCL904.SPL~ ~override~
+      SAY UNIDENTIFIED_DESC @502
+      LPF DELETE_EFFECT INT_VAR match_opcode = 166 END
+      LPF DELETE_EFFECT INT_VAR match_opcode = 142 END
+      LPF ADD_SPELL_EFFECT INT_VAR opcode = 146 target = 1 parameter2 = 1 timing = 1 STR_VAR resource = ~CBKRSMG~ END
+    BUT_ONLY
+  END
+
+  // 3. Deathblow (SPCL902) / Greater Deathblow (SPCL903) -> 12 HD / 16 HD
+  ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL902.SPL~) BEGIN
+    COPY_EXISTING ~SPCL902.SPL~ ~override~
+      SAY UNIDENTIFIED_DESC @503
+      LPF ALTER_EFFECT INT_VAR silent = 1 match_opcode = 248 special = 12 END
+    BUT_ONLY
+    ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL902.EFF~) BEGIN
+      COPY_EXISTING ~SPCL902.EFF~ ~override~
+        WRITE_LONG 0x54 12
+      BUT_ONLY
+    END
+  END
+  ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL903.SPL~) BEGIN
+    COPY_EXISTING ~SPCL903.SPL~ ~override~
+      SAY UNIDENTIFIED_DESC @504
+      LPF ALTER_EFFECT INT_VAR silent = 1 match_opcode = 248 special = 16 END
+    BUT_ONLY
+    ACTION_IF (FILE_EXISTS_IN_GAME ~SPCL903.EFF~) BEGIN
+      COPY_EXISTING ~SPCL903.EFF~ ~override~
+        WRITE_LONG 0x54 16
+      BUT_ONLY
+    END
+  END
+
+  // 4. Dual-Classes Keep Kit Names (including Barbarian 0x40000000 and mod kits)
+  LAF cbk_rebuild_dcnam END
   COPY ~%MOD_FOLDER%/lua/M_CBKDCN.lua~ ~override/M_CBKDCN.lua~
 END

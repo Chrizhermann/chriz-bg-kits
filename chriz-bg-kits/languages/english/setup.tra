@@ -2,8 +2,13 @@
 @2   = ~chriz-bg-kits replaces ArtisansKitpack and BardicWonders and cannot be installed alongside them.~
 @3   = ~Requires Component 100 (Core EEex Kit Kernel) to be installed first.~
 
-@100 = ~Core EEex Kit Kernel (Weapon Usability, Multiclass Kit Proficiencies, Spec APR, Bard Spells, Strength Floor)~
+@100 = ~Core EEex Kit Kernel (Weapon Usability, Multiclass Kit Proficiencies, Global Non-Warrior Proficiency APR, Bard Spells, Strength Floor)~
+@110 = ~Forgotten Realms Racial Class, Kit & Multiclass Rules (Recommended)~
+@111 = ~Unlock All Classes, Kits, Dual-Classes & Multiclasses for All Races~
+@112 = ~Racial Class, Kit & Multiclass Rules~
 @200 = ~Cleric Overhaul: Priest of Tempus~
+@210 = ~Sorcerer Kit: Stonefire Sorcerer~
+@220 = ~Druid Kit: Elementalist~
 @300 = ~Standalone Fighter Kit: Bloodrager~
 @310 = ~Bard Overhaul: Jester & Skald~
 @320 = ~Core Kit & HLA Fixes (Archer Called Shot, Physical Hardiness, Resist Magic, Deathblows, Dual-Class Kit Names)~
@@ -64,9 +69,109 @@ Permanent +1 Luck, +2 Saving Throws, and a non-stacking aura granting allies +1 
 @514 = ~Thief~
 @515 = ~Druid~
 @516 = ~Ranger~
+@517 = ~Barbarian~
 @521 = ~mage~
 @522 = ~fighter~
 @523 = ~cleric~
 @524 = ~thief~
 @525 = ~druid~
 @526 = ~ranger~
+@527 = ~barbarian~
+
+@2100 = ~stonefire sorcerer~
+@2101 = ~Stonefire Sorcerer~
+@2102 = ~STONEFIRE SORCERER: Forged in the volcanic hearts of dwarven holds, Stonefire Sorcerers channel the weight of living stone and the fury of magma directly through runic mail and dwarven steel.
+
+Advantages:
+- Hit Die: d6.
+- May equip and Specialize (2 slots) in Warhammers and Battle Axes, gaining +1/2 attack per round when specialized.
+- May wear Helmets, Shields (except Tower Shields), and Armor up to Chain Mail, and casts arcane spells in armor up to Chain Mail without spell failure.
+- Immune to Wing Buffet and Knockdown.
+- Gains 5% / 10% / 15% / 20% physical damage resistance and 20% / 30% / 40% / 50% Fire resistance at levels 4 / 8 / 12 / 16.
+- Gains +1 Constitution at levels 5 and 15.
+- May cast Magma Eruption once per day at level 3 (increasing to 2/day at level 9 and 3/day at level 15).
+
+Disadvantages:
+- May cast one fewer spell per level per day.
+- Barred School: Illusion (cannot learn Illusion spells or read Illusion scrolls).~
+@2103 = ~Magma Eruption~
+@2104 = ~Magma Eruption
+Range: 30 ft.
+Area of Effect: Small enemy-only burst
+Casting Time: 3
+Saving Throw: Breath (1/2 damage; negates Slow)
+
+Calls forth a localized eruption of molten rock and concussive stone at a target point within 30 feet. Enemies caught in the blast suffer 3d6 damage at 3rd level, 5d6 at 9th level, and 7d6 at 15th level (half crushing, half fire; Save vs. Breath for half) and must save vs. Breath or be slowed for 2 rounds.~
+
+@2200 = ~elementalist~
+@2201 = ~Elementalist~
+@2202 = ~ELEMENTALIST: Forsaking woodland beasts and insect swarms, Elementalist druids commune directly with the four primordial planes of Fire, Water, Air, and Earth.
+
+Advantages:
+- +10% baseline resistance to Fire, Cold, Electricity, and Acid.
+- Receives a curated bonus Priest spellbook of elemental magic across spell levels 1 through 7.
+- Elemental Forms (Fire, Water, Air, Earth): Shared pool of 2 uses/day at 3rd level, 3/day at 7th, 4/day at 10th, and 5/day at 12th+ (scaling at levels 3, 7, 12, and 15). Spellcasting remains fully enabled while transformed:
+  * Fire Form: 2 APR slashing + fire natural attack, +25% Fire damage dealt, 50/75/90/100% Fire resistance, 0/10/15/20% physical resistance floor, and a 1d6 fire recoil aura at 12th level.
+  * Water Form: 2 APR crushing natural attack, +20% Cold damage dealt, 50/75/90/100% Cold resistance, 0/25/50/50% Fire resistance, 10/15/20/25% physical resistance floor, 0/1/1/2 HP/round regeneration, and Tidal Healing (Cure Wounds spells cast at speed 1, 30-ft. range, and +25% healing).
+  * Air Form: 2/3/3/3 APR piercing + electrical natural attack, +3 movement rate, +20% Electricity damage dealt, 50/75/90/100% Electricity resistance, 20/40/50/60% Missile resistance, 0/10/15/20% physical resistance floor, and +1/+2 faster casting speed at levels 12/15.
+  * Earth Form: 2 APR heavy crushing natural attack, Strength floor 19/20/21/22 (Dexterity 9), Knockdown/Wing Buffet immunity, 50/75/90/100% Acid resistance, 15/25/35/50% Slashing/Piercing/Missile resistance floor, and 10/15/20/25% Crushing resistance floor.
+- High-Level Ability — Primal Penetration: Replaces Elemental Transformation. While in an Elemental Form, the Elementalist's own spells of that form's element pierce half of the target's Magic Resistance and cap non-Elemental targets' elemental resistance at 70%; in Earth Form, melee attacks ignore 25% of target Crushing resistance and have a 20% chance (Save vs. Breath negates) to knock the target down for 1 round.
+
+Disadvantages:
+- Cannot wear armor (robes permitted).
+- Loses vanilla animal shapeshifting, Animal-sphere summons, and Insect swarm spells (retains Elemental Summonings).~
+@2203 = ~Fire Elemental Form~
+@2204 = ~Fire Elemental Form
+Transforms into a living Flame Elemental (Lesser at 3rd, Standard at 7th, Greater at 12th, Final at 15th). Grants +25% Fire damage dealt, scaling Fire resistance (50/75/90/100%), physical resistance floor (0/10/15/20%), 2 APR slashing/fire melee attacks, and at 12th+ level a 1d6 fire recoil aura plus elemental immunities.~
+@2205 = ~Water Elemental Form~
+@2206 = ~Water Elemental Form
+Transforms into a living Water Elemental. Grants +20% Cold damage dealt, scaling Cold resistance (50/75/90/100%), Fire resistance (0/25/50/50%), physical resistance floor (10/15/20/25%), regeneration (0/1/1/2 HP/round), and Tidal Healing (Cure Wounds spells gain Casting Time 1, 30-ft. range, and +25% extra healing).~
+@2207 = ~Air Elemental Form~
+@2208 = ~Air Elemental Form
+Transforms into a living Air Elemental. Grants +20% Electricity damage dealt, 2/3/3/3 APR piercing/electrical melee attacks, +3 movement rate, scaling Electricity resistance (50/75/90/100%), Missile resistance (20/40/50/60%), physical resistance floor (0/10/15/20%), and +1/+2 faster casting speed at levels 12/15.~
+@2209 = ~Earth Elemental Form~
+@2210 = ~Earth Elemental Form
+Transforms into a living Earth Elemental. Grants Strength floor 19/20/21/22 (Dexterity 9), Knockdown and Wing Buffet immunity, scaling Acid resistance (50/75/90/100%), 15/25/35/50% Slashing/Piercing/Missile resistance floor, and 10/15/20/25% Crushing resistance floor.~
+@2211 = ~Natural Form~
+@2212 = ~Natural Form
+Returns the Elementalist to natural humanoid form.~
+@2213 = ~Primal Penetration~
+@2214 = ~Primal Penetration (HLA)
+One-time passive High-Level Ability. While transformed into an Elemental Form, the Elementalist's own spells matching that form's element (Fire -> Fire, Water -> Cold, Air -> Electricity, Earth -> Acid) pierce half of the target's Magic Resistance and cap non-Elemental targets' elemental resistance at 70%. In Earth Form, Tectonic Strikes ignore 25% of target Crushing resistance and have a 20% chance (Save vs. Breath negates) to knock struck targets down for 1 round.~
+
+@2220 = ~Burning Hands~
+@2221 = ~Burning Hands: Releases a searing cone of fire dealing 1d3+4 fire damage (Save vs. Spell for half).~
+@2222 = ~Shocking Grasp~
+@2223 = ~Shocking Grasp: Jolts a touched enemy for 1d8+4 electrical damage.~
+@2224 = ~Agannazar's Scorcher~
+@2225 = ~Agannazar's Scorcher: Projects a jet of flame dealing 3d6 fire damage.~
+@2226 = ~Melf's Acid Arrow~
+@2227 = ~Melf's Acid Arrow: Launches a magical arrow of acid dealing 2d4 acid damage immediately and 2d4 acid damage the following round.~
+@2228 = ~Snilloc's Snowball Swarm~
+@2229 = ~Snilloc's Snowball Swarm: Unleashes an icy flurry dealing 1d3 cold damage per level (up to 8d3, Save vs. Spell for half) in a 15-ft. radius.~
+@2230 = ~Fireball~
+@2231 = ~Fireball: Detonates an explosive burst of flame dealing 8d6 fire damage (Save vs. Spell for half).~
+@2232 = ~Lightning Bolt~
+@2233 = ~Lightning Bolt: Releases a stroke of electrical energy dealing 8d6 electrical damage (Save vs. Spell for half).~
+@2234 = ~Icelance~
+@2235 = ~Icelance: Hurls a magical lance of ice dealing 5d6 cold damage and stunning the target for 3 rounds unless a Save vs. Spell succeeds.~
+@2236 = ~Ice Storm~
+@2237 = ~Ice Storm: Pummels an area with giant hailstones for 2d8 cold damage.~
+@2238 = ~Vitriolic Sphere~
+@2239 = ~Vitriolic Sphere: Hurls a sphere of emerald acid dealing 1d4 acid damage per level (up to 15d4, Save vs. Spell for half) plus 2d4 lingering acid damage on a failed save.~
+@2240 = ~Fire Shield (Red)~
+@2241 = ~Fire Shield (Red): Wreathes the caster in flames granting +50% Fire resistance and inflicting fire damage on melee attackers.~
+@2242 = ~Cone of Cold~
+@2243 = ~Cone of Cold: Projects a freezing cone dealing 10d4+10 cold damage (Save vs. Spell for half).~
+@2244 = ~Sunfire~
+@2245 = ~Sunfire: Releases a globe of searing flame around the caster dealing 10d6 fire damage (Save vs. Spell for half).~
+@2246 = ~Chain Lightning~
+@2247 = ~Chain Lightning: Arcs electrical bolts across enemies dealing 10d6 electrical damage (Save vs. Spell for half).~
+@2248 = ~Otiluke's Freezing Sphere~
+@2249 = ~Otiluke's Freezing Sphere: Fires a globe of absolute zero dealing 1d4+2 cold damage per level (Save vs. Spell negates).~
+@2250 = ~Delayed Blast Fireball~
+@2251 = ~Delayed Blast Fireball: Creates a devastating fireball dealing 14d6 fire damage (Save vs. Spell for half).~
+@2252 = ~Acid Storm~
+@2253 = ~Acid Storm: Unleashes a downpour of caustic acid over 3 rounds dealing 7d4, 7d6, and 7d8 acid damage (Save vs. Spell for half).~
+@2254 = ~Incendiary Cloud~
+@2255 = ~Incendiary Cloud: Conjures a billowing cloud of white-hot embers dealing 14d4 fire damage (Save vs. Spell for half).~

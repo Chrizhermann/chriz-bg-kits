@@ -1,0 +1,273 @@
+// cbk_stonefire.tpa: Component 210 — Stonefire Sorcerer (Dwarf Sorcerer Kit, CBK_STONEFIRE)
+
+DEFINE_ACTION_FUNCTION cbk_install_stonefire BEGIN
+  LAF cbk_install_res_stonefire END
+  LAF cbk_ensure_resource_symbols
+    RET
+      cbk_splprot_CBK_STATE_SF_ARMOR_EQ = cbk_splprot_CBK_STATE_SF_ARMOR_EQ
+      cbk_state_CBK_STONEFIRE_ARMOR = cbk_state_CBK_STONEFIRE_ARMOR
+  END
+
+  // Stamp Magma Eruption name and description
+  COPY_EXISTING ~CBKSF01.SPL~ ~override~
+    SAY NAME1 @2103
+    SAY UNIDENTIFIED_DESC @2104
+
+  // Determine first Sorcerer level with >= 2 casts per spell level from MXSPLSRC.2DA
+  OUTER_SET sf_c1 = 1
+  OUTER_SET sf_c2 = 4
+  OUTER_SET sf_c3 = 6
+  OUTER_SET sf_c4 = 8
+  OUTER_SET sf_c5 = 10
+  OUTER_SET sf_c6 = 12
+  OUTER_SET sf_c7 = 14
+  OUTER_SET sf_c8 = 16
+  OUTER_SET sf_c9 = 18
+
+  ACTION_IF (FILE_EXISTS_IN_GAME ~MXSPLSRC.2DA~) BEGIN
+    COPY_EXISTING ~MXSPLSRC.2DA~ ~override~
+      COUNT_2DA_COLS mx_cols
+      READ_2DA_ENTRIES_NOW mx_rows mx_cols
+      FOR (sl = 1; sl <= 9; ++sl) BEGIN
+        PATCH_IF (sl < mx_cols) BEGIN
+          SET found_lv = 0
+          FOR (r = 0; r < mx_rows; ++r) BEGIN
+            PATCH_IF (found_lv = 0) BEGIN
+              READ_2DA_ENTRY_FORMER mx_rows r 0 src_lv
+              READ_2DA_ENTRY_FORMER mx_rows r sl casts
+              PATCH_IF (IS_AN_INT src_lv AND IS_AN_INT casts AND casts >= 2) BEGIN
+                SET found_lv = src_lv
+              END
+            END
+          END
+          PATCH_IF (found_lv > 0) BEGIN
+            SET EVAL ~sf_c%sl%~ = found_lv
+          END
+        END
+      END
+    BUT_ONLY
+  END
+
+  // Build CBKSF0.2DA CLAB dynamically
+  OUTER_SPRINT clab_hdr ~2DA V1.0%WNL%****%WNL%           ~
+  OUTER_SPRINT r_a1 ~ABILITY1   ~
+  OUTER_SPRINT r_a2 ~ABILITY2   ~
+  OUTER_SPRINT r_a3 ~ABILITY3   ~
+  OUTER_SPRINT r_a4 ~ABILITY4   ~
+
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT clab_hdr ~%clab_hdr% %lv%~
+
+    // ABILITY1: L1 passive (CBKSF00), L3/L9/L15 Magma Eruption (GA_CBKSF01)
+    ACTION_IF (lv = 1) BEGIN
+      OUTER_SPRINT c1 ~AP_CBKSF00~
+    END ELSE ACTION_IF (lv = 3 OR lv = 9 OR lv = 15) BEGIN
+      OUTER_SPRINT c1 ~GA_CBKSF01~
+    END ELSE BEGIN
+      OUTER_SPRINT c1 ~****~
+    END
+    OUTER_SPRINT r_a1 ~%r_a1% %c1%~
+
+    // ABILITY2: L4 CBKSFR1, L8/L12/L16 CBKSFR2, L5/L15 CBKSFCN (+1 CON)
+    ACTION_IF (lv = 4) BEGIN
+      OUTER_SPRINT c2 ~AP_CBKSFR1~
+    END ELSE ACTION_IF (lv = 8 OR lv = 12 OR lv = 16) BEGIN
+      OUTER_SPRINT c2 ~AP_CBKSFR2~
+    END ELSE ACTION_IF (lv = 5 OR lv = 15) BEGIN
+      OUTER_SPRINT c2 ~AP_CBKSFCN~
+    END ELSE BEGIN
+      OUTER_SPRINT c2 ~****~
+    END
+    OUTER_SPRINT r_a2 ~%r_a2% %c2%~
+
+    // ABILITY3 & ABILITY4: -1 spell cast per spell level (CBKSFC1..9)
+    OUTER_SPRINT c3 ~****~
+    OUTER_SPRINT c4 ~****~
+    OUTER_FOR (sl = 1; sl <= 9; ++sl) BEGIN
+      OUTER_SET trig = EVAL ~sf_c%sl%~
+      ACTION_IF (lv = trig) BEGIN
+        ACTION_IF (~%c3%~ STR_EQ ~****~) BEGIN
+          OUTER_SPRINT c3 ~AP_CBKSFC%sl%~
+        END ELSE BEGIN
+          OUTER_SPRINT c4 ~AP_CBKSFC%sl%~
+        END
+      END
+    END
+    OUTER_SPRINT r_a3 ~%r_a3% %c3%~
+    OUTER_SPRINT r_a4 ~%r_a4% %c4%~
+  END
+
+  OUTER_SPRINT clab_full ~%clab_hdr%%WNL%%r_a1%%WNL%%r_a2%%WNL%%r_a3%%WNL%%r_a4%%WNL%~
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKSF0.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    INSERT_BYTES 0 (STRING_LENGTH ~%clab_full%~)
+    WRITE_ASCIIE 0 ~%clab_full%~
+    PRETTY_PRINT_2DA
+
+  // Register CBK_STONEFIRE (class 19 = SORCERER, HPDD = d6, 0x00001000 = Illusion scroll opposition)
+  OUTER_SET sf_lower = RESOLVE_STR_REF (@2100)
+  OUTER_SET sf_mixed = RESOLVE_STR_REF (@2101)
+  OUTER_SET sf_help  = RESOLVE_STR_REF (@2102)
+
+  LAF cbk_register_kit
+    INT_VAR
+      class_id      = 19
+      unusable_mask = 0x00001000
+      lower_ref     = sf_lower
+      mixed_ref     = sf_mixed
+      help_ref      = sf_help
+    STR_VAR
+      kit_name       = ~CBK_STONEFIRE~
+      class_label    = ~SORCERER~
+      clone_kit      = ~DRAGON_DISCIPLE~
+      clone_prof_col = ~SORCERER~
+      clab           = ~CBKSF0~
+      lua_abbr       = ~Ma0~
+      hpclass        = ~HPDD~
+      abclasrq_row   = ~0 0 12 9 0 9~
+      alignmnt_row   = ~1 1 1 1 1 1 1 1 1~
+      dualclas_row   = ~0 0 0 0 0 0~
+      race_policy    = ~DWARF_ONLY~
+    RET
+      sf_kit_num     = kit_num
+      sf_kit_ids     = kit_ids
+      sf_kit_ids_hex = kit_ids_hex
+  END
+
+  // Unless Component 111 (Unlock All) is active, ensure K_S_D.2DA does NOT expose generic Sorcerer (0) or Dragon Disciple (35)
+  LAF cbk_get_race_mode RET cur_rm = race_mode END
+  ACTION_IF (cur_rm != 111 AND FILE_EXISTS_IN_GAME ~K_S_D.2DA~) BEGIN
+    OUTER_SPRINT ksd_body ~2DA V1.0%WNL%*%WNL%    KIT%WNL%1   %sf_kit_num%%WNL%~
+    COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/K_S_D.2DA~
+      DELETE_BYTES 0 BUFFER_LENGTH
+      INSERT_BYTES 0 (STRING_LENGTH ~%ksd_body%~)
+      WRITE_ASCIIE 0 ~%ksd_body%~
+      PRETTY_PRINT_2DA
+  END
+
+  // WEAPPROF.2DA: Battle Axe (92) = 2, Warhammer (97) = 2, Sorcerer weapons + styles = 1, rest = 0
+  COPY_EXISTING ~WEAPPROF.2DA~ ~override~
+    COUNT_2DA_COLS wp_cols
+    READ_2DA_ENTRIES_NOW wp_hdr (wp_cols - 1)
+    READ_2DA_ENTRIES_NOW wp_rows wp_cols
+    SET sf_col = 0 - 1
+    FOR (h = 0; h < wp_cols - 1; ++h) BEGIN
+      READ_2DA_ENTRY_FORMER wp_hdr 0 h col_name
+      PATCH_IF (~%col_name%~ STR_EQ ~CBK_STONEFIRE~) BEGIN
+        SET sf_col = h + 1
+      END
+    END
+    PATCH_IF (sf_col > 0) BEGIN
+      FOR (r = 0; r < wp_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER wp_rows r 1 pid
+        PATCH_IF (IS_AN_INT pid) BEGIN
+          PATCH_IF (pid = 92 OR pid = 97) BEGIN
+            SET_2DA_ENTRY_LATER wp_sf r sf_col ~2~
+          END ELSE PATCH_IF (pid = 96 OR pid = 102 OR pid = 106 OR pid = 107 OR pid = 111 OR pid = 112 OR pid = 113) BEGIN
+            SET_2DA_ENTRY_LATER wp_sf r sf_col ~1~
+          END ELSE PATCH_IF (pid >= 89 AND pid <= 115) BEGIN
+            SET_2DA_ENTRY_LATER wp_sf r sf_col ~0~
+          END
+        END
+      END
+      SET_2DA_ENTRIES_NOW wp_sf wp_cols
+      PRETTY_PRINT_2DA
+    END
+  BUT_ONLY
+
+  // CBKWPN.2DA equipment overrides:
+  //   PROF 92 (Axe) ALLOW, PROF 97 (Warhammer) ALLOW
+  //   SUBTYPE 2 (<= Chain Mail) ALLOW, SUBTYPE 3 (>= Splint/Plate) DENY
+  //   SUBTYPE 4 (<= Medium Shield) ALLOW, SUBTYPE 5 (Tower Shield) DENY
+  //   SUBTYPE 7 (Helmet) ALLOW
+  OUTER_PATCH ~~ BEGIN SPRINTF sf_dec ~%d~ (sf_kit_ids) END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKSF_AXE~      row_line = EVAL ~CBKSF_AXE 19 %sf_dec% PROF 92 ALLOW~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKSF_HAMMER~   row_line = EVAL ~CBKSF_HAMMER 19 %sf_dec% PROF 97 ALLOW~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKSF_ARMOR_OK~ row_line = EVAL ~CBKSF_ARMOR_OK 19 %sf_dec% SUBTYPE 2 ALLOW~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKSF_ARMOR_NO~ row_line = EVAL ~CBKSF_ARMOR_NO 19 %sf_dec% SUBTYPE 3 DENY~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKSF_SHLD_OK~  row_line = EVAL ~CBKSF_SHLD_OK 19 %sf_dec% SUBTYPE 4 ALLOW~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKSF_SHLD_NO~  row_line = EVAL ~CBKSF_SHLD_NO 19 %sf_dec% SUBTYPE 5 DENY~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKSF_HELM_OK~  row_line = EVAL ~CBKSF_HELM_OK 19 %sf_dec% SUBTYPE 7 ALLOW~ END
+
+  // Ensure Bardic Wonders / Artisan's Kitpack EFFs carry parent_resource if present so op318 blocks them cleanly
+  ACTION_FOR_EACH ext_eff IN ~C0ARCAS1~ ~C0ARCAS2~ BEGIN
+    ACTION_IF (FILE_EXISTS_IN_GAME ~%ext_eff%.EFF~) BEGIN
+      COPY_EXISTING ~%ext_eff%.EFF~ ~override~
+        PATCH_IF (SOURCE_SIZE >= 0x110) BEGIN
+          WRITE_LONG   0x90 1
+          WRITE_ASCIIE 0x94 ~%ext_eff%~ #8
+        END
+      BUT_ONLY
+    END
+  END
+
+  // Armored Arcane Casting up to Chain Mail:
+  // Convert raw equipping op145 (p2=0) on leather/hide/chain body armors to op177 -> CBKARCDS.EFF,
+  // and prepend equipped op318 guard (CBK_STATE_SF_ARMOR_EQ) for CBKARCDS (plus C0ARCAS1/C0ARCAS2 if used).
+  COPY_EXISTING_REGEXP GLOB ~^.+\.itm$~ ~override~
+    PATCH_IF (SOURCE_SIZE >= 0x72) BEGIN
+      READ_SHORT 0x1c itype
+      READ_LONG  0x1e unus
+      READ_ASCII 0x22 anim (2)
+      TO_UPPER anim
+      PATCH_IF (itype = 2) AND ((~%anim%~ STR_EQ ~2A~) OR ((~%anim%~ STR_EQ ~3A~) AND ((unus BAND 0x00000040) = 0))) BEGIN
+        READ_LONG  0x6a fx_off
+        READ_SHORT 0x70 eq_cnt
+        SET has_145 = 0
+        SET has_cbkarcds = 0
+        FOR (i = 0; i < eq_cnt; ++i) BEGIN
+          SET fo = fx_off + (i * 0x30)
+          PATCH_IF (fo + 0x30 <= SOURCE_SIZE) BEGIN
+            READ_SHORT fo op
+            READ_LONG  (fo + 0x08) p2
+            READ_ASCII (fo + 0x14) res (8) NULL
+            TO_UPPER res
+            PATCH_IF (op = 145 AND p2 = 0) BEGIN
+              SET has_145 = 1
+            END
+            PATCH_IF (op = 177 AND (~%res%~ STR_EQ ~CBKARCDS~ OR ~%res%~ STR_EQ ~C0ARCAS1~ OR ~%res%~ STR_EQ ~C0ARCAS2~)) BEGIN
+              SET has_cbkarcds = 1
+            END
+          END
+        END
+        PATCH_IF (has_145 = 1 OR has_cbkarcds = 1) BEGIN
+          LPF DELETE_EFFECT INT_VAR check_headers = 0 check_globals = 1 match_opcode = 318 STR_VAR match_resource = ~CBKARCDS~ END
+          PATCH_IF (has_145 = 1) BEGIN
+            LPF ALTER_EFFECT
+              INT_VAR
+                check_headers    = 0
+                check_globals    = 1
+                match_opcode     = 145
+                match_parameter2 = 0
+                silent           = 1
+                opcode           = 177
+                target           = 1
+                parameter1       = 0
+                parameter2       = 2
+                timing           = 2
+              STR_VAR
+                resource         = ~CBKARCDS~
+            END
+          END
+          LPF ADD_ITEM_EQEFFECT
+            INT_VAR
+              opcode      = 318
+              target      = 1
+              parameter1  = 0
+              parameter2  = cbk_splprot_CBK_STATE_SF_ARMOR_EQ
+              timing      = 2
+              insert_point = 0
+            STR_VAR
+              resource    = ~CBKARCDS~
+          END
+        END
+      END
+    END
+  BUT_ONLY
+
+  // Install M_CBKSF.lua with resolved kit_ids and CBK_STONEFIRE_ARMOR state
+  OUTER_SET CBK_STONEFIRE_KIT_IDS = sf_kit_ids
+  OUTER_SET CBK_STONEFIRE_ARMOR_STATE = cbk_state_CBK_STONEFIRE_ARMOR
+  COPY ~%MOD_FOLDER%/lua/M_CBKSF.lua~ ~override/M_CBKSF.lua~
+    EVALUATE_BUFFER
+END

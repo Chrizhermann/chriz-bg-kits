@@ -1,0 +1,628 @@
+{
+  "texts": {},
+  "states": [
+    "CBK_STONEFIRE_ARMOR"
+  ],
+  "splprots": {
+    "CBK_STATE_SF_ARMOR_EQ": {
+      "stat": "0x112",
+      "value": "STATE:CBK_STONEFIRE_ARMOR",
+      "relation": 1
+    }
+  },
+  "resources": [
+    {
+      "file": "CBKARCDS.EFF",
+      "opcode": 145,
+      "target": 1,
+      "p1": 0,
+      "p2": 0,
+      "timing": 2,
+      "prob1": 100,
+      "parent_type": 1,
+      "parent_resource": "CBKARCDS"
+    },
+    {
+      "file": "CBKSF00.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 328,
+              "target": 1,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_STONEFIRE_ARMOR"
+              },
+              "timing": 9,
+              "special": 1
+            },
+            {
+              "opcode": 318,
+              "target": 1,
+              "p1": 0,
+              "p2": 0,
+              "timing": 9,
+              "resource": "CBKARCDS"
+            },
+            {
+              "opcode": 318,
+              "target": 1,
+              "p1": 0,
+              "p2": 0,
+              "timing": 9,
+              "resource": "C0ARCAS1"
+            },
+            {
+              "opcode": 318,
+              "target": 1,
+              "p1": 0,
+              "p2": 0,
+              "timing": 9,
+              "resource": "C0ARCAS2"
+            },
+            {
+              "opcode": 101,
+              "target": 1,
+              "p1": 0,
+              "p2": 235,
+              "timing": 9
+            },
+            {
+              "opcode": 101,
+              "target": 1,
+              "p1": 0,
+              "p2": 39,
+              "timing": 9
+            },
+            {
+              "opcode": 169,
+              "target": 1,
+              "p1": 0,
+              "p2": 14,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFR1.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 86,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 87,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 88,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 89,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 30,
+              "target": 1,
+              "p1": 20,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 84,
+              "target": 1,
+              "p1": 20,
+              "p2": 0,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFR2.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 86,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 87,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 88,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 89,
+              "target": 1,
+              "p1": 5,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 30,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 84,
+              "target": 1,
+              "p1": 10,
+              "p2": 0,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFCN.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 10,
+              "target": 1,
+              "p1": 1,
+              "p2": 0,
+              "timing": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC1.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 1,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC2.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 2,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC3.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 4,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC4.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 8,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC5.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 16,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC6.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 32,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC7.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 64,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC8.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 128,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSFC9.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 42,
+              "target": 1,
+              "p1": -1,
+              "p2": 256,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSF01.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "icon": "SPWI304C",
+      "abilities": [
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 30,
+          "min_level": 1,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 159
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dice": 3,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 3,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 215,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 1,
+              "timing": 1,
+              "resource": "ICFIRSDI"
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 30,
+          "min_level": 9,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 159
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dice": 5,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 5,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 215,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 1,
+              "timing": 1,
+              "resource": "ICFIRSDI"
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI304B",
+          "target": 4,
+          "range": 30,
+          "min_level": 15,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 159
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dice": 7,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 524288,
+              "timing": 1,
+              "dice": 7,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 215,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 1,
+              "timing": 1,
+              "resource": "ICFIRSDI"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

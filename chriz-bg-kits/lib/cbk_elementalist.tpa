@@ -1,0 +1,526 @@
+// cbk_elementalist.tpa: Component 220 — Elementalist (Druid Kit, CBK_ELEMENTALIST)
+
+DEFINE_ACTION_FUNCTION cbk_spell_resref_from_ids
+  STR_VAR sym = ~~
+  RET     res
+BEGIN
+  OUTER_SPRINT res ~~
+  ACTION_IF !(~%sym%~ STR_EQ ~~) BEGIN
+    OUTER_SET num = IDS_OF_SYMBOL (~spell~ ~%sym%~)
+    ACTION_IF (num > 1000) BEGIN
+      OUTER_SET stype = num / 1000
+      OUTER_SET snum  = num MODULO 1000
+      ACTION_IF (snum < 10) BEGIN
+        OUTER_SPRINT pad ~00%snum%~
+      END ELSE ACTION_IF (snum < 100) BEGIN
+        OUTER_SPRINT pad ~0%snum%~
+      END ELSE BEGIN
+        OUTER_SPRINT pad ~%snum%~
+      END
+      ACTION_IF (stype = 1) BEGIN
+        OUTER_SPRINT cand ~SPPR%pad%~
+      END ELSE ACTION_IF (stype = 2) BEGIN
+        OUTER_SPRINT cand ~SPWI%pad%~
+      END ELSE ACTION_IF (stype = 3) BEGIN
+        OUTER_SPRINT cand ~SPIN%pad%~
+      END ELSE ACTION_IF (stype = 4) BEGIN
+        OUTER_SPRINT cand ~SPCL%pad%~
+      END ELSE BEGIN
+        OUTER_SPRINT cand ~~
+      END
+      ACTION_IF (!(~%cand%~ STR_EQ ~~) AND FILE_EXISTS_IN_GAME ~%cand%.SPL~) BEGIN
+        OUTER_SPRINT res ~%cand%~
+      END
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_setup_elem_spell
+  INT_VAR
+    priest_lv         = 1
+    fallback_name_tra = 0
+    fallback_desc_tra = 0
+  STR_VAR
+    dst        = ~~
+    ids_sym    = ~~
+    direct_res = ~~
+BEGIN
+  LAF cbk_spell_resref_from_ids STR_VAR sym = EVAL ~%ids_sym%~ RET src_res = res END
+  ACTION_IF (~%src_res%~ STR_EQ ~~ AND !(~%direct_res%~ STR_EQ ~~) AND FILE_EXISTS_IN_GAME ~%direct_res%.SPL~) BEGIN
+    OUTER_SPRINT src_res ~%direct_res%~
+  END
+
+  ACTION_IF !(~%src_res%~ STR_EQ ~~) BEGIN
+    COPY_EXISTING ~%src_res%.SPL~ ~override/%dst%.SPL~
+      PATCH_IF (SOURCE_SIZE >= 0x72) BEGIN
+        WRITE_SHORT 0x1c 2
+        WRITE_LONG  0x1e 0
+        WRITE_LONG  0x34 priest_lv
+        READ_LONG   0x64 ab_off
+        READ_SHORT  0x68 ab_num
+        READ_LONG   0x6a fx_off
+        READ_SHORT  0x70 eq_cnt
+        SET total_fx = eq_cnt
+        FOR (a = 0; a < ab_num; ++a) BEGIN
+          SET ao = ab_off + (a * 0x28)
+          PATCH_IF (ao + 0x28 <= SOURCE_SIZE) BEGIN
+            WRITE_SHORT (ao + 0x02) 2
+            READ_SHORT  (ao + 0x1e) fcnt
+            READ_SHORT  (ao + 0x20) fidx
+            PATCH_IF (fidx + fcnt > total_fx) BEGIN
+              SET total_fx = fidx + fcnt
+            END
+          END
+        END
+        FOR (f = 0; f < total_fx; ++f) BEGIN
+          SET fo = fx_off + (f * 0x30)
+          PATCH_IF (fo + 0x30 <= SOURCE_SIZE) BEGIN
+            READ_SHORT fo op
+            PATCH_IF (op = 206 OR op = 318 OR op = 321 OR op = 324) BEGIN
+              READ_ASCII (fo + 0x14) rref (8) NULL
+              PATCH_IF (~%rref%~ STR_EQ ~%src_res%~) BEGIN
+                WRITE_ASCIIE (fo + 0x14) ~%dst%~ #8
+              END
+            END
+          END
+        END
+      END
+  END ELSE BEGIN
+    COPY_EXISTING ~%dst%.SPL~ ~override~
+      SET nref = RESOLVE_STR_REF ((AT fallback_name_tra))
+      SET dref = RESOLVE_STR_REF ((AT fallback_desc_tra))
+      WRITE_LONG 0x08 nref
+      WRITE_LONG 0x50 dref
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbk_recolor_fire_bam_to_water BEGIN
+  PATCH_IF (SOURCE_SIZE >= 0x18) BEGIN
+    READ_ASCII 0x00 bsig (8)
+    SET was_compressed = 0
+    PATCH_IF (~%bsig%~ STR_EQ ~BAMCV1  ~) BEGIN
+      SET was_compressed = 1
+      READ_LONG 0x08 uncomp_len
+      DECOMPRESS_REPLACE_FILE 12 (SOURCE_SIZE - 12) uncomp_len
+    END
+    PATCH_IF (BUFFER_LENGTH >= 0x18) BEGIN
+      READ_ASCII 0x00 usig (8)
+      PATCH_IF (~%usig%~ STR_EQ ~BAM V1  ~) BEGIN
+        READ_LONG 0x10 pal_off
+        PATCH_IF (pal_off >= 0x18 AND pal_off + 1024 <= BUFFER_LENGTH) BEGIN
+          // Skip palette entries 0 (transparent green) and 1 (shadow)
+          FOR (pi = 2; pi < 256; ++pi) BEGIN
+            SET po = pal_off + (pi * 4)
+            READ_BYTE po       b_val
+            READ_BYTE (po + 1) g_val
+            READ_BYTE (po + 2) r_val
+            // Convert unsigned 0..255
+            SET b_u = (b_val < 0) ? (b_val + 256) : b_val
+            SET g_u = (g_val < 0) ? (g_val + 256) : g_val
+            SET r_u = (r_val < 0) ? (r_val + 256) : r_val
+            // Deep ocean/sapphire blue recolour from fire orange/yellow/red
+            SET new_b = (r_u > b_u) ? r_u : b_u
+            SET new_g = (g_u * 2 + r_u) / 4
+            SET new_r = b_u / 2
+            PATCH_IF (new_b > 255) BEGIN SET new_b = 255 END
+            PATCH_IF (new_g > 255) BEGIN SET new_g = 255 END
+            PATCH_IF (new_r > 255) BEGIN SET new_r = 255 END
+            WRITE_BYTE po       new_b
+            WRITE_BYTE (po + 1) new_g
+            WRITE_BYTE (po + 2) new_r
+          END
+        END
+      END
+    END
+    PATCH_IF (was_compressed = 1) BEGIN
+      SET raw_len = BUFFER_LENGTH
+      COMPRESS_REPLACE_FILE 0 raw_len 6
+      INSERT_BYTES 0 12
+      WRITE_ASCII  0 ~BAMCV1  ~ #8
+      WRITE_LONG   8 raw_len
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_clone_elem_ini
+  STR_VAR
+    src_ini    = ~~
+    dst_ini    = ~~
+    new_resref = ~~
+    anim_sym   = ~~
+    water_mode = ~0~
+BEGIN
+  ACTION_IF (FILE_EXISTS_IN_GAME ~%src_ini%.INI~) BEGIN
+    COPY_EXISTING ~%src_ini%.INI~ ~override/%dst_ini%.INI~
+      REPLACE_TEXTUALLY ~^personal_space=[0-9]+~ ~personal_space=3~
+      PATCH_IF !(~%new_resref%~ STR_EQ ~~) BEGIN
+        REPLACE_TEXTUALLY ~^resref=[A-Za-z0-9_]+~ ~resref=%new_resref%~
+      END
+      PATCH_IF (~%water_mode%~ STR_EQ ~1~) BEGIN
+        REPLACE_TEXTUALLY ~^light_source=1~ ~light_source=0~
+        REPLACE_TEXTUALLY ~^color_blood=[0-9]+~ ~color_blood=31~
+      END
+  END ELSE BEGIN
+    OUTER_SPRINT fallback_rr ~%new_resref%~
+    ACTION_IF (~%fallback_rr%~ STR_EQ ~~) BEGIN
+      OUTER_SPRINT fallback_rr ~MFIS~
+    END
+    OUTER_SPRINT min_ini ~// %anim_sym%%WNL%[general]%WNL%animation_type=7000%WNL%move_scale=8%WNL%ellipse=16%WNL%color_blood=50%WNL%color_chunks=255%WNL%sound_freq=8%WNL%personal_space=3%WNL%cast_frame=4%WNL%[monster]%WNL%can_lie_down=1%WNL%resref=%fallback_rr%%WNL%split_bams=1%WNL%~
+    COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/%dst_ini%.INI~
+      DELETE_BYTES 0 BUFFER_LENGTH
+      INSERT_BYTES 0 (STRING_LENGTH ~%min_ini%~)
+      WRITE_ASCIIE 0 ~%min_ini%~
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_install_elementalist BEGIN
+  LAF cbk_install_res_elementalist END
+  LAF cbk_ensure_resource_symbols
+    RET
+      cbk_state_CBK_ELM_FIRE = cbk_state_CBK_ELM_FIRE
+      cbk_state_CBK_ELM_WATER = cbk_state_CBK_ELM_WATER
+      cbk_state_CBK_ELM_AIR = cbk_state_CBK_ELM_AIR
+      cbk_state_CBK_ELM_EARTH = cbk_state_CBK_ELM_EARTH
+      cbk_state_CBK_ELM_HLA = cbk_state_CBK_ELM_HLA
+      cbk_state_CBK_ELM_RESOLVED = cbk_state_CBK_ELM_RESOLVED
+  END
+
+  // 1. Stamp names and descriptions on Natural Weapons, Form Spells, and Primal Penetration HLA
+  ACTION_FOR_EACH t IN ~1~ ~2~ ~3~ ~4~ BEGIN
+    COPY_EXISTING ~CBKEF1%t%.ITM~ ~override~ SAY NAME1 @2203 SAY NAME2 @2203
+    COPY_EXISTING ~CBKEF2%t%.ITM~ ~override~ SAY NAME1 @2205 SAY NAME2 @2205
+    COPY_EXISTING ~CBKEF3%t%.ITM~ ~override~ SAY NAME1 @2207 SAY NAME2 @2207
+    COPY_EXISTING ~CBKEF4%t%.ITM~ ~override~ SAY NAME1 @2209 SAY NAME2 @2209
+  END
+
+  COPY_EXISTING ~CBKELF1.SPL~ ~override~ SAY NAME1 @2203 SAY UNIDENTIFIED_DESC @2204
+  COPY_EXISTING ~CBKELF2.SPL~ ~override~ SAY NAME1 @2205 SAY UNIDENTIFIED_DESC @2206
+  COPY_EXISTING ~CBKELF3.SPL~ ~override~ SAY NAME1 @2207 SAY UNIDENTIFIED_DESC @2208
+  COPY_EXISTING ~CBKELF4.SPL~ ~override~ SAY NAME1 @2209 SAY UNIDENTIFIED_DESC @2210
+  COPY_EXISTING ~CBKELF0.SPL~ ~override~ SAY NAME1 @2211 SAY UNIDENTIFIED_DESC @2212
+  COPY_EXISTING ~CBKELHLA.SPL~ ~override~ SAY NAME1 @2213 SAY UNIDENTIFIED_DESC @2214
+
+  // 2. Curated Bonus Elemental Priest Spellbook (Levels 1-7)
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 1 fallback_name_tra = 2220 fallback_desc_tra = 2221 STR_VAR dst = ~CBKEL11~ ids_sym = ~WIZARD_BURNING_HANDS~          direct_res = ~SPWI103~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 1 fallback_name_tra = 2222 fallback_desc_tra = 2223 STR_VAR dst = ~CBKEL12~ ids_sym = ~WIZARD_SHOCKING_GRASP~         direct_res = ~SPWI115~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 2 fallback_name_tra = 2224 fallback_desc_tra = 2225 STR_VAR dst = ~CBKEL21~ ids_sym = ~WIZARD_AGANNAZAR_SCORCHER~     direct_res = ~SPWI217~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 2 fallback_name_tra = 2226 fallback_desc_tra = 2227 STR_VAR dst = ~CBKEL22~ ids_sym = ~WIZARD_MELF_ACID_ARROW~        direct_res = ~SPWI211~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 2 fallback_name_tra = 2228 fallback_desc_tra = 2229 STR_VAR dst = ~CBKEL23~ ids_sym = ~WIZARD_SNILLOCS_SNOWBALL_SWARM~ direct_res = ~SPWI204~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 3 fallback_name_tra = 2230 fallback_desc_tra = 2231 STR_VAR dst = ~CBKEL31~ ids_sym = ~WIZARD_FIREBALL~               direct_res = ~SPWI304~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 3 fallback_name_tra = 2232 fallback_desc_tra = 2233 STR_VAR dst = ~CBKEL32~ ids_sym = ~WIZARD_LIGHTNING_BOLT~         direct_res = ~SPWI308~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 3 fallback_name_tra = 2234 fallback_desc_tra = 2235 STR_VAR dst = ~CBKEL33~ ids_sym = ~WIZARD_ICELANCE~               direct_res = ~SPWI327~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 4 fallback_name_tra = 2236 fallback_desc_tra = 2237 STR_VAR dst = ~CBKEL41~ ids_sym = ~WIZARD_ICE_STORM~              direct_res = ~SPWI404~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 4 fallback_name_tra = 2238 fallback_desc_tra = 2239 STR_VAR dst = ~CBKEL42~ ids_sym = ~WIZARD_VITRIOLIC_SPHERE~       direct_res = ~SPWI432~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 4 fallback_name_tra = 2240 fallback_desc_tra = 2241 STR_VAR dst = ~CBKEL43~ ids_sym = ~WIZARD_FIRE_SHIELD_RED~        direct_res = ~SPWI418~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 5 fallback_name_tra = 2242 fallback_desc_tra = 2243 STR_VAR dst = ~CBKEL51~ ids_sym = ~WIZARD_CONE_OF_COLD~           direct_res = ~SPWI503~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 5 fallback_name_tra = 2244 fallback_desc_tra = 2245 STR_VAR dst = ~CBKEL52~ ids_sym = ~WIZARD_SUN_FIRE~               direct_res = ~SPWI523~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 6 fallback_name_tra = 2246 fallback_desc_tra = 2247 STR_VAR dst = ~CBKEL61~ ids_sym = ~WIZARD_CHAIN_LIGHTNING~        direct_res = ~SPWI615~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 6 fallback_name_tra = 2248 fallback_desc_tra = 2249 STR_VAR dst = ~CBKEL62~ ids_sym = ~WIZARD_OTILUKES_FREEZING_SPHERE~ direct_res = ~~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 7 fallback_name_tra = 2250 fallback_desc_tra = 2251 STR_VAR dst = ~CBKEL71~ ids_sym = ~WIZARD_DELAYED_BLAST_FIREBALL~ direct_res = ~SPWI712~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 7 fallback_name_tra = 2252 fallback_desc_tra = 2253 STR_VAR dst = ~CBKEL72~ ids_sym = ~WIZARD_ACID_STORM~             direct_res = ~SPWI724~ END
+  LAF cbk_setup_elem_spell INT_VAR priest_lv = 7 fallback_name_tra = 2254 fallback_desc_tra = 2255 STR_VAR dst = ~CBKEL73~ ids_sym = ~WIZARD_INCENDIARY_CLOUD~       direct_res = ~SPWI810~ END
+
+  OUTER_SET has_druid_icelance = 0
+  ACTION_IF (IDS_OF_SYMBOL (~spell~ ~CLERIC_ICELANCE~) >= 0) OR (IDS_OF_SYMBOL (~spell~ ~CLERIC_CBMAGIC_ICELANCE~) >= 0) BEGIN
+    OUTER_SET has_druid_icelance = 1
+  END
+
+  // 3. Water Form Tidal Healing fast-cure clones (Cast Speed 1, Range 30, +25% healing; NEVER Regenerate!)
+  OUTER_SPRINT CBK_ELM_EXTRA_CURES ~~
+  LAF cbk_spell_resref_from_ids STR_VAR sym = ~CLERIC_CURE_MODERATE_WOUNDS~ RET cmw_res = res END
+  ACTION_IF (~%cmw_res%~ STR_EQ ~~ AND FILE_EXISTS_IN_GAME ~SPPR215.SPL~) BEGIN
+    OUTER_SPRINT cmw_res ~SPPR215~
+  END
+  ACTION_IF !(~%cmw_res%~ STR_EQ ~~) BEGIN
+    OUTER_SPRINT CBK_ELM_EXTRA_CURES ~state.cureToTidal["%cmw_res%"] = "CBKWTH2"%WNL%~
+  END
+
+  ACTION_CLEAR_ARRAY cbk_cure_clones
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY cbk_cure_clones BEGIN
+    ~CBKWTH1~ => ~SPPR103~
+    ~CBKWTH3~ => ~SPPR315~
+    ~CBKWTH4~ => ~SPPR401~
+    ~CBKWTH5~ => ~SPPR502~
+    ~CBKWTH6~ => ~SPPR514~
+  END
+  ACTION_IF !(~%cmw_res%~ STR_EQ ~~) BEGIN
+    OUTER_SPRINT $cbk_cure_clones(~CBKWTH2~) ~%cmw_res%~
+  END
+
+  ACTION_PHP_EACH cbk_cure_clones AS cdst => csrc BEGIN
+    ACTION_IF (FILE_EXISTS_IN_GAME ~%csrc%.SPL~) BEGIN
+      COPY_EXISTING ~%csrc%.SPL~ ~override/%cdst%.SPL~
+        PATCH_IF (SOURCE_SIZE >= 0x72) BEGIN
+          READ_LONG  0x64 ab_off
+          READ_SHORT 0x68 ab_num
+          READ_LONG  0x6a fx_off
+          READ_SHORT 0x70 eq_cnt
+          SET total_fx = eq_cnt
+          FOR (a = 0; a < ab_num; ++a) BEGIN
+            SET ao = ab_off + (a * 0x28)
+            PATCH_IF (ao + 0x28 <= SOURCE_SIZE) BEGIN
+              WRITE_SHORT (ao + 0x0e) 30
+              WRITE_SHORT (ao + 0x12) 1
+              READ_SHORT  (ao + 0x1e) fcnt
+              READ_SHORT  (ao + 0x20) fidx
+              PATCH_IF (fidx + fcnt > total_fx) BEGIN
+                SET total_fx = fidx + fcnt
+              END
+            END
+          END
+          FOR (f = 0; f < total_fx; ++f) BEGIN
+            SET fo = fx_off + (f * 0x30)
+            PATCH_IF (fo + 0x30 <= SOURCE_SIZE) BEGIN
+              READ_SHORT fo op
+              READ_LONG  (fo + 0x04) p1
+              READ_LONG  (fo + 0x08) p2
+              READ_LONG  (fo + 0x1c) dice
+              READ_LONG  (fo + 0x20) sides
+              PATCH_IF (op = 17 AND p2 = 0) BEGIN
+                SET extra_d = (dice > 0 AND sides > 0) ? ((dice * (sides + 1) + 4) / 8) : 0
+                SET new_p1  = ((p1 * 5 + 2) / 4) + extra_d
+                WRITE_LONG (fo + 0x04) new_p1
+              END
+              PATCH_IF (op = 206 OR op = 318 OR op = 321 OR op = 324) BEGIN
+                READ_ASCII (fo + 0x14) rref (8) NULL
+                PATCH_IF (~%rref%~ STR_EQ ~%csrc%~) BEGIN
+                  WRITE_ASCIIE (fo + 0x14) ~%cdst%~ #8
+                END
+              END
+            END
+          END
+        END
+    END
+  END
+
+  // 4. Elemental Form Animation Slots (0x7330..0x7337 with personal_space=3 + Water BAM recolour)
+  ACTION_IF (FILE_EXISTS_IN_GAME ~ANIMATE.IDS~) BEGIN
+    APPEND ~ANIMATE.IDS~ ~0x7330 CBK_ELEMENTAL_FIRE_SMALL~  UNLESS ~^0x7330~
+    APPEND ~ANIMATE.IDS~ ~0x7331 CBK_ELEMENTAL_FIRE_LARGE~  UNLESS ~^0x7331~
+    APPEND ~ANIMATE.IDS~ ~0x7332 CBK_ELEMENTAL_WATER_SMALL~ UNLESS ~^0x7332~
+    APPEND ~ANIMATE.IDS~ ~0x7333 CBK_ELEMENTAL_WATER_LARGE~ UNLESS ~^0x7333~
+    APPEND ~ANIMATE.IDS~ ~0x7334 CBK_ELEMENTAL_AIR_SMALL~   UNLESS ~^0x7334~
+    APPEND ~ANIMATE.IDS~ ~0x7335 CBK_ELEMENTAL_AIR_LARGE~   UNLESS ~^0x7335~
+    APPEND ~ANIMATE.IDS~ ~0x7336 CBK_ELEMENTAL_EARTH_SMALL~ UNLESS ~^0x7336~
+    APPEND ~ANIMATE.IDS~ ~0x7337 CBK_ELEMENTAL_EARTH_LARGE~ UNLESS ~^0x7337~
+  END
+
+  LAF cbk_clone_elem_ini STR_VAR src_ini = ~7311~ dst_ini = ~7330~ new_resref = ~~ anim_sym = ~CBK_ELEMENTAL_FIRE_SMALL~  END
+  LAF cbk_clone_elem_ini STR_VAR src_ini = ~7310~ dst_ini = ~7331~ new_resref = ~~ anim_sym = ~CBK_ELEMENTAL_FIRE_LARGE~  END
+  LAF cbk_clone_elem_ini STR_VAR src_ini = ~7321~ dst_ini = ~7334~ new_resref = ~~ anim_sym = ~CBK_ELEMENTAL_AIR_SMALL~   END
+  LAF cbk_clone_elem_ini STR_VAR src_ini = ~7320~ dst_ini = ~7335~ new_resref = ~~ anim_sym = ~CBK_ELEMENTAL_AIR_LARGE~   END
+  LAF cbk_clone_elem_ini STR_VAR src_ini = ~7301~ dst_ini = ~7336~ new_resref = ~~ anim_sym = ~CBK_ELEMENTAL_EARTH_SMALL~ END
+  LAF cbk_clone_elem_ini STR_VAR src_ini = ~7300~ dst_ini = ~7337~ new_resref = ~~ anim_sym = ~CBK_ELEMENTAL_EARTH_LARGE~ END
+
+  ACTION_IF (FILE_EXISTS_IN_GAME ~MFISG1.BAM~) BEGIN
+    ACTION_FOR_EACH sfx IN ~G1~ ~G11~ ~G12~ ~G13~ ~G14~ ~G15~ ~G2~ ~G21~ ~G22~ ~G23~ ~G24~ ~G25~ ~G26~ ~INV~ BEGIN
+      ACTION_IF (FILE_EXISTS_IN_GAME ~MFIS%sfx%.BAM~) BEGIN
+        COPY_EXISTING ~MFIS%sfx%.BAM~ ~override/MWAS%sfx%.BAM~
+          LPF cbk_recolor_fire_bam_to_water END
+      END
+      ACTION_IF (FILE_EXISTS_IN_GAME ~MFIE%sfx%.BAM~) BEGIN
+        COPY_EXISTING ~MFIE%sfx%.BAM~ ~override/MWAE%sfx%.BAM~
+          LPF cbk_recolor_fire_bam_to_water END
+      END
+    END
+    LAF cbk_clone_elem_ini STR_VAR src_ini = ~7311~ dst_ini = ~7332~ new_resref = ~MWAS~ anim_sym = ~CBK_ELEMENTAL_WATER_SMALL~ water_mode = ~1~ END
+    LAF cbk_clone_elem_ini STR_VAR src_ini = ~7310~ dst_ini = ~7333~ new_resref = ~MWAE~ anim_sym = ~CBK_ELEMENTAL_WATER_LARGE~ water_mode = ~1~ END
+  END ELSE BEGIN
+    // Fallback cleanly to Water Weird (0xEF10) when Fire Elemental BAMs are absent (e.g. minimal synthetic fakegame)
+    LAF cbk_clone_elem_ini STR_VAR src_ini = ~EF10~ dst_ini = ~7332~ new_resref = ~MWWE~ anim_sym = ~CBK_ELEMENTAL_WATER_SMALL~ END
+    LAF cbk_clone_elem_ini STR_VAR src_ini = ~EF10~ dst_ini = ~7333~ new_resref = ~MWWE~ anim_sym = ~CBK_ELEMENTAL_WATER_LARGE~ END
+    COPY_EXISTING ~CBKELF2.SPL~ ~override~
+      LPF ALTER_EFFECT INT_VAR match_opcode = 53 silent = 1 parameter1 = 0xEF10 END
+  END
+
+  // 5. Build CBKEL0.2DA CLAB
+  //    - L1: AP_CBKEL00 + bonus Priest spells (CBKEL11..73; CBKEL33 omitted if Druid Icelance already installed)
+  //    - L1..40: AP_CBKELRM strips vanilla animal shapeshifts & forbidden animal/insect spells
+  //    - L3: 2x GA_CBKELF1..4 (2/day); L7: +1 (3/day); L10: +1 (4/day); L12: +1 (5/day); L15: 0 extra (stays 5/day!)
+  OUTER_SPRINT el_hdr ~2DA V1.0%WNL%****%WNL%           ~
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT el_hdr ~%el_hdr% %lv%~
+  END
+
+  // Row 1: AP_CBKELRM across levels 1..40
+  OUTER_SPRINT el_rows ~ABILITY1   ~
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    ACTION_IF (lv <= 40) BEGIN
+      OUTER_SPRINT el_rows ~%el_rows% AP_CBKELRM~
+    END ELSE BEGIN
+      OUTER_SPRINT el_rows ~%el_rows% ****~
+    END
+  END
+  OUTER_SPRINT el_rows ~%el_rows%%WNL%~
+
+  // Rows 2..9: Form charges (2 at L3, +1 at L7, +1 at L10, +1 at L12; 0 at L15!)
+  OUTER_SET rnum = 1
+  ACTION_FOR_EACH fidx IN ~1~ ~2~ ~3~ ~4~ BEGIN
+    OUTER_SET rnum += 1
+    OUTER_SPRINT row_a ~ABILITY%rnum%   ~
+    OUTER_SET rnum += 1
+    OUTER_SPRINT row_b ~ABILITY%rnum%   ~
+    OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+      ACTION_IF (lv = 3 OR lv = 7 OR lv = 10 OR lv = 12) BEGIN
+        OUTER_SPRINT row_a ~%row_a% GA_CBKELF%fidx%~
+      END ELSE BEGIN
+        OUTER_SPRINT row_a ~%row_a% ****~
+      END
+      ACTION_IF (lv = 3) BEGIN
+        OUTER_SPRINT row_b ~%row_b% GA_CBKELF%fidx%~
+      END ELSE BEGIN
+        OUTER_SPRINT row_b ~%row_b% ****~
+      END
+    END
+    OUTER_SPRINT el_rows ~%el_rows%%row_a%%WNL%%row_b%%WNL%~
+  END
+
+  // Level 1 passive + bonus Priest spells rows
+  ACTION_CLEAR_ARRAY cbk_l1_grants
+  OUTER_SPRINT $cbk_l1_grants(~0~) ~AP_CBKEL00~
+  OUTER_SPRINT $cbk_l1_grants(~1~) ~GA_CBKEL11~
+  OUTER_SPRINT $cbk_l1_grants(~2~) ~GA_CBKEL12~
+  OUTER_SPRINT $cbk_l1_grants(~3~) ~GA_CBKEL21~
+  OUTER_SPRINT $cbk_l1_grants(~4~) ~GA_CBKEL22~
+  OUTER_SPRINT $cbk_l1_grants(~5~) ~GA_CBKEL23~
+  OUTER_SPRINT $cbk_l1_grants(~6~) ~GA_CBKEL31~
+  OUTER_SPRINT $cbk_l1_grants(~7~) ~GA_CBKEL32~
+  OUTER_SET g_idx = 8
+  ACTION_IF (has_druid_icelance = 0) BEGIN
+    OUTER_SPRINT $cbk_l1_grants(~%g_idx%~) ~GA_CBKEL33~
+    OUTER_SET g_idx += 1
+  END
+  ACTION_FOR_EACH sp IN ~CBKEL41~ ~CBKEL42~ ~CBKEL43~ ~CBKEL51~ ~CBKEL52~ ~CBKEL61~ ~CBKEL62~ ~CBKEL71~ ~CBKEL72~ ~CBKEL73~ BEGIN
+    OUTER_SPRINT $cbk_l1_grants(~%g_idx%~) ~GA_%sp%~
+    OUTER_SET g_idx += 1
+  END
+
+  OUTER_SPRINT tail_stars ~~
+  OUTER_FOR (lv = 2; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT tail_stars ~%tail_stars% ****~
+  END
+  ACTION_PHP_EACH cbk_l1_grants AS gk => g_entry BEGIN
+    OUTER_SET rnum += 1
+    OUTER_SPRINT el_rows ~%el_rows%ABILITY%rnum%    %g_entry%%tail_stars%%WNL%~
+  END
+
+  OUTER_SPRINT el_clab ~%el_hdr%%WNL%%el_rows%~
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKEL0.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    INSERT_BYTES 0 (STRING_LENGTH ~%el_clab%~)
+    WRITE_ASCIIE 0 ~%el_clab%~
+    PRETTY_PRINT_2DA
+
+  // 6. Build LUEL0.2DA HLA table (replace vanilla SPPR731/SPPR732 Elemental Transformation with AP_CBKELHLA)
+  ACTION_IF (FILE_EXISTS_IN_GAME ~LUDR0.2DA~) BEGIN
+    COPY_EXISTING ~LUDR0.2DA~ ~override/LUEL0.2DA~
+      COUNT_2DA_COLS lu_cols
+      READ_2DA_ENTRIES_NOW lu_rows lu_cols
+      SET replaced_hla = 0
+      FOR (r = 0; r < lu_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER lu_rows r 1 ab_cell
+        TO_UPPER ab_cell
+        PATCH_IF (~%ab_cell%~ STR_EQ ~GA_SPPR731~ OR ~%ab_cell%~ STR_EQ ~AP_SPPR731~) BEGIN
+          SET_2DA_ENTRY_LATER lu_out r 1 ~AP_CBKELHLA~
+          SET_2DA_ENTRY_LATER lu_out r 2 ~SPPR731C~
+          SET_2DA_ENTRY_LATER lu_out r 4 ~1~
+          SET_2DA_ENTRY_LATER lu_out r 5 ~99~
+          SET_2DA_ENTRY_LATER lu_out r 6 ~1~
+          SET replaced_hla = 1
+        END ELSE PATCH_IF (~%ab_cell%~ STR_EQ ~GA_SPPR732~ OR ~%ab_cell%~ STR_EQ ~AP_SPPR732~) BEGIN
+          FOR (c = 1; c < lu_cols; ++c) BEGIN
+            SET_2DA_ENTRY_LATER lu_out r c ~*~
+          END
+        END
+      END
+      PATCH_IF (replaced_hla = 0) BEGIN
+        FOR (r = 0; r < lu_rows; ++r) BEGIN
+          PATCH_IF (replaced_hla = 0) BEGIN
+            READ_2DA_ENTRY_FORMER lu_rows r 1 ab_cell
+            PATCH_IF (~%ab_cell%~ STR_EQ ~*~) BEGIN
+              SET_2DA_ENTRY_LATER lu_out r 1 ~AP_CBKELHLA~
+              SET_2DA_ENTRY_LATER lu_out r 2 ~SPPR731C~
+              SET_2DA_ENTRY_LATER lu_out r 4 ~1~
+              SET_2DA_ENTRY_LATER lu_out r 5 ~99~
+              SET_2DA_ENTRY_LATER lu_out r 6 ~1~
+              SET replaced_hla = 1
+            END
+          END
+        END
+      END
+      SET_2DA_ENTRIES_NOW lu_out lu_cols
+      PRETTY_PRINT_2DA
+  END ELSE BEGIN
+    OUTER_SPRINT luel_fallback ~2DA V1.0%WNL%*%WNL%        ABILITY       ICON        STRREF    MIN_LEV   MAX_LEVEL  NUM_ALLOWED  PREREQUISITE EXCLUDED_BY   ALIGNMENT_RESTRICT%WNL%1       AP_CBKELHLA   SPPR731C    *         1         99         1            *            *             *%WNL%~
+    COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/LUEL0.2DA~
+      DELETE_BYTES 0 BUFFER_LENGTH
+      INSERT_BYTES 0 (STRING_LENGTH ~%luel_fallback%~)
+      WRITE_ASCIIE 0 ~%luel_fallback%~
+      PRETTY_PRINT_2DA
+  END
+
+  // 7. Register CBK_ELEMENTALIST (class 11 = DRUID, unusable_mask = 0x00004000, NO 0x10000000 Shapeshifter bit!)
+  OUTER_SPRINT el_align ~0 0 0 0 1 0 0 0 0~
+  ACTION_IF (FILE_EXISTS_IN_GAME ~ALIGNMNT.2DA~) BEGIN
+    COPY_EXISTING ~ALIGNMNT.2DA~ ~override~
+      COUNT_2DA_COLS al_cols
+      READ_2DA_ENTRIES_NOW al_rows al_cols
+      FOR (r = 0; r < al_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER al_rows r 0 rn
+        PATCH_IF (~%rn%~ STR_EQ ~DRUID~) BEGIN
+          SPRINT tmp_al ~~
+          FOR (c = 1; c < al_cols; ++c) BEGIN
+            READ_2DA_ENTRY_FORMER al_rows r c cv
+            PATCH_IF (c = 1) BEGIN SPRINT tmp_al ~%cv%~ END ELSE BEGIN SPRINT tmp_al ~%tmp_al% %cv%~ END
+          END
+          SPRINT el_align ~%tmp_al%~
+        END
+      END
+    BUT_ONLY
+  END
+
+  OUTER_SET el_lower = RESOLVE_STR_REF (@2200)
+  OUTER_SET el_mixed = RESOLVE_STR_REF (@2201)
+  OUTER_SET el_help  = RESOLVE_STR_REF (@2202)
+
+  LAF cbk_register_kit
+    INT_VAR
+      class_id      = 11
+      unusable_mask = 0x00004000
+      lower_ref     = el_lower
+      mixed_ref     = el_mixed
+      help_ref      = el_help
+    STR_VAR
+      kit_name       = ~CBK_ELEMENTALIST~
+      class_label    = ~DRUID~
+      clone_kit      = ~TOTEMIC_DRUID~
+      clone_prof_col = ~DRUID~
+      clab           = ~CBKEL0~
+      lua_abbr       = ~EL0~
+      hpclass        = ~HPPRS~
+      abclasrq_row   = ~0 0 0 0 12 15~
+      alignmnt_row   = EVAL ~%el_align%~
+      dualclas_row   = ~0 1 0 0 0 0~
+      race_policy    = ~DRUID_RACES~
+    RET
+      el_kit_num     = kit_num
+      el_kit_ids     = kit_ids
+      el_kit_ids_hex = kit_ids_hex
+  END
+
+  // 8. CBKWPN.2DA: forbid non-robe body armor (SUBTYPE 1 DENY) and allow robes (SUBTYPE 6 ALLOW)
+  OUTER_PATCH ~~ BEGIN SPRINTF el_dec ~%d~ (el_kit_ids) END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKEL_NO_ARMOR~ row_line = EVAL ~CBKEL_NO_ARMOR * %el_dec% SUBTYPE 1 DENY~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKEL_ROBES_OK~ row_line = EVAL ~CBKEL_ROBES_OK * %el_dec% SUBTYPE 6 ALLOW~ END
+
+  // 9. Install M_CBKELM.lua with resolved kit_ids and spell states
+  OUTER_SET CBK_ELM_KIT_IDS        = el_kit_ids
+  OUTER_SET CBK_STATE_ELM_FIRE     = cbk_state_CBK_ELM_FIRE
+  OUTER_SET CBK_STATE_ELM_WATER    = cbk_state_CBK_ELM_WATER
+  OUTER_SET CBK_STATE_ELM_AIR      = cbk_state_CBK_ELM_AIR
+  OUTER_SET CBK_STATE_ELM_EARTH    = cbk_state_CBK_ELM_EARTH
+  OUTER_SET CBK_STATE_ELM_HLA      = cbk_state_CBK_ELM_HLA
+  OUTER_SET CBK_STATE_ELM_RESOLVED = cbk_state_CBK_ELM_RESOLVED
+  COPY ~%MOD_FOLDER%/lua/M_CBKELM.lua~ ~override/M_CBKELM.lua~
+    EVALUATE_BUFFER
+END

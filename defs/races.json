@@ -1,0 +1,141 @@
+{
+  "texts": {
+    "SECOND_WIND": "Second Wind"
+  },
+  "states": [
+    "CBK_RAC_RESOLVED"
+  ],
+  "splprots": {},
+  "resources": [
+    {
+      "file": "CBKSWND.SPL",
+      "spell_type": 4,
+      "flags": 0,
+      "school": 0,
+      "sectype": 0,
+      "level": 1,
+      "icon": "",
+      "casting_effects": [],
+      "abilities": [
+        {
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 93,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 1,
+              "timing": 1,
+              "dispel": 0,
+              "duration": 0,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            },
+            {
+              "opcode": 161,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 0,
+              "duration": 0,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            },
+            {
+              "opcode": 240,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 36,
+              "timing": 1,
+              "dispel": 0,
+              "duration": 0,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            },
+            {
+              "opcode": 240,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 39,
+              "timing": 1,
+              "dispel": 0,
+              "duration": 0,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            },
+            {
+              "opcode": 139,
+              "target": 1,
+              "power": 0,
+              "p1": {
+                "text": "SECOND_WIND"
+              },
+              "p2": 0,
+              "timing": 1,
+              "dispel": 0,
+              "duration": 0,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            },
+            {
+              "opcode": 215,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 1,
+              "timing": 1,
+              "dispel": 0,
+              "duration": 0,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "SPHEALIN",
+              "dice": 0,
+              "sides": 0,
+              "save": 0,
+              "bonus": 0,
+              "special": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

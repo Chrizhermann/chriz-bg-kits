@@ -80,6 +80,7 @@ DEFINE_ACTION_FUNCTION cbk_install_bloodrager BEGIN
       lua_abbr = ~Cbk~
       abclasrq_row = ~15 0 15 0 0 0~
       dualclas_row = ~0 0 1 1 0 0~
+      race_policy  = ~NO_HALFLING_HOBGOBLIN~
     RET br_ids = kit_ids br_prof = kit_prof br_data_col = kit_data_col
   END
 
