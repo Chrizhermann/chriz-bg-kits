@@ -1,4 +1,4 @@
-"""Comprehensive verification suite for chriz-bg-kits v0.2.0."""
+"""Comprehensive verification suite for chriz-bg-kits v0.3.0."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ STEAM_EXE = pathlib.Path(
     r"C:\Program Files (x86)\Steam\steamapps\common\Baldur's Gate II Enhanced Edition\Baldur.exe"
 )
 
-ALL_COMPONENTS_110 = ["100", "110", "200", "210", "220", "300", "310", "320"]
+ALL_COMPONENTS_110 = ["100", "110", "200", "201", "202", "203", "204", "205", "210", "220", "300", "310", "320"]
 
 
 def _sha256_tree(root: pathlib.Path, ignore_prefixes: tuple[str, ...]) -> dict[str, str]:
@@ -96,7 +96,7 @@ def test_01_build_resources_check() -> None:
         timeout=60,
     )
     assert res.returncode == 0, f"build_resources.py --check failed:\n{res.stdout}\n{res.stderr}"
-    assert "101 files" in res.stdout
+    assert "137 files" in res.stdout
 
 
 # ---------------------------------------------------------------------------
@@ -132,6 +132,7 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
         "M_CBKWPN.lua", "M_CBKKP.lua", "M_CBKAPR.lua", "M_CBKSP.lua",
         "M_CBKSTR.lua", "M_CBKDCN.lua", "M_CBKCMB.lua",
         "M_CBKRAC.lua", "M_CBKSF.lua", "M_CBKELM.lua",
+        "M_CBKSHR.lua", "M_CBKILM.lua",
     ):
         text = (ovr / lua).read_text(encoding="utf-8")
         assert not re.search(r"%[A-Z0-9_]+%", text), f"Unresolved %VAR% in {lua}"
@@ -142,6 +143,7 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
         "CBK_RAC_RESOLVED", "CBK_STONEFIRE_ARMOR",
         "CBK_ELM_FIRE", "CBK_ELM_WATER", "CBK_ELM_AIR", "CBK_ELM_EARTH",
         "CBK_ELM_HLA", "CBK_ELM_RESOLVED",
+        "CBM_BONUS_TYPED", "CBK_SHAR_WEAVE", "CBK_ILMATER_ENDURE", "CBK_ILM_RESOLVED",
     ):
         assert sym in splstate_text
 
@@ -226,11 +228,141 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
         assert {"0", "7", "8"}.issubset(kr_hb) and "9" not in kr_hb
         assert rc_rows["DRUID"][hb_col_idx] == "0"
 
-    # Comp 200: Tempus
+    # Comp 200: Tempus + Multiclass F/C & C/R
     ohtempus = (ovr / "OHTEMPUS.2DA").read_text(encoding="utf-8")
     assert "AP_CDHLYSYM" in ohtempus and "AP_CBKTMP1" in ohtempus and "AP_CBKTMDV" in ohtempus
     branwe = parse_cre_v1((ovr / "BRANWE.CRE").read_bytes())
     assert branwe["kit_ids"] == 0x4029 and branwe["profs"].get(92, 0) >= 1
+
+    pr01_hdr, pr01_map = _read_2da_header_and_map(ovr / "CLABPR01.2DA")
+    assert len(pr01_hdr) == 50 and "CBK_MC_P" in pr01_map
+    assert pr01_map["CBK_MC_P"][0] == "AP_CBKMCP01" and pr01_map["CBK_MC_P"][49] == "AP_CBKMCP50"
+    mcp01_fx = parse_spl((ovr / "CBKMCP01.SPL").read_bytes())["abilities"][0]["effects"]
+    tempus_mc_fx = [fx for fx in mcp01_fx if fx["opcode"] == 177 and fx["p1"] == 0x4029 and fx["p2"] == 9]
+    assert len(tempus_mc_fx) == 4
+    for fx in tempus_mc_fx:
+        ed = read_eff_v2((ovr / f"{fx['resource']}.EFF").read_bytes())
+        assert ed["parent_type"] == 1 and ed["parent_resource"] == fx["resource"]
+
+    _, kt_all = _read_2da_header_and_map(ovr / "KITTABLE.2DA")
+    tempus_num = kl_by_name["OHTEMPUS"][0]
+    for r_i, tbl in enumerate(kt_all["FIGHTER_CLERIC"]):
+        kfc = [r[1] for r in _read_2da_rows(ovr / f"{tbl}.2DA")]
+        assert kfc[0] == "0" and tempus_num in kfc, f"{tbl}: {kfc}"
+    for r_name in ("HUMAN", "ELF", "HALF_ELF", "HALFLING"):
+        tbl = kt_all["CLERIC_RANGER"][rc_hdr.index(r_name)]
+        kcr = [r[1] for r in _read_2da_rows(ovr / f"{tbl}.2DA")]
+        assert kcr[0] == "0" and tempus_num in kcr, f"{tbl}: {kcr}"
+
+    # Comp 201: Vanilla Deity Clerics (Lathander, Helm, Talos, Tyr)
+    for clab_f, expected_toks in [
+        ("CLABPR04.2DA", ("AP_CBKLPLA", "GA_SPCL741", "GA_SPCL742", "AP_CDHLYSYM")),
+        ("CLABPR03.2DA", ("AP_CBKLPHM", "GA_SPCL731", "GA_SPCL732", "AP_CDHLYSYM")),
+        ("CLABPR02.2DA", ("AP_CBKLPTL", "AP_CBKTAL0", "GA_SPCL721", "GA_SPCL722", "AP_CDHLYSYM")),
+        ("OHTYR.2DA", ("AP_CBKLPTY", "GA_OHTYR1", "GA_OHTYR2", "AP_CBKHSYTY")),
+    ]:
+        ctext = (ovr / clab_f).read_text(encoding="utf-8")
+        for tok in expected_toks:
+            assert tok in ctext, f"{tok} missing in {clab_f}"
+        assert "SPPR301" not in ctext  # Animate Dead never stripped
+    spcl741 = parse_spl((ovr / "SPCL741.SPL").read_bytes())
+    assert len(spcl741["abilities"]) == 20
+    ab0_741 = spcl741["abilities"][0]["effects"]
+    assert ab0_741[0]["opcode"] == 321 and ab0_741[0]["resource"] == "SPCL741"
+    assert any(fx["opcode"] == 1 and fx["resource"] == "CBTAPR" and fx["special"] == 1 for fx in ab0_741)
+    assert any(fx["opcode"] == 328 and fx["resource"] == "CBTSTATE" and fx["special"] == 1 for fx in ab0_741)
+    sw1hseek = parse_itm_v1((ovr / "SW1HSEEK.ITM").read_bytes())
+    seek_ops = [fx["opcode"] for fx in sw1hseek["equipping_effects"]]
+    assert 145 not in seek_ops and 1 in seek_ops and 0 in seek_ops
+    spcl722 = parse_spl((ovr / "SPCL722.SPL").read_bytes())
+    assert len(spcl722["abilities"]) == 10 and all(ab["projectile"] == 1 for ab in spcl722["abilities"])
+    ohtyr2 = parse_spl((ovr / "OHTYR2.SPL").read_bytes())
+    assert [ab["min_level"] for ab in ohtyr2["abilities"]] == [1, 6, 9, 12, 15, 18]
+    cbkhtyr = parse_itm_v1((ovr / "CBKHTYR.ITM").read_bytes())
+    assert cbkhtyr["item_type"] == 10 and cbkhtyr["flags"] == 0x0000006C
+    assert [(fx["opcode"], fx["p1"], fx["p2"]) for fx in cbkhtyr["equipping_effects"]] == [
+        (62, 1, 0x20), (62, 1, 0x40), (166, 5, 0), (44, 1, 0), (142, 0, 0x3F),
+    ]
+
+    # Comp 202: Alaghor of Clangeddin (LK_ALAGHOR)
+    assert "LK_ALAGHOR" in kl_by_name
+    alag_row = kl_by_name["LK_ALAGHOR"]
+    alag_num, alag_ids = alag_row[0], int(alag_row[9], 16)
+    assert alag_row[8] == "3" and int(alag_row[7], 16) == 0x00004000
+    assert alag_num in [r[1] for r in _read_2da_rows(ovr / "K_C_D.2DA")]
+    assert alag_num not in [r[1] for r in _read_2da_rows(ovr / "K_C_H.2DA")]
+    kfc_d = [r[1] for r in _read_2da_rows(ovr / "K_FC_D.2DA")]
+    kfc_h = [r[1] for r in _read_2da_rows(ovr / "K_FC_H.2DA")]
+    assert kfc_d[0] == "0" and alag_num in kfc_d and alag_num not in kfc_h
+    for tier in range(1, 5):
+        axe_itm = parse_itm_v1((ovr / f"CBKALGA{tier}.ITM").read_bytes())
+        assert axe_itm["enchantment"] == tier and axe_itm["prof"] == 92
+        assert not any(fx["opcode"] == 145 for fx in axe_itm["equipping_effects"])
+    yeslic = parse_cre_v1((ovr / "YESLIC.CRE").read_bytes())
+    assert yeslic["kit_ids"] == alag_ids
+    assert yeslic["levels"] == (5, 5, 0)  # Level bytes NEVER touched!
+    assert yeslic["profs"].get(92) == 2 and yeslic["profs"].get(97) == 2 and yeslic["profs"].get(107, 0) == 0
+
+    # Comp 203: Nightcloak of Shar (CBK_SHAR)
+    assert "CBK_SHAR" in kl_by_name
+    shar_row = kl_by_name["CBK_SHAR"]
+    shar_num, shar_ids = shar_row[0], int(shar_row[9], 16)
+    assert shar_row[8] == "3" and int(shar_row[7], 16) == 0x00004000
+    for tbl in kt_all["CLERIC_THIEF"]:
+        kct = [r[1] for r in _read_2da_rows(ovr / f"{tbl}.2DA")]
+        assert kct[0] == "0" and shar_num in kct, f"{tbl}: {kct}"
+    cbkshr2 = parse_spl((ovr / "CBKSHR2.SPL").read_bytes())
+    assert not any(fx["opcode"] == 74 for ab in cbkshr2["abilities"] for fx in ab["effects"])  # NO blindness!
+    viconi = parse_cre_v1((ovr / "VICONI9.CRE").read_bytes())
+    assert viconi["kit_ids"] == shar_ids and viconi["levels"] == (8, 0, 0)  # Level bytes NEVER touched!
+
+    # Comp 204: Waveservant of Umberlee (CBK_UMBERLEE)
+    assert "CBK_UMBERLEE" in kl_by_name
+    umb_row = kl_by_name["CBK_UMBERLEE"]
+    umb_num, umb_ids = umb_row[0], int(umb_row[9], 16)
+    _, al_rows = _read_2da_header_and_map(ovr / "ALIGNMNT.2DA")
+    assert al_rows["CBK_UMBERLEE"] == ["0", "0", "0", "0", "0", "1", "0", "1", "1"]  # NE, CN, CE only (NO CG!)
+    assert umb_num not in [r[1] for r in _read_2da_rows(ovr / "K_C_D.2DA")]
+    assert umb_num in [r[1] for r in _read_2da_rows(ovr / "K_C_H.2DA")]
+    cbkhumb = parse_itm_v1((ovr / "CBKHUMB.ITM").read_bytes())
+    assert any(fx["opcode"] == 49 and fx["p1"] == 1 for fx in cbkhumb["equipping_effects"])
+
+    # Comp 205: Painbearer of Ilmater (CBK_ILMATER)
+    assert "CBK_ILMATER" in kl_by_name
+    ilm_row = kl_by_name["CBK_ILMATER"]
+    ilm_num = ilm_row[0]
+    assert al_rows["CBK_ILMATER"] == ["1", "1", "0", "1", "0", "0", "0", "0", "0"]  # LG, LN, NG
+    assert ilm_num in [r[1] for r in _read_2da_rows(ovr / "K_C_D.2DA")]
+    if extra_race:
+        assert ilm_num not in [r[1] for r in _read_2da_rows(ovr / "K_C_HB.2DA")]
+        assert umb_num in [r[1] for r in _read_2da_rows(ovr / "K_C_HB.2DA")]
+        assert shar_num in [r[1] for r in _read_2da_rows(ovr / "K_C_HB.2DA")]
+    _, sp_prot_map = _read_2da_header_and_map(ovr / "SPLPROT.2DA")
+    assert sp_prot_map["CBK_HP_LE_10"] == ["0", "10", "0"]
+    cbkilm2s = parse_spl((ovr / "CBKILM2S.SPL").read_bytes())
+    assert cbkilm2s["abilities"][0]["effects"][0]["opcode"] == 318
+    assert cbkilm2s["abilities"][0]["effects"][1]["opcode"] == 12
+    cbkhilm = parse_itm_v1((ovr / "CBKHILM.ITM").read_bytes())
+    assert any(fx["opcode"] == 10 and fx["p1"] == 1 for fx in cbkhilm["equipping_effects"])
+
+    # Verify WEAPPROF.2DA EXTRA2..EXTRA20 (116..134) stay 0 across all v0.3.0 Cleric kits
+    wp_lines_all = (ovr / "WEAPPROF.2DA").read_text(encoding="utf-8").splitlines()
+    wp_hdr_all = wp_lines_all[2].split()
+    for kit_col in ("HELM", "TALOS", "OHTYR", "LK_ALAGHOR", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
+        c_idx = wp_hdr_all.index(kit_col) + 1
+        for line in wp_lines_all[3:]:
+            parts = line.split()
+            if parts and int(parts[1]) >= 116:
+                assert parts[c_idx] == "0", f"{kit_col} non-zero EXTRA row {parts[0]}={parts[c_idx]}"
+
+    # Verify CBKWPN rules for 201..204
+    cbkwpn_all = _read_2da_rows(ovr / "CBKWPN.2DA")
+    alag_wpn = {(r[3], r[4], r[5]) for r in cbkwpn_all if r[2] == str(alag_ids)}
+    assert {("PROF", "92", "ALLOW"), ("PROF", "103", "DENY"), ("PROF", "107", "DENY")}.issubset(alag_wpn)
+    shar_wpn = {(r[3], r[4], r[5]) for r in cbkwpn_all if r[2] == str(shar_ids)}
+    assert ("PROF", "96", "ALLOW") in shar_wpn
+    umb_wpn = {(r[3], r[4], r[5]) for r in cbkwpn_all if r[2] == str(umb_ids)}
+    assert {("PROF", "98", "ALLOW"), ("PROF", "96", "ALLOW")}.issubset(umb_wpn)
 
     # Comp 210: Stonefire Sorcerer (CBK_STONEFIRE)
     assert "CBK_STONEFIRE" in kl_by_name
@@ -374,7 +506,53 @@ def test_03b_comp_111_and_install_orders_and_fallbacks(tmp_path: pathlib.Path) -
     assert br_num2 in {r[1] for r in _read_2da_rows(ovr2 / "K_F_HB.2DA")}
     mg2 = _read_2da_rows(ovr2 / "MGSRCREQ.2DA")
     assert mg2[0][1] == "MAGE" and mg2[1][1] == "ILLUSIONIST"
-    assert all(v == "1" for r in mg2 for v in r[2:])
+    # 3) Install 200..205 BEFORE 110 (with yeslick-npc pre-installed LK_ALAGHOR + QD_MCP01 & Icelance dedup)
+    g3 = tmp_path / "order_clerics_then_110"
+    create_fake_game(g3, mode="eet", extra_race_col=True, with_druid_icelance=True, with_yeslick_alaghor=True)
+    _install_list(g3, ["100", "200", "201", "202", "203", "204", "205"])
+    _install_list(g3, ["110"])
+    ovr3 = g3 / "override"
+    kl3 = {r[1]: r for r in _read_2da_rows(ovr3 / "KITLIST.2DA")}
+    t3, a3, s3, u3, i3 = kl3["OHTEMPUS"][0], kl3["LK_ALAGHOR"][0], kl3["CBK_SHAR"][0], kl3["CBK_UMBERLEE"][0], kl3["CBK_ILMATER"][0]
+    assert len([r for r in _read_2da_rows(ovr3 / "KITLIST.2DA") if r[1] == "LK_ALAGHOR"]) == 1
+    # QD_MCP01 cleanup: LK_ALAGHOR (0x402A) stripped, unrelated 0x4099 kept!
+    qd3_p1s = [fx["p1"] for fx in parse_spl((ovr3 / "QD_MCP01.SPL").read_bytes())["abilities"][0]["effects"] if fx["opcode"] == 177]
+    assert 0x402A not in qd3_p1s and 0x4099 in qd3_p1s
+    # Umberlee Icelance deduplication when CLERIC_CBMAGIC_ICELANCE is present
+    cbkumb0_3 = (ovr3 / "CBKUMB0.2DA").read_text(encoding="utf-8")
+    assert "GA_CBKUMIL" not in cbkumb0_3 and "GA_CBKUMCC" in cbkumb0_3
+    # Reverse-order FR preservation across K_C_*, K_FC_*, K_CT_*, K_CR_*
+    assert a3 in [r[1] for r in _read_2da_rows(ovr3 / "K_C_D.2DA")]
+    assert a3 not in [r[1] for r in _read_2da_rows(ovr3 / "K_C_H.2DA")]
+    assert u3 not in [r[1] for r in _read_2da_rows(ovr3 / "K_C_D.2DA")]
+    assert u3 in [r[1] for r in _read_2da_rows(ovr3 / "K_C_H.2DA")]
+    assert i3 not in [r[1] for r in _read_2da_rows(ovr3 / "K_C_HB.2DA")]
+    assert t3 in [r[1] for r in _read_2da_rows(ovr3 / "K_C_D.2DA")]
+    kfc3_d = [r[1] for r in _read_2da_rows(ovr3 / "K_FC_D.2DA")]
+    kfc3_e = [r[1] for r in _read_2da_rows(ovr3 / "K_FC_E.2DA")]
+    kct3_hb = [r[1] for r in _read_2da_rows(ovr3 / "K_CT_HB.2DA")]
+    kcr3_e = [r[1] for r in _read_2da_rows(ovr3 / "K_CR_E.2DA")]
+    assert kfc3_d[0] == "0" and t3 in kfc3_d and a3 in kfc3_d
+    assert kfc3_e[0] == "0" and t3 in kfc3_e and a3 not in kfc3_e
+    assert kct3_hb[0] == "0" and s3 in kct3_hb
+    assert kcr3_e[0] == "0" and t3 in kcr3_e
+
+    # 4) Install 200..205 BEFORE 111 -> Unlock All unlocks every Cleric kit & multiclass across all races
+    g4 = tmp_path / "order_clerics_then_111"
+    create_fake_game(g4, mode="eet", extra_race_col=True)
+    _install_list(g4, ["100", "200", "201", "202", "203", "204", "205"])
+    _install_list(g4, ["111"])
+    ovr4 = g4 / "override"
+    kl4 = {r[1]: r for r in _read_2da_rows(ovr4 / "KITLIST.2DA")}
+    t4, a4, s4, u4, i4 = kl4["OHTEMPUS"][0], kl4["LK_ALAGHOR"][0], kl4["CBK_SHAR"][0], kl4["CBK_UMBERLEE"][0], kl4["CBK_ILMATER"][0]
+    assert {t4, a4, s4, u4, i4}.issubset(set(r[1] for r in _read_2da_rows(ovr4 / "K_C_D.2DA")))
+    assert {t4, a4, s4, u4, i4}.issubset(set(r[1] for r in _read_2da_rows(ovr4 / "K_C_HB.2DA")))
+    kfc4_h = [r[1] for r in _read_2da_rows(ovr4 / "K_FC_H.2DA")]
+    kct4_h = [r[1] for r in _read_2da_rows(ovr4 / "K_CT_H.2DA")]
+    kcr4_d = [r[1] for r in _read_2da_rows(ovr4 / "K_CR_D.2DA")]
+    assert kfc4_h[0] == "0" and t4 in kfc4_h and a4 in kfc4_h
+    assert kct4_h[0] == "0" and s4 in kct4_h
+    assert kcr4_d[0] == "0" and t4 in kcr4_d
 
 
 # ---------------------------------------------------------------------------
@@ -394,7 +572,7 @@ def test_04_we_overwrite_converges_from_mutated_state(tmp_path: pathlib.Path) ->
     ohtmps1 = parse_spl((ovr / "OHTMPS1.SPL").read_bytes())
     assert not any(fx["opcode"] == 99 for ab in ohtmps1["abilities"] for fx in ab["effects"])
 
-    # v0.2.0 We Overwrite checks on mutated ABRACEAD, RACETHAC, SPWI116, and CHAN01
+    # v0.2.0 + v0.3.0 We Overwrite checks on mutated ABRACEAD, RACETHAC, SPWI116, CHAN01, SW1HSEEK, SPCL741, OHTYR2, YESLIC, VICONI9
     _, ab_rows = _read_2da_header_and_map(ovr / "ABRACEAD.2DA")
     assert ab_rows["DWARF"][5] == "-1"
     _, rt_rows = _read_2da_header_and_map(ovr / "RACETHAC.2DA")
@@ -405,6 +583,17 @@ def test_04_we_overwrite_converges_from_mutated_state(tmp_path: pathlib.Path) ->
     chan01 = parse_itm_v1((ovr / "CHAN01.ITM").read_bytes())
     ops = [fx["opcode"] for fx in chan01["equipping_effects"]]
     assert ops.count(318) == 1 and ops.count(177) == 1 and 145 not in ops
+    sw1hseek_m = parse_itm_v1((ovr / "SW1HSEEK.ITM").read_bytes())
+    assert 145 not in [fx["opcode"] for fx in sw1hseek_m["equipping_effects"]]
+    for sp_m in ("SPCL741.SPL", "OHTYR2.SPL"):
+        parsed_m = parse_spl((ovr / sp_m).read_bytes())
+        assert not any(fx["opcode"] == 99 for ab in parsed_m["abilities"] for fx in ab["effects"])
+    kl_m = {r[1]: r for r in _read_2da_rows(ovr / "KITLIST.2DA")}
+    yeslic_m = parse_cre_v1((ovr / "YESLIC.CRE").read_bytes())
+    assert yeslic_m["kit_ids"] == int(kl_m["LK_ALAGHOR"][9], 16) and yeslic_m["levels"] == (5, 5, 0)
+    assert yeslic_m["profs"].get(92) == 2 and yeslic_m["profs"].get(97) == 2 and yeslic_m["profs"].get(107, 0) == 0
+    viconi_m = parse_cre_v1((ovr / "VICONI9.CRE").read_bytes())
+    assert viconi_m["kit_ids"] == int(kl_m["CBK_SHAR"][9], 16) and viconi_m["levels"] == (8, 0, 0)
 
 
 # ---------------------------------------------------------------------------
@@ -418,13 +607,17 @@ def test_05_idempotent_reinstall_and_uninstall(tmp_path: pathlib.Path) -> None:
     baseline = _sha256_tree(game, ignore)
 
     _install_all(game)
-    _install_all(game)  # Reinstall all 8 components once more
+    _install_all(game)  # Reinstall all 13 components once more
     ovr = game / "override"
     kl_rows = _read_2da_rows(ovr / "KITLIST.2DA")
-    assert len([r for r in kl_rows if r[1] == "CBKBLDRG"]) == 1
-    assert len([r for r in kl_rows if r[1] == "CBK_STONEFIRE"]) == 1
-    assert len([r for r in kl_rows if r[1] == "CBK_ELEMENTALIST"]) == 1
+    for kname in ("CBKBLDRG", "CBK_STONEFIRE", "CBK_ELEMENTALIST", "LK_ALAGHOR", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
+        assert len([r for r in kl_rows if r[1] == kname]) == 1
     assert len([r for r in _read_2da_rows(ovr / "CBRKPKIT.2DA") if r[0].startswith("OHTEMPUS_")]) == 2
+    assert len([r for r in _read_2da_rows(ovr / "CBRKPKIT.2DA") if r[0] == "LK_ALAGHOR_FC"]) == 1
+    assert len([r for r in _read_2da_rows(ovr / "CBRKPKIT.2DA") if r[0] == "CBK_SHAR_CT"]) == 1
+    # CBKMCP01 op177 idempotence: still exactly 4 Tempus entries after reinstall
+    mcp01_re = parse_spl((ovr / "CBKMCP01.SPL").read_bytes())["abilities"][0]["effects"]
+    assert len([fx for fx in mcp01_re if fx["opcode"] == 177 and fx["p1"] == 0x4029 and fx["p2"] == 9]) == 4
 
     _uninstall_all(game)
     after_uninstall = _sha256_tree(game, ignore)
@@ -945,6 +1138,57 @@ def test_08_lua_runtime_and_coexistence() -> None:
     assert demon_tgt.m_derivedStats.m_nResistCrushing == 35
     g7.CBKCombat_OnDamageAfter(crush_eff, elm_sp, demon_tgt)
     assert demon_tgt.m_derivedStats.m_nResistCrushing == 60
+
+    # 6) M_CBKSHR.lua (Shadow Weave Magic -2 Save on Enchantment/Illusion/Necromancy/CBKSHR2) + M_CBKILM.lua (25% Phys-DR floor)
+    lua7.execute(_load_mod_lua("M_CBKSHR.lua", {
+        "CBK_SHAR_KIT_IDS": 0x4031,
+        "CBK_STATE_SHAR_WEAVE": 148,
+    }))
+    lua7.execute(_load_mod_lua("M_CBKILM.lua", {
+        "CBK_STATE_ILMATER_ENDURE": 149,
+        "CBK_STATE_ILM_RESOLVED": 150,
+    }))
+    g7.CBKShar.mockSpellSchools = lua7.eval("{ SPPR102 = 4, SPWI201 = 5, SPPR313 = 7, SPWI304 = 6 }")
+    shar_sp = lua7.eval("{ _spellStates = { [148] = true }, _kitIds = 0x4031 }")
+    other_sp = lua7.eval("{ _spellStates = { [148] = false }, _kitIds = 0x4000 }")
+    for sres, expect_pen in [("SPPR102", -2), ("SPWI201", -2), ("SPPR313", -2), ("CBKSHR2", -2), ("SPWI304", 0)]:
+        eff = lua7.eval(f"{{ m_sourceRes = '{sres}', m_sourceType = 1, m_saveMod = 3 }}")
+        eff._sourceSprite = shar_sp
+        g7.CBKCombat_OnCheckSaveBefore(eff, demon_tgt)
+        assert eff.m_saveMod == 3 + expect_pen, f"{sres}: got {eff.m_saveMod}"
+        g7.CBKCombat_OnCheckSaveAfter(eff, demon_tgt)
+        assert eff.m_saveMod == 3
+    # Item source (m_sourceType == 2) and non-Shar caster stay untouched
+    item_eff = lua7.eval("{ m_sourceRes = 'SPPR102', m_sourceType = 2, m_saveMod = 1 }")
+    item_eff._sourceSprite = shar_sp
+    g7.CBKCombat_OnCheckSaveBefore(item_eff, demon_tgt)
+    assert item_eff.m_saveMod == 1
+    g7.CBKCombat_OnCheckSaveAfter(item_eff, demon_tgt)
+    non_shar_eff = lua7.eval("{ m_sourceRes = 'CBKSHR2', m_sourceType = 1, m_saveMod = 1 }")
+    non_shar_eff._sourceSprite = other_sp
+    g7.CBKCombat_OnCheckSaveBefore(non_shar_eff, demon_tgt)
+    assert non_shar_eff.m_saveMod == 1
+    g7.CBKCombat_OnCheckSaveAfter(non_shar_eff, demon_tgt)
+
+    # M_CBKILM.lua: 25% Physical DR floor, non-additive with 40% Hardiness, idempotent via CBK_ILM_RESOLVED
+    ilm_sp = lua7.eval("""
+        {
+            _spellStates = { [149] = true },
+            m_derivedStats = {
+                m_nResistSlashing = 40, m_nResistCrushing = 0,
+                m_nResistPiercing = 10, m_nResistMissile = 25,
+            },
+        }
+    """)
+    assert g7.CBKIlmater.OnListsResolved(ilm_sp) is True
+    assert ilm_sp.m_derivedStats.m_nResistSlashing == 40   # 40% > 25% -> NOT stacked to 65%!
+    assert ilm_sp.m_derivedStats.m_nResistCrushing == 25   # 0% -> 25% floor
+    assert ilm_sp.m_derivedStats.m_nResistPiercing == 25   # 10% -> 25% floor
+    assert ilm_sp.m_derivedStats.m_nResistMissile == 25
+    assert g7.CBKIlmater.OnListsResolved(ilm_sp) is False  # Idempotent via CBK_ILM_RESOLVED!
+    ilm_inactive = lua7.eval("{ _spellStates = { [149] = false }, m_derivedStats = { m_nResistSlashing = 0, m_nResistCrushing = 0, m_nResistPiercing = 0, m_nResistMissile = 0 } }")
+    assert g7.CBKIlmater.OnListsResolved(ilm_inactive) is False
+    assert ilm_inactive.m_derivedStats.m_nResistSlashing == 0
 
 
 # ---------------------------------------------------------------------------

@@ -63,6 +63,7 @@ def _make_weapprof(extra_race_col: bool = False) -> str:
     cols = [
         "FIGHTER", "MAGE", "CLERIC", "THIEF", "BARD", "PALADIN", "DRUID", "RANGER", "SORCERER",
         "BERSERKER", "JESTER", "BLADE", "SKALD", "OHTEMPUS", "TOTEMIC_DRUID", "DRAGON_DISCIPLE",
+        "TALOS", "HELM", "LATHANDER", "OHTYR",
     ]
     if extra_race_col:
         cols.append("HOBGOBLIN")
@@ -91,15 +92,18 @@ def _make_weapprof(extra_race_col: bool = False) -> str:
         ("SWORDANDSHIELD", 112, 2),
         ("SINGLEWEAPON", 113, 2),
         ("2WEAPON", 114, 3),
+        *[(f"EXTRA{i}", 114 + i, 0) for i in range(2, 21)],
     ]
     lines = ["2DA V1.0", "0", "                ID      DESCSTR " + " ".join(cols)]
     for name, pid, base_v in profs:
         vals = []
         for c in cols:
-            if c in ("FIGHTER", "BERSERKER"):
+            if pid >= 116:
+                vals.append("0")
+            elif c in ("FIGHTER", "BERSERKER"):
                 vals.append(str(5 if pid <= 107 or pid == 115 else base_v))
-            elif c == "OHTEMPUS":
-                vals.append("1" if pid in (97, 100, 101, 102, 107, 111, 112, 113) else "0")
+            elif c in ("CLERIC", "OHTEMPUS", "TALOS", "HELM", "LATHANDER", "OHTYR"):
+                vals.append("1" if pid in (97, 100, 101, 102, 107, 111, 112, 113, 114, 115) else "0")
             elif c in ("SORCERER", "DRAGON_DISCIPLE", "MAGE"):
                 vals.append("1" if pid in (96, 102, 106, 107) else "0")
             elif c in ("DRUID", "TOTEMIC_DRUID"):
@@ -119,6 +123,7 @@ def create_fake_game(
     conflict_mod: str | None = None,
     with_fire_bams: bool = True,
     with_druid_icelance: bool = False,
+    with_yeslick_alaghor: bool = False,
 ) -> None:
     game_dir.mkdir(parents=True, exist_ok=True)
     ovr = game_dir / "override"
@@ -228,7 +233,7 @@ def create_fake_game(
         (ovr / "MFISG1.BAM").write_bytes(make_fire_bam(compressed=True))
         (ovr / "MFIEG1.BAM").write_bytes(make_fire_bam(compressed=False))
 
-    (ovr / "KIT.IDS").write_text(
+    kit_ids_txt = (
         "IDS V1.0\n"
         "0x4000 TRUECLASS\n"
         "0x4001 BERSERKER\n"
@@ -247,6 +252,9 @@ def create_fake_game(
         "0x4010 TOTEMIC_DRUID\n"
         "0x4011 SHAPESHIFTER\n"
         "0x4012 BEAST_FRIEND\n"
+        "0x4013 TALOS\n"
+        "0x4014 HELM\n"
+        "0x4015 LATHANDER\n"
         "0x0040 ABJURER\n"
         "0x0080 CONJURER\n"
         "0x0100 DIVINER\n"
@@ -263,57 +271,68 @@ def create_fake_game(
         "0x4023 DRAGON_DISCIPLE\n"
         "0x4024 DARK_MOON\n"
         "0x4025 SUN_SOUL\n"
-        "0x4029 OHTEMPUS\n",
-        encoding="utf-8",
+        "0x4028 OHTYR\n"
+        "0x4029 OHTEMPUS\n"
     )
+    if with_yeslick_alaghor:
+        kit_ids_txt += "0x402A LK_ALAGHOR\n"
+    (ovr / "KIT.IDS").write_text(kit_ids_txt, encoding="utf-8")
 
     (ovr / "WEAPPROF.2DA").write_text(_make_weapprof(extra_race_col=extra_race_col), encoding="utf-8")
     (ovr / "25STWEAP.2DA").write_text(_make_weapprof(extra_race_col=extra_race_col), encoding="utf-8")
 
     # WEAPPROF header indices (col_idx + 2 = PROFICIENCY number):
     # FIGHTER=2, MAGE=3, CLERIC=4, THIEF=5, BARD=6, PALADIN=7, DRUID=8, RANGER=9, SORCERER=10,
-    # BERSERKER=11, JESTER=12, BLADE=13, SKALD=14, OHTEMPUS=15, TOTEMIC_DRUID=16, DRAGON_DISCIPLE=17
+    # BERSERKER=11, JESTER=12, BLADE=13, SKALD=14, OHTEMPUS=15, TOTEMIC_DRUID=16, DRAGON_DISCIPLE=17,
+    # TALOS=18, HELM=19, LATHANDER=20, OHTYR=21
+    kitlist_rows = [
+        ["0",  "RESERVE", "*", "*", "*", "*", "*", "*", "*", "*"],
+        ["1",  "BERSERKER", "11", "10", "18", "CLABFI02", "11", "0x00000001", "2",  "0x00004001"],
+        ["4",  "CAVALIER", "3", "3", "18", "CLABPA02", "7", "0x00000008", "6",  "0x00004004"],
+        ["5",  "INQUISITOR", "3", "3", "18", "CLABPA03", "7", "0x00000010", "6",  "0x00004005"],
+        ["6",  "UNDEAD_HUNTER", "3", "3", "18", "CLABPA04", "7", "0x00000020", "6",  "0x00004006"],
+        ["7",  "FERALAN", "7", "7", "18", "CLABRN02", "9", "0x00008000", "12", "0x00004007"],
+        ["8",  "STALKER", "7", "7", "18", "CLABRN03", "9", "0x00010000", "12", "0x00004008"],
+        ["9",  "BEASTMASTER", "7", "7", "18", "CLABRN04", "9", "0x00020000", "12", "0x00004009"],
+        ["10", "ASSASIN", "5", "5", "18", "CLABTH02", "5", "0x00040000", "4",  "0x0000400a"],
+        ["11", "BOUNTY_HUNTER", "5", "5", "18", "CLABTH03", "5", "0x00080000", "4",  "0x0000400b"],
+        ["12", "SWASHBUCKLER", "5", "5", "18", "CLABTH04", "5", "0x00100000", "4",  "0x0000400c"],
+        ["13", "BLADE", "17", "16", "18", "CLABBA02", "13", "0x00200000", "5",  "0x0000400d"],
+        ["14", "JESTER", "13", "12", "18", "CLABBA03", "12", "0x00400000", "5",  "0x0000400e"],
+        ["15", "SKALD", "15", "14", "18", "CLABBA04", "14", "0x00800000", "5",  "0x0000400f"],
+        ["16", "TOTEMIC_DRUID", "6", "6", "18", "CLABDR02", "16", "0x08000000", "11", "0x00004010"],
+        ["17", "SHAPESHIFTER", "6", "6", "18", "CLABDR03", "16", "0x10000000", "11", "0x00004011"],
+        ["18", "BEAST_FRIEND", "6", "6", "18", "CLABDR04", "16", "0x20000000", "11", "0x00004012"],
+        ["19", "TALOS", "4", "4", "18", "CLABPR02", "18", "0x01000000", "3",  "0x00004013"],
+        ["20", "HELM", "4", "4", "18", "CLABPR03", "19", "0x02000000", "3",  "0x00004014"],
+        ["21", "LATHANDER", "4", "4", "18", "CLABPR04", "20", "0x04000000", "3",  "0x00004015"],
+        ["22", "ABJURER", "2", "2", "18", "CLABMA02", "3", "0x00000040", "1",  "0x00000040"],
+        ["23", "CONJURER", "2", "2", "18", "CLABMA06", "3", "0x00000080", "1",  "0x00000080"],
+        ["24", "DIVINER", "2", "2", "18", "CLABMA05", "3", "0x00000100", "1",  "0x00000100"],
+        ["25", "ENCHANTER", "2", "2", "18", "CLABMA09", "3", "0x00000200", "1",  "0x00000200"],
+        ["26", "ILLUSIONIST", "2", "2", "18", "CLABMA08", "3", "0x00000400", "1",  "0x00000400"],
+        ["27", "INVOKER", "2", "2", "18", "CLABMA07", "3", "0x00000800", "1",  "0x00000800"],
+        ["28", "NECROMANCER", "2", "2", "18", "CLABMA03", "3", "0x00001000", "1",  "0x00001000"],
+        ["29", "TRANSMUTER", "2", "2", "18", "CLABMA04", "3", "0x00002000", "1",  "0x00002000"],
+        ["30", "WILDMAGE", "2", "2", "18", "CLABMA01", "3", "0x80000000", "1",  "0x80000000"],
+        ["31", "BARBARIAN", "3", "3", "18", "CLABFI05", "2", "0x40000000", "2",  "0x40000000"],
+        ["32", "Blackguard", "3", "3", "18", "CLABPA06", "7", "0x00000021", "6",  "0x00004020"],
+        ["33", "SHADOWDANCER", "5", "5", "18", "CLABTH05", "5", "0x00004000", "4",  "0x00004021"],
+        ["34", "DWARVEN_DEFENDER", "3", "3", "18", "CLABFI06", "2", "0x00004000", "2",  "0x00004022"],
+        ["35", "DRAGON_DISCIPLE", "2", "2", "18", "CLABSO01", "17", "0x00004000", "19", "0x00004023"],
+        ["36", "DARK_MOON", "3", "3", "18", "CLABMO02", "2", "0x00004000", "20", "0x00004024"],
+        ["37", "SUN_SOUL", "3", "3", "18", "CLABMO03", "2", "0x00004000", "20", "0x00004025"],
+        ["38", "LATHANDER_X", "4", "4", "18", "CLABPR04", "4", "0x04000000", "3",  "0x00004015"],
+        ["39", "GRIZZLY_BEAR", "3", "3", "18", "CLABBEAR", "2", "0xFFFFFFFF", "2",  "0x00004027"],
+        ["40", "OHTYR", "4", "4", "18", "OHTYR", "21", "0x00004000", "3",  "0x00004028"],
+        ["41", "OHTEMPUS", "8", "9", "18", "OHTEMPUS", "15", "0x00000080", "3",  "0x00004029"],
+    ]
+    if with_yeslick_alaghor:
+        kitlist_rows.append(["42", "LK_ALAGHOR", "4", "4", "18", "LK#YESK", "4", "0x00004000", "3", "0x0000402a"])
     (ovr / "KITLIST.2DA").write_text(
         _table_2da(
             ["ROWNAME", "LOWER", "MIXED", "HELP", "ABILITIES", "PROFICIENCY", "UNUSABLE", "CLASS", "KITIDS"],
-            [
-                ["0",  "RESERVE", "*", "*", "*", "*", "*", "*", "*", "*"],
-                ["1",  "BERSERKER", "11", "10", "18", "CLABFI02", "11", "0x00000001", "2",  "0x00004001"],
-                ["4",  "CAVALIER", "3", "3", "18", "CLABPA02", "7", "0x00000008", "6",  "0x00004004"],
-                ["5",  "INQUISITOR", "3", "3", "18", "CLABPA03", "7", "0x00000010", "6",  "0x00004005"],
-                ["6",  "UNDEAD_HUNTER", "3", "3", "18", "CLABPA04", "7", "0x00000020", "6",  "0x00004006"],
-                ["7",  "FERALAN", "7", "7", "18", "CLABRN02", "9", "0x00008000", "12", "0x00004007"],
-                ["8",  "STALKER", "7", "7", "18", "CLABRN03", "9", "0x00010000", "12", "0x00004008"],
-                ["9",  "BEASTMASTER", "7", "7", "18", "CLABRN04", "9", "0x00020000", "12", "0x00004009"],
-                ["10", "ASSASIN", "5", "5", "18", "CLABTH02", "5", "0x00040000", "4",  "0x0000400a"],
-                ["11", "BOUNTY_HUNTER", "5", "5", "18", "CLABTH03", "5", "0x00080000", "4",  "0x0000400b"],
-                ["12", "SWASHBUCKLER", "5", "5", "18", "CLABTH04", "5", "0x00100000", "4",  "0x0000400c"],
-                ["13", "BLADE", "17", "16", "18", "CLABBA02", "13", "0x00200000", "5",  "0x0000400d"],
-                ["14", "JESTER", "13", "12", "18", "CLABBA03", "12", "0x00400000", "5",  "0x0000400e"],
-                ["15", "SKALD", "15", "14", "18", "CLABBA04", "14", "0x00800000", "5",  "0x0000400f"],
-                ["16", "TOTEMIC_DRUID", "6", "6", "18", "CLABDR02", "16", "0x08000000", "11", "0x00004010"],
-                ["17", "SHAPESHIFTER", "6", "6", "18", "CLABDR03", "16", "0x10000000", "11", "0x00004011"],
-                ["18", "BEAST_FRIEND", "6", "6", "18", "CLABDR04", "16", "0x20000000", "11", "0x00004012"],
-                ["22", "ABJURER", "2", "2", "18", "CLABMA02", "3", "0x00000040", "1",  "0x00000040"],
-                ["23", "CONJURER", "2", "2", "18", "CLABMA06", "3", "0x00000080", "1",  "0x00000080"],
-                ["24", "DIVINER", "2", "2", "18", "CLABMA05", "3", "0x00000100", "1",  "0x00000100"],
-                ["25", "ENCHANTER", "2", "2", "18", "CLABMA09", "3", "0x00000200", "1",  "0x00000200"],
-                ["26", "ILLUSIONIST", "2", "2", "18", "CLABMA08", "3", "0x00000400", "1",  "0x00000400"],
-                ["27", "INVOKER", "2", "2", "18", "CLABMA07", "3", "0x00000800", "1",  "0x00000800"],
-                ["28", "NECROMANCER", "2", "2", "18", "CLABMA03", "3", "0x00001000", "1",  "0x00001000"],
-                ["29", "TRANSMUTER", "2", "2", "18", "CLABMA04", "3", "0x00002000", "1",  "0x00002000"],
-                ["30", "WILDMAGE", "2", "2", "18", "CLABMA01", "3", "0x80000000", "1",  "0x80000000"],
-                ["31", "BARBARIAN", "3", "3", "18", "CLABFI05", "2", "0x40000000", "2",  "0x40000000"],
-                ["32", "Blackguard", "3", "3", "18", "CLABPA06", "7", "0x00000021", "6",  "0x00004020"],
-                ["33", "SHADOWDANCER", "5", "5", "18", "CLABTH05", "5", "0x00004000", "4",  "0x00004021"],
-                ["34", "DWARVEN_DEFENDER", "3", "3", "18", "CLABFI06", "2", "0x00004000", "2",  "0x00004022"],
-                ["35", "DRAGON_DISCIPLE", "2", "2", "18", "CLABSO01", "17", "0x00004000", "19", "0x00004023"],
-                ["36", "DARK_MOON", "3", "3", "18", "CLABMO02", "2", "0x00004000", "20", "0x00004024"],
-                ["37", "SUN_SOUL", "3", "3", "18", "CLABMO03", "2", "0x00004000", "20", "0x00004025"],
-                ["38", "LATHANDER_X", "4", "4", "18", "CLABPR04", "4", "0x04000000", "3",  "0x00004015"],
-                ["39", "GRIZZLY_BEAR", "3", "3", "18", "CLABBEAR", "2", "0xFFFFFFFF", "2",  "0x00004027"],
-                ["41", "OHTEMPUS", "8", "9", "18", "OHTEMPUS", "15", "0x00000080", "3",  "0x00004029"],
-            ],
+            kitlist_rows,
         ),
         encoding="utf-8",
     )
@@ -353,6 +372,10 @@ def create_fake_game(
                 ["BERSERKER",           *_rc(["1", "1", "1", "1", "1", "1", "1"], "1")],
                 ["JESTER",              *_rc(["1", "0", "1", "0", "0", "0", "0"], "0")],
                 ["SKALD",               *_rc(["1", "0", "1", "0", "0", "0", "0"], "0")],
+                ["TALOS",               *_rc(["1", "1", "1", "1", "1", "1", "1"], "1")],
+                ["HELM",                *_rc(["1", "1", "1", "1", "1", "1", "1"], "1")],
+                ["LATHANDER",           *_rc(["1", "1", "1", "1", "1", "1", "1"], "1")],
+                ["OHTYR",               *_rc(["1", "1", "1", "1", "1", "1", "1"], "1")],
                 ["OHTEMPUS",            *_rc(["1", "1", "1", "1", "1", "1", "1"], "1")],
                 ["TOTEMIC_DRUID",       *_rc(["1", "0", "1", "0", "0", "0", "0"], "0")],
                 ["DRAGON_DISCIPLE",     *_rc(["1", "1", "1", "0", "0", "0", "0"], "0")],
@@ -467,10 +490,16 @@ def create_fake_game(
             ["CLASSID", "KITID", "LOWER", "DESCSTR", "MIXED", "BIOGRAPHY", "FALLEN", "BRIEFDESC", "FALLEN_NOTICE"],
             [
                 ["FIGHTER", "2", "16384", "3", "18", "3", "-1", "0", "18", "-1"],
+                ["CLERIC", "3", "16384", "4", "18", "4", "-1", "0", "18", "-1"],
                 ["BERSERKER", "2", "1", "11", "18", "10", "-1", "0", "18", "-1"],
                 ["BARBARIAN", "2", "1073741824", "3", "18", "3", "-1", "0", "18", "-1"],
                 ["JESTER", "5", "14", "13", "18", "12", "-1", "0", "18", "-1"],
                 ["SKALD", "5", "15", "15", "18", "14", "-1", "0", "18", "-1"],
+                ["TALOS", "3", "19", "4", "18", "4", "-1", "0", "18", "-1"],
+                ["HELM", "3", "20", "4", "18", "4", "-1", "0", "18", "-1"],
+                ["LATHANDER", "3", "21", "4", "18", "4", "-1", "0", "18", "-1"],
+                ["LATHANDER_X", "3", "38", "4", "18", "4", "-1", "0", "18", "-1"],
+                ["OHTYR", "3", "40", "4", "18", "4", "-1", "0", "18", "-1"],
                 ["OHTEMPUS", "3", "41", "8", "18", "9", "-1", "0", "18", "-1"],
                 ["SORCERER", "19", "16384", "2", "18", "2", "-1", "0", "18", "-1"],
                 ["DRAGON_DISCIPLE", "19", "35", "2", "18", "2", "-1", "0", "18", "-1"],
@@ -637,8 +666,9 @@ def create_fake_game(
         make_eff_v1(12, target=2, p1=0, p2=0x00080000, dice=10, sides=4),
     ])]))
 
-    # Tempus + Priest spells + CREs
+    # Tempus + Vanilla Clerics + Priest spells + CREs
     (ovr / "CDHLYSYM.SPL").write_bytes(make_spl())
+    (ovr / "BELT12.ITM").write_bytes(make_itm_v1(item_type=10, unusable=0x607F3842, flags=0x0000006C))
     (ovr / "OHTEMPUS.2DA").write_text(
         "2DA V1.0\n****\n"
         + "            " + " ".join(str(i) for i in range(1, 26)) + "\n"
@@ -651,8 +681,20 @@ def create_fake_game(
     (ovr / "SPPR113.SPL").write_bytes(make_spl(spell_type=2, school=3))
     (ovr / "SPPR415.SPL").write_bytes(make_spl(spell_type=2, school=3))
     (ovr / "SPPR201.SPL").write_bytes(make_spl(spell_type=2, school=1))
-    for sp in ("SPPR412", "SPPR425", "SPPR507", "SPPR513", "SPPR525", "SPWI603", "SPCL751A", "SPCL121"):
+    for sp in (
+        "SPPR412", "SPPR425", "SPPR507", "SPPR513", "SPPR525", "SPWI603", "SPCL751A", "SPCL121",
+        "SPCL721", "SPCL722", "SPCL731", "SPCL732", "SPCL741", "SPCL742", "OHTYR1", "OHTYR2",
+    ):
         (ovr / f"{sp}.SPL").write_bytes(make_spl())
+    (ovr / "SW1HSEEK.ITM").write_bytes(make_itm_v1(
+        item_type=20, unusable=0, anim="S1", prof=89,
+        eq_effects=[make_eff_v1(145, target=1, p1=0, p2=0, timing=2)] if pre_mutate else [],
+    ))
+    if with_yeslick_alaghor:
+        (ovr / "QD_MCP01.SPL").write_bytes(make_spl(abilities=[(1, 1, [
+            make_eff_v1(177, target=1, p1=0x402A, p2=9, timing=1, resource="QDYSLK01"),
+            make_eff_v1(177, target=1, p1=0x4099, p2=9, timing=1, resource="QDOTHER1"),
+        ])]))
 
     # Core fixes spells
     (ovr / "SPCL907.SPL").write_bytes(
@@ -679,12 +721,18 @@ def create_fake_game(
 
     if pre_mutate:
         (ovr / "OHTMPS1.SPL").write_bytes(make_spl(abilities=[(1, 1, [make_eff_v1(99, p1=999)])]))
+        (ovr / "SPCL741.SPL").write_bytes(make_spl(abilities=[(1, 1, [make_eff_v1(99, p1=999)])]))
+        (ovr / "OHTYR2.SPL").write_bytes(make_spl(abilities=[(1, 1, [make_eff_v1(99, p1=999)])]))
         (ovr / "BRANWE.CRE").write_bytes(make_cre_v1(kit_ids=0x4005, prof_effects=[(92, 0), (101, 1)]))
         (ovr / "BRANWE5.CRE").write_bytes(make_cre_v1(kit_ids=0x4000, prof_effects=[(101, 2)]))
+        (ovr / "YESLIC.CRE").write_bytes(make_cre_v1(kit_ids=0x4001, prof_effects=[(97, 1), (107, 2)], levels=(5, 5, 0)))
+        (ovr / "VICONI9.CRE").write_bytes(make_cre_v1(kit_ids=0x4013, prof_effects=[(107, 1)], levels=(8, 0, 0)))
         (ovr / "ARCHSLOW.EFF").write_bytes(make_eff_v2(opcode=20, target=2, p1=999))
     else:
         (ovr / "BRANWE.CRE").write_bytes(make_cre_v1(kit_ids=0x4000, prof_effects=[(101, 1)]))
         (ovr / "BRANWE5.CRE").write_bytes(make_cre_v1(kit_ids=0x4000, prof_effects=[(101, 1)]))
+        (ovr / "YESLIC.CRE").write_bytes(make_cre_v1(kit_ids=0x4000, prof_effects=[(97, 1), (107, 1)], levels=(5, 5, 0)))
+        (ovr / "VICONI9.CRE").write_bytes(make_cre_v1(kit_ids=0x4000, prof_effects=[(107, 1)], levels=(8, 0, 0)))
     (ovr / "KORGAN8.CRE").write_bytes(make_cre_v1(kit_ids=0x4001, prof_effects=[(92, 5)]))
 
     if conflict_mod == "artisan":

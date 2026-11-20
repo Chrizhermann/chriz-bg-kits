@@ -1,6 +1,6 @@
 BACKUP ~weidu_external/backup/chriz-bg-kits~
 SUPPORT ~https://github.com/Chrizhermann/chriz-bg-kits~
-VERSION ~v0.2.0~
+VERSION ~v0.3.0~
 
 ALWAYS
   OUTER_SPRINT MOD_FOLDER ~chriz-bg-kits~
@@ -10,8 +10,15 @@ ALWAYS
     INCLUDE ~chriz-bg-kits/lib/cbk_resources.tpa~
     INCLUDE ~chriz-bg-kits/lib/cbk_kernel.tpa~
     INCLUDE ~chriz-bg-kits/lib/cbk_add_kit.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_holysym.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_multiclass.tpa~
     INCLUDE ~chriz-bg-kits/lib/cbk_races.tpa~
     INCLUDE ~chriz-bg-kits/lib/cbk_tempus.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_vanilla_clerics.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_alaghor.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_shar.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_umberlee.tpa~
+    INCLUDE ~chriz-bg-kits/lib/cbk_ilmater.tpa~
     INCLUDE ~chriz-bg-kits/lib/cbk_stonefire.tpa~
     INCLUDE ~chriz-bg-kits/lib/cbk_elementalist.tpa~
     INCLUDE ~chriz-bg-kits/lib/cbk_bloodrager.tpa~
@@ -49,6 +56,36 @@ LABEL ~chriz_bg_kits_tempus~
 REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~) @3
 REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
 LAF cbk_install_tempus END
+
+BEGIN @2001 DESIGNATED 201
+LABEL ~chriz_bg_kits_vanilla_clerics~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_vanilla_clerics END
+
+BEGIN @2002 DESIGNATED 202
+LABEL ~chriz_bg_kits_alaghor~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_alaghor END
+
+BEGIN @2003 DESIGNATED 203
+LABEL ~chriz_bg_kits_shar~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~ AND FILE_EXISTS_IN_GAME ~M_CBKCMB.lua~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_shar END
+
+BEGIN @2004 DESIGNATED 204
+LABEL ~chriz_bg_kits_umberlee~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_umberlee END
+
+BEGIN @2005 DESIGNATED 205
+LABEL ~chriz_bg_kits_ilmater~
+REQUIRE_PREDICATE (FILE_EXISTS_IN_GAME ~M_CBKWPN.lua~ AND FILE_EXISTS_IN_GAME ~CBKWPN.2DA~) @3
+REQUIRE_PREDICATE (!(MOD_IS_INSTALLED ~ARTISANSKITPACK/ARTISANSKITPACK.TP2~ ~0~) AND !(MOD_IS_INSTALLED ~BARDICWONDERS/BARDICWONDERS.TP2~ ~0~)) @2
+LAF cbk_install_ilmater END
 
 BEGIN @210 DESIGNATED 210
 LABEL ~chriz_bg_kits_stonefire~

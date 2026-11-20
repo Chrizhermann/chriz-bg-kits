@@ -309,10 +309,17 @@ def read_bam_palette_entry(data: bytes, idx: int) -> tuple[int, int, int]:
     return r, g, b
 
 
-def make_cre_v1(kit_ids: int = 0x4000, prof_effects: list[tuple[int, int]] | None = None) -> bytes:
+def make_cre_v1(
+    kit_ids: int = 0x4000,
+    prof_effects: list[tuple[int, int]] | None = None,
+    levels: tuple[int, int, int] = (0, 0, 0),
+) -> bytes:
     hdr = bytearray(0x2D4)
     hdr[0x00:0x08] = b"CRE V1.0"
     hdr[0x33] = 1
+    hdr[0x234] = levels[0] & 0xFF
+    hdr[0x235] = levels[1] & 0xFF
+    hdr[0x236] = levels[2] & 0xFF
     struct.pack_into("<HH", hdr, 0x244, (kit_ids >> 16) & 0xFFFF, kit_ids & 0xFFFF)
     fx_list = prof_effects or []
     fx_bytes = bytearray()
@@ -351,7 +358,12 @@ def parse_cre_v1(data: bytes) -> dict:
             p2 = struct.unpack_from("<I", data, o + 0x18)[0]
             if op == 233:
                 profs[p2] = p1
-    return {"kit_ids": kit_ids, "fx_ver": fx_ver, "profs": profs}
+    return {
+        "kit_ids": kit_ids,
+        "fx_ver": fx_ver,
+        "levels": (data[0x234], data[0x235], data[0x236]),
+        "profs": profs,
+    }
 
 
 def check_spl_has_opcodes(spl_path: pathlib.Path, forbidden: set[int]) -> list[int]:

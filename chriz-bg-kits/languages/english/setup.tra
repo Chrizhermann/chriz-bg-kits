@@ -7,6 +7,11 @@
 @111 = ~Unlock All Classes, Kits, Dual-Classes & Multiclasses for All Races~
 @112 = ~Racial Class, Kit & Multiclass Rules~
 @200 = ~Cleric Overhaul: Priest of Tempus~
+@2001 = ~Cleric Overhaul: Vanilla Deities (Lathander, Helm, Talos, Tyr)~
+@2002 = ~Cleric Kit: Alaghor of Clangeddin (Dwarf Cleric & Fighter/Cleric)~
+@2003 = ~Cleric Kit: Nightcloak of Shar (Cleric & Cleric/Thief)~
+@2004 = ~Cleric Kit: Waveservant of Umberlee~
+@2005 = ~Cleric Kit: Painbearer of Ilmater~
 @210 = ~Sorcerer Kit: Stonefire Sorcerer~
 @220 = ~Druid Kit: Elementalist~
 @300 = ~Standalone Fighter Kit: Bloodrager~
@@ -175,3 +180,321 @@ One-time passive High-Level Ability. While transformed into an Elemental Form, t
 @2253 = ~Acid Storm: Unleashes a downpour of caustic acid over 3 rounds dealing 7d4, 7d6, and 7d8 acid damage (Save vs. Spell for half).~
 @2254 = ~Incendiary Cloud~
 @2255 = ~Incendiary Cloud: Conjures a billowing cloud of white-hot embers dealing 14d4 fire damage (Save vs. Spell for half).~
+
+// Component 201: Vanilla Deity Clerics (Lathander, Helm, Talos, Tyr) (@2300..@2349)
+@2300 = ~Boon of Lathander~
+@2301 = ~Boon of Lathander
+Duration: 1 round/level
+Casting Time: 1
+
+The Priest of Lathander channels the Morninglord's radiance, gaining +1 to THAC0, +1 to damage rolls, +1 to all Saving Throws, +1 extra attack per round (does not stack with Haste or Improved Haste), and immunity to Level Drain for the duration.~
+@2302 = ~PRIEST OF LATHANDER: Clerics of the Morninglord are champions of dawn, vitality, and the destruction of undead.
+Advantages:
+- Automatically receives 1 Mace proficiency pip at 1st level in addition to starting proficiencies.
+- May cast Boon of Lathander once per day at 1st level (plus 1 additional use every 5 levels): grants +1 THAC0, +1 damage, +1 to all Saving Throws, +1 extra attack per round (capped vs. Haste/Improved Haste), and immunity to Level Drain for 1 round per level.
+- May cast Hold Undead once per day at 1st level (plus 1 additional use every 10 levels).
+- Receives a Holy Symbol of Lathander at 25th level.
+Disadvantages:
+- Alignment restricted to Lawful Good, Neutral Good, Chaotic Good, or True Neutral.~
+
+@2310 = ~Seeking Sword~
+@2311 = ~Seeking Sword
+Duration: 1 round/level
+Casting Time: 5
+
+Summons a +4 Bastard Sword of radiant vigilance into the Priest of Helm's hands. The Seeking Sword deals 2d4 slashing damage, grants 3 base attacks per round and a +2 bonus to Armor Class, and does not restrict spellcasting while equipped. May be dismissed at will via Dismiss Seeking Sword.~
+@2312 = ~Seeking Sword~
+@2313 = ~This radiant +4 Bastard Sword is summoned by a Priest of Helm to guard the faithful. It sets base attacks per round to 3, grants a +2 bonus to Armor Class, and allows unhindered spellcasting while wielded.
+
+STATISTICS:
+
+THAC0: +4
+Damage: 2d4 (slashing)
+Enchantment: +4
+Special:
+  3 base attacks per round
+  +2 Armor Class
+  Spellcasting remains enabled
+Speed Factor: 1
+Proficiency Type: Bastard Sword
+Type: One-handed
+Weight: 0~
+@2314 = ~Dismiss Seeking Sword~
+@2315 = ~Dismiss Seeking Sword
+Dismisses the summoned Seeking Sword immediately.~
+@2316 = ~PRIEST OF HELM: Clerics of the Vigilant One stand watch over their allies with blade and ward alike.
+Advantages:
+- Automatically receives 1 Bastard Sword proficiency pip at 1st level in addition to starting proficiencies, and may equip and become proficient in Bastard Swords.
+- May cast Seeking Sword once per day at 1st level (plus 1 additional use every 10 levels): summons a +4 Bastard Sword (2d4 slashing, 3 base attacks per round, +2 Armor Class) without disabling spellcasting, and may dismiss it at will.
+- May cast True Sight once per day at 1st level (plus 1 additional use every 5 levels).
+- Receives a Holy Symbol of Helm at 25th level.
+Disadvantages:
+- Alignment restricted to Lawful Good, Lawful Neutral, True Neutral, or Lawful Evil.~
+
+@2320 = ~Lightning of Talos~
+@2321 = ~Lightning of Talos
+Range: 40 ft.
+Duration: Instant (stagger 1 round)
+Casting Time: 2
+Saving Throw: Breath (half damage; negates stagger)
+
+Calls down a targeted bolt of lightning upon a single foe, dealing 1d6 electrical damage per caster level (max 10d6; Save vs. Breath for half). A creature that fails its Saving Throw vs. Breath is also staggered for 1 round (-2 THAC0 and -2 Armor Class).~
+@2322 = ~PRIEST OF TALOS: Stormlords revel in unleashed fury, wielding thunder, lightning, and the spear of the tempest.
+Advantages:
+- Automatically receives 1 Spear proficiency pip at 1st level in addition to starting proficiencies, and may equip and become proficient in Spears and Daggers.
+- +25% baseline resistance to Electricity.
+- May cast Lightning of Talos once per day at 1st level (plus 1 additional use every 5 levels): calls down a targeted, non-bouncing strike for 1d6 electrical damage per level (max 10d6, Save vs. Breath for half) plus a 1-round stagger (-2 THAC0, -2 Armor Class; Save vs. Breath negates).
+- May cast Storm Shield once per day at 1st level (plus 1 additional use every 10 levels).
+- Receives a Holy Symbol of Talos at 25th level.
+Disadvantages:
+- Alignment restricted to Chaotic Neutral, Neutral Evil, or Chaotic Evil.~
+
+@2330 = ~Divine Favor~
+@2331 = ~Divine Favor
+Duration: 4 rounds
+Casting Time: 1
+
+Calling upon Tyr's righteous judgment, the priest gains a scaling bonus to THAC0 and melee/ranged damage rolls (+1 at 1st level, +2 at 6th, +3 at 9th, +4 at 12th, +5 at 15th, and +6 at 18th level) for 4 rounds.~
+@2332 = ~Holy Symbol of Tyr~
+@2333 = ~This sacred symbol is bestowed upon faithful Priests of Tyr who reach 25th level.
+
+STATISTICS:
+
+Equipped abilities:
+- Strength: +1
+- Magic Resistance: +5%
+- Memorize 1 extra 6th-level and 1 extra 7th-level Priest spell
+
+Weight: 0~
+@2334 = ~PRIEST OF TYR: Clerics of the Maimed God uphold justice and righteous judgment with blade and prayer.
+Advantages:
+- Automatically receives 1 Long Sword proficiency pip at 1st level in addition to starting proficiencies, and may equip and become proficient in Long Swords.
+- May cast Divine Favor once per day at 1st level (plus 1 additional use every 5 levels): grants +1 to +6 THAC0 and damage (scaling at levels 1, 6, 9, 12, 15, and 18) for 4 rounds.
+- May cast Exaltation once per day at 1st level (plus 1 additional use every 10 levels).
+- Receives a Holy Symbol of Tyr at 25th level (+1 Strength, +5% Magic Resistance, +1 6th- and 7th-level Priest spell).
+Disadvantages:
+- Alignment restricted to Lawful Good, Lawful Neutral, or Neutral Good.~
+
+// Component 202: Alaghor of Clangeddin (@2400..@2449)
+@2400 = ~alaghor of clangeddin~
+@2401 = ~Alaghor of Clangeddin~
+@2402 = ~ALAGHOR OF CLANGEDDIN: Battle-priests of the Father of Battle, Alaghor of Clangeddin Silverbeard lead dwarven shield-walls from the front, swinging twin axes and war hammers while inspiring their comrades with roaring battle chants.
+
+Advantages:
+- Automatically receives 1 Battle Axe proficiency at 1st level in addition to starting proficiency pips.
+- May equip Battle Axes and Specialize (2 slots) in Battle Axes, War Hammers, and Two-Weapon Style; may place 1 slot in standard cleric blunt weapons and other fighting styles.
+- Gains +1/2 attack per round when wielding a weapon in which the priest holds 2 or more proficiency pips (without double-stacking on Fighter/Cleric multiclasses).
+- Dwarven Battle-Hardening: Gains +5% resistance to Slashing, Piercing, and Crushing damage at 5th level, increasing to +10% at 15th level.
+- May cast Spiritual Axe of Clangeddin once per day at 1st level and an additional time every 10 levels thereafter. Conjures a magical battle axe (+1 at 1st level, +2 at 6th, +3 at 12th, +4 at 18th) dealing 1d8 slashing plus 1d4 magic damage while keeping spellcasting fully enabled, and grants Dismiss Spiritual Axe to end it early.
+- May cast Battle Chant of Clangeddin once per day at 3rd level and an additional time every 5 levels thereafter, granting nearby allies +2 THAC0, +2 melee damage, and cure/immunity to Fear and Panic for 4 rounds.
+- Receives the Holy Symbol of Clangeddin (+1 Strength, +5% Magic Resistance, +1 bonus 6th- and 7th-level Priest spell) at 25th level.
+- Available to single-class Clerics and Dwarven Fighter/Cleric multiclasses.
+
+Disadvantages:
+- Restricted to Dwarves of Lawful Good, Lawful Neutral, or Neutral Good alignment (unless racial restrictions are unlocked).
+- Requires minimum Strength 12, Constitution 12, and Wisdom 9.
+- Disdains skirmishing from afar: cannot place proficiency pips in or equip any ranged weapons (Crossbows, Bows, Darts, or Slings).~
+@2403 = ~Spiritual Axe of Clangeddin~
+@2404 = ~Spiritual Axe of Clangeddin
+Range: 0
+Duration: 10 / 15 / 20 / 30 rounds (levels 1 / 6 / 12 / 18)
+Casting Time: 2
+Area of Effect: Caster
+Saving Throw: None
+
+Calls forth a gleaming spectral battle axe blessed by Clangeddin Silverbeard into the Alaghor's weapon hand. The axe strikes as a +1 magical battle axe at 1st level (+2 at 6th, +3 at 12th, and +4 at 18th), dealing 1d8 slashing damage plus 1d4 magic damage on every hit while allowing the Alaghor to continue casting spells freely. Casting this ability also grants Dismiss Spiritual Axe to dismiss the conjured weapon at will.~
+@2405 = ~Spiritual Axe +1~
+@2406 = ~Spiritual Axe +2~
+@2407 = ~Spiritual Axe +3~
+@2408 = ~Spiritual Axe +4~
+@2409 = ~Spiritual Axe of Clangeddin
+Forged from radiant silver force in the likeness of Clangeddin Silverbeard's sacred weapon, this conjured battle axe strikes with divine precision and deals 1d8 slashing plus 1d4 magic damage without impeding spellcasting.
+
+STATISTICS:
+
+Damage: 1d8 slashing + 1d4 magic (plus enchantment bonus)
+Proficiency Type: Axe
+Type: One-handed
+Weight: 0~
+@2410 = ~Dismiss Spiritual Axe~
+@2411 = ~Dismiss Spiritual Axe
+Immediately dispels the conjured Spiritual Axe of Clangeddin and returns the Alaghor's normal equipped weapons to hand.~
+@2412 = ~Battle Chant of Clangeddin~
+@2413 = ~Battle Chant of Clangeddin
+Range: 0
+Duration: 4 rounds
+Casting Time: 1
+Area of Effect: 15-ft. radius (party)
+Saving Throw: None
+
+The Alaghor raises a booming dwarven war-hymn to Clangeddin Silverbeard. All allied party members within 15 feet are immediately cured of Fear and Panic and gain +2 THAC0, +2 melee weapon damage, and immunity to Fear and Panic for 4 rounds.~
+@2414 = ~Holy Symbol of Clangeddin~
+@2415 = ~Holy Symbol of Clangeddin
+Forged of gleaming silver in the shape of crossed battle axes, this sacred emblem marks an exalted Alaghor of the Father of Battle.
+
+STATISTICS:
+
+Equipped abilities:
+- Strength: +1
+- Magic Resistance: +5%
+- Memorize one extra 6th- and 7th-level Priest spell
+
+Weight: 0~
+
+// Component 203: Nightcloak of Shar (@2450..@2499)
+@2450 = ~nightcloak of shar~
+@2451 = ~Nightcloak of Shar~
+@2452 = ~NIGHTCLOAK OF SHAR: Devotees of the Lady of Loss weave hidden strands of the Shadow Weave into divine magic, shrouding themselves in darkness and weakening foes with chilling bolts of oblivion.
+
+Advantages:
+- Automatically receives 1 Dagger proficiency at 1st level in addition to starting proficiency pips, and may equip Daggers alongside standard cleric weapons.
+- Immune to Blindness.
+- Shadow Weave Magic: Enemies suffer a -2 penalty to Saving Throws against all Enchantment, Illusion, and Necromancy spells cast by the Nightcloak, as well as against Shadow Bolt.
+- May cast Shadow Veil once per day at 1st level and an additional time every 5 levels thereafter, instantly gaining Improved Invisibility, Non-Detection, +4 Armor Class, and +2 to all Saving Throws for 5 rounds.
+- May cast Shadow Bolt once per day at 3rd level and an additional time every 5 levels thereafter, hurling a dark bolt at a single target for 2d6 / 3d6 / 4d6 / 5d6 / 6d6 half cold and half magic damage (at levels 1 / 7 / 11 / 15 / 19; Save vs. Spell for half) and inflicting Touch of Loss (-2 THAC0 and -2 to all Saving Throws for 4 rounds on a failed Save vs. Spell).
+- Receives the Holy Symbol of Shar (+1 Wisdom, +5% Magic Resistance, +1 bonus 6th- and 7th-level Priest spell) at 25th level.
+- Available to single-class Clerics and Cleric/Thief multiclasses.
+
+Disadvantages:
+- Restricted to Lawful Evil, True Neutral, Neutral Evil, or Chaotic Evil alignment.
+- Requires minimum Dexterity 10 and Wisdom 9.~
+@2453 = ~Shadow Veil~
+@2454 = ~Shadow Veil
+Range: 0
+Duration: 5 rounds
+Casting Time: 1
+Area of Effect: Caster
+Saving Throw: None
+
+Wraps the Nightcloak in a silent mantle drawn from the Shadow Weave. For 5 rounds, the caster gains Improved Invisibility, Non-Detection, +4 Armor Class, and +2 to all Saving Throws.~
+@2455 = ~Shadow Bolt~
+@2456 = ~Shadow Bolt
+Range: 40 ft.
+Duration: Instant / 4 rounds
+Casting Time: 2
+Area of Effect: 1 creature
+Saving Throw: Spell (half damage; negates Touch of Loss)
+
+Launches a concentrated lance of Shadow Weave energy at a single target within 40 feet, dealing 2d6 damage at 1st level, 3d6 at 7th, 4d6 at 11th, 5d6 at 15th, and 6d6 at 19th (half cold, half magic; Save vs. Spell for half). If the target fails a Save vs. Spell, it is also afflicted with Touch of Loss, suffering -2 THAC0 and -2 to all Saving Throws for 4 rounds. Shadow Weave Magic applies an additional -2 penalty to the target's saving throws against this ability.~
+@2457 = ~Holy Symbol of Shar~
+@2458 = ~Holy Symbol of Shar
+A smooth obsidian disc rimmed in deep violet, signifying a Nightcloak favored by the Mistress of the Night.
+
+STATISTICS:
+
+Equipped abilities:
+- Wisdom: +1
+- Magic Resistance: +5%
+- Memorize one extra 6th- and 7th-level Priest spell
+
+Weight: 0~
+
+// Component 204: Waveservant of Umberlee (@2500..@2549)
+@2500 = ~waveservant of umberlee~
+@2501 = ~Waveservant of Umberlee~
+@2502 = ~WAVESERVANT OF UMBERLEE: Devoted priestesses and priests of the Bitch Queen, the capricious goddess of the deep oceans, crushing tides, and deadly sea storms.
+
+Advantages:
+- Automatically receives 1 proficiency pip in Spears at 1st level, and may place 1 proficiency pip in Spears and Daggers as well as standard cleric weapons and fighting styles.
+- Permanent +25% resistance to Cold and Electricity.
+- Bonus Domain Spells: Gains Icelance (3rd level, when not already present in the Priest spellbook) and Cone of Cold (5th level) as Priest spells.
+- May cast Crushing Undertow once per day at 1st level, plus an additional use every 5 levels thereafter (15-ft. enemy-only surge dealing 2d6/3d6/4d6/5d6/6d6 half-crushing, half-cold damage at levels 1/5/9/13/17 and slowing failed-save foes for 2 rounds; Save vs. Breath for half damage and to negate Slow).
+- At 5th level, may invoke Tempest Shroud once per day, plus an additional use every 5 levels thereafter (5 rounds: +2 Armor Class, +50% Missile resistance, and 1d6+2 Cold damage to melee attackers).
+- Receives the Holy Symbol of Umberlee at 25th level (+1 Wisdom, +5% Magic Resistance, +1 6th- and 7th-level Priest spell slot).
+
+Disadvantages:
+- Alignment restricted to Neutral Evil, Chaotic Neutral, or Chaotic Evil.
+- Not available to Dwarves (unless racial kit restrictions are unlocked).~
+@2503 = ~Crushing Undertow~
+@2504 = ~Crushing Undertow
+Range: 35 ft.
+Area of Effect: 15-ft. radius (enemies only)
+Casting Time: 3
+Saving Throw: Breath (1/2 damage; negates Slow)
+
+Summons a crushing abyssal surge beneath target foes. Enemies caught in the blast suffer 2d6 damage at 1st level, 3d6 at 5th, 4d6 at 9th, 5d6 at 13th, and 6d6 at 17th level (half crushing, half cold; Save vs. Breath for half) and are slowed for 2 rounds unless a Save vs. Breath succeeds.~
+@2505 = ~Tempest Shroud~
+@2506 = ~Tempest Shroud
+Range: Caster
+Duration: 5 rounds
+Casting Time: 1
+
+Surrounds the Waveservant in a howling squall of freezing spray and gale-force winds, granting +2 Armor Class, +50% Missile resistance, and inflicting 1d6+2 Cold damage on any creature that strikes the caster.~
+@2507 = ~Icelance~
+@2508 = ~Icelance
+Level: 3
+Sphere: Water
+Range: 40 ft.
+Duration: Instant / 3 rounds
+Casting Time: 3
+Area of Effect: 1 creature
+Saving Throw: Special
+
+Hurls a jagged lance of enchanted ice at a single target, inflicting 5d6 Cold damage and stunning the target for 3 rounds unless a Save vs. Spell succeeds.~
+@2509 = ~Cone of Cold~
+@2510 = ~Cone of Cold
+Level: 5
+Sphere: Water
+Range: 20 ft.
+Duration: Instant
+Casting Time: 5
+Area of Effect: Cone
+Saving Throw: 1/2
+
+Projects a cone of bitter frost that inflicts 10d4+10 Cold damage to all creatures within its area (Save vs. Spell for half).~
+@2511 = ~Holy Symbol of Umberlee~
+@2512 = ~Holy Symbol of Umberlee
+This jagged shark-tooth crest of blue-green sea glass marks a favored Waveservant of the Bitch Queen.
+
+STATISTICS:
+
+Equipped abilities:
+- Wisdom: +1
+- Magic Resistance: +5%
+- Memorize 1 extra 6th- and 7th-level Priest spell
+
+Usable By:
+Cleric (Neutral Evil, Chaotic Neutral, Chaotic Evil)~
+
+// Component 205: Painbearer of Ilmater (@2550..@2599)
+@2550 = ~painbearer of ilmater~
+@2551 = ~Painbearer of Ilmater~
+@2552 = ~PAINBEARER OF ILMATER: Selfless clerics of the Crying God who take the suffering of others upon themselves and endure wounds that would fell lesser mortals.
+
+Advantages:
+- Automatically receives 1 proficiency pip in Quarterstaffs at 1st level, and may place 1 proficiency pip in standard cleric weapons and fighting styles.
+- Immune to Fatigue and gains a permanent +1 bonus to Saving Throws vs. Death.
+- May invoke Ilmater's Endurance once per day at 1st level, plus an additional use every 5 levels thereafter (5 rounds: +10/+15/+20/+25 temporary maximum Hit Points at levels 1/6/11/16, immunity to Stun and Sleep/Hopelessness, and a non-additive 25% Physical Damage Resistance floor against Slashing, Crushing, Piercing, and Missile damage).
+- At 3rd level, may cast Martyr's Grace once per day, plus an additional use every 5 levels thereafter (ranged ally heal restoring 3d8+6 / 4d8+8 / 5d8+10 / 6d8+12 Hit Points at levels 1/8/13/18 and curing Poison, Blindness, Deafness, and Hold, at the cost of 2d4 magic damage to the caster when current Hit Points exceed 10).
+- Receives the Holy Symbol of Ilmater at 25th level (+1 Constitution, +5% Magic Resistance, +1 6th- and 7th-level Priest spell slot).
+
+Disadvantages:
+- Alignment restricted to Lawful Good, Lawful Neutral, or Neutral Good.
+- Minimum Constitution: 12. Minimum Wisdom: 9.~
+@2553 = ~Ilmater's Endurance~
+@2554 = ~Ilmater's Endurance
+Range: Caster
+Duration: 5 rounds
+Casting Time: 1
+
+Channels the Crying God's steadfast resilience for 5 rounds, granting +10 temporary maximum Hit Points (+15 at 6th level, +20 at 11th, +25 at 16th), immunity to Stun, Sleep, and Hopelessness, and a non-additive 25% minimum resistance floor against Slashing, Crushing, Piercing, and Missile damage (does not stack with Armor of Faith or Hardiness).~
+@2555 = ~Martyr's Grace~
+@2556 = ~Martyr's Grace
+Range: 30 ft.
+Area of Effect: 1 creature
+Casting Time: 1
+
+Transfers an ally's suffering onto the Painbearer, restoring 3d8+6 Hit Points at 1st level (4d8+8 at 8th, 5d8+10 at 13th, and 6d8+12 at 18th) and curing Poison, Blindness, Deafness, and Hold. The caster suffers 2d4 magic damage unless at 10 Hit Points or fewer.~
+@2557 = ~Holy Symbol of Ilmater~
+@2558 = ~Holy Symbol of Ilmater
+A pair of white hands bound at the wrists with red cord, blessed by the Broken God for his most devoted Painbearers.
+
+STATISTICS:
+
+Equipped abilities:
+- Constitution: +1
+- Magic Resistance: +5%
+- Memorize 1 extra 6th- and 7th-level Priest spell
+
+Usable By:
+Cleric (Lawful Good, Lawful Neutral, Neutral Good)~
