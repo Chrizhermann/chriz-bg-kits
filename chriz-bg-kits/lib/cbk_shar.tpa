@@ -1,4 +1,4 @@
-// Component 203: Nightcloak of Shar (CBK_SHAR) — Cleric & Cleric/Thief Kit
+// Component 202: Priest of Shar (CBK_SHAR) — Single-Class Cleric Kit
 
 DEFINE_ACTION_FUNCTION cbk_install_shar BEGIN
   LAF cbk_install_res_shar END
@@ -149,27 +149,13 @@ DEFINE_ACTION_FUNCTION cbk_install_shar BEGIN
       row_line  = EVAL ~CBK_SHAR_P96 * %shar_dec% PROF 96 ALLOW~
   END
 
-  // 7. Multiclass Cleric/Thief support
-  LAF cbk_enable_multiclass_cleric_kit
-    INT_VAR
-      kit_num   = shar_num
-      kit_ids   = shar_ids
-      enable_fc = 0
-      enable_ct = 1
-      enable_cr = 0
-    STR_VAR
-      kit_name    = ~CBK_SHAR~
-      clab        = ~CBKSHR0~
-      race_policy = ~CLONE~
-  END
-
-  // 8. Install M_CBKSHR.lua (Shadow Weave Magic CheckSave listener)
+  // 7. Install M_CBKSHR.lua (Shadow Weave Magic CheckSave listener)
   OUTER_SET CBK_SHAR_KIT_IDS = shar_ids
   OUTER_SET CBK_STATE_SHAR_WEAVE = cbk_state_CBK_SHAR_WEAVE
   COPY ~%MOD_FOLDER%/lua/M_CBKSHR.lua~ ~override/M_CBKSHR.lua~
     EVALUATE_BUFFER
 
-  // 9. Viconia Sync (kit ONLY — NEVER touch CRE level bytes 0x234..0x236!)
+  // 8. Viconia Sync (kit ONLY — NEVER touch CRE level bytes 0x234..0x236!)
   ACTION_FOR_EACH cre IN ~VICONI~ ~VICONI4~ ~VICONI6~ ~VICONI6_~ ~VICONI7~ ~VICONI8~ ~VICONI9~ ~VICONI11~ ~VICONI13~ ~VICONI16~ ~BDVICONI~ BEGIN
     ACTION_IF (FILE_EXISTS_IN_GAME ~%cre%.CRE~) BEGIN
       COPY_EXISTING ~%cre%.CRE~ ~override~

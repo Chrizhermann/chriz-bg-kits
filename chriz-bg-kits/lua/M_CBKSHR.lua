@@ -1,7 +1,7 @@
--- M_CBKSHR.lua: Nightcloak of Shar (Component 203)
+-- M_CBKSHR.lua: Priest of Shar (Component 202)
 -- Shadow Weave Magic: applies a scoped -2 saving throw penalty on targets of
 -- Enchantment (4), Illusion (5), and Necromancy (7) spells — plus Shadow Bolt
--- (CBKSHR2) — cast by a Nightcloak of Shar (spell state CBK_SHAR_WEAVE or kit
+-- (CBKSHR2) — cast by a Priest of Shar (spell state CBK_SHAR_WEAVE or kit
 -- CBK_SHAR), excluding item effects (m_sourceType == 2). Restores exact
 -- original m_saveMod immediately after CheckSave via stack-safe LIFO frames.
 

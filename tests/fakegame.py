@@ -691,6 +691,7 @@ def create_fake_game(
         eq_effects=[make_eff_v1(145, target=1, p1=0, p2=0, timing=2)] if pre_mutate else [],
     ))
     if with_yeslick_alaghor:
+        (ovr / "K_FC_D.2DA").write_text(_table_2da(["KIT"], [["1", "0"], ["2", "42"]]), encoding="utf-8")
         (ovr / "QD_MCP01.SPL").write_bytes(make_spl(abilities=[(1, 1, [
             make_eff_v1(177, target=1, p1=0x402A, p2=9, timing=1, resource="QDYSLK01"),
             make_eff_v1(177, target=1, p1=0x4099, p2=9, timing=1, resource="QDOTHER1"),

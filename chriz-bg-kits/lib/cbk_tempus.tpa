@@ -181,7 +181,7 @@ DEFINE_ACTION_FUNCTION cbk_install_tempus BEGIN
     WRITE_ASCIIE 0 ~%full_clab%~
     PRETTY_PRINT_2DA
 
-  // 5. WEAPPROF + CBKWPN + CBKAPKIT + CBRKPKIT
+  // 5. WEAPPROF + CBKWPN + CBKAPKIT
   OUTER_SET cbk_tmp_wp_90 = 2
   OUTER_SET cbk_tmp_wp_92 = 2
   OUTER_SET cbk_tmp_wp_103 = 2
@@ -208,17 +208,6 @@ DEFINE_ACTION_FUNCTION cbk_install_tempus BEGIN
     END
   END
   LAF cbk_append_2da_row_unique INT_VAR cols = 4 STR_VAR file = ~CBKAPKIT.2DA~ match_key = ~OHTEMPUS~ row_line = EVAL ~OHTEMPUS %tempus_dec% 2 1~ END
-  LAF cbk_enable_multiclass_cleric_kit
-    INT_VAR
-      kit_num   = tempus_num
-      kit_ids   = tempus_ids
-      enable_fc = 1
-      enable_cr = 1
-    STR_VAR
-      kit_name    = ~OHTEMPUS~
-      clab        = ~OHTEMPUS~
-      race_policy = ~CLONE~
-  END
 
   // 6. KITLIST & CLASTEXT description update (We Overwrite)
   OUTER_SET tx_desc = RESOLVE_STR_REF (@205)

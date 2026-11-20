@@ -39,22 +39,6 @@ BEGIN
   LAF cbk_ensure_splprot STR_VAR label = ~CBK_STR_GE_2~ stat = ~36~ value = EVAL ~2~ relation = ~4~ RET cbk_splprot_CBK_STR_GE_2 = row END
 END
 
-DEFINE_ACTION_FUNCTION cbk_install_res_alaghor BEGIN
-  LAF cbk_ensure_resource_symbols RET cbk_state_CBK_BR_WINDED cbk_state_CBK_ELM_AIR cbk_state_CBK_ELM_EARTH cbk_state_CBK_ELM_FIRE cbk_state_CBK_ELM_HLA cbk_state_CBK_ELM_RESOLVED cbk_state_CBK_ELM_WATER cbk_state_CBK_ILMATER_ENDURE cbk_state_CBK_ILM_RESOLVED cbk_state_CBK_RAC_RESOLVED cbk_state_CBK_RAGE_EXTENDED cbk_state_CBK_SHAR_WEAVE cbk_state_CBK_STONEFIRE_ARMOR cbk_state_CBK_STR_CLAMP_1 cbk_state_CBM_BONUS_TYPED cbk_state_CBM_STR_FLOOR cbk_state_TRANSFORMATION cbk_splprot_CBK_HP_LE_10 cbk_splprot_CBK_PROF_BATTLEAXE_GE_1 cbk_splprot_CBK_PROF_BSWORD_GE_1 cbk_splprot_CBK_PROF_DAGGER_GE_1 cbk_splprot_CBK_PROF_LSWORD_GE_1 cbk_splprot_CBK_PROF_MACE_GE_1 cbk_splprot_CBK_PROF_SPEAR_GE_1 cbk_splprot_CBK_PROF_STAFF_GE_1 cbk_splprot_CBK_RESISTMAGIC_GE_50 cbk_splprot_CBK_STATE_104_EQ cbk_splprot_CBK_STATE_104_NEQ cbk_splprot_CBK_STATE_BR_WINDED_EQ cbk_splprot_CBK_STATE_ELM_HLA_EQ cbk_splprot_CBK_STATE_RAGE_EXT_EQ cbk_splprot_CBK_STATE_SF_ARMOR_EQ cbk_splprot_CBK_STATE_TRANSFORMATION_EQ cbk_splprot_CBK_STR_GE_2 END
-  COPY ~%MOD_FOLDER%/res/CBKLPAL.SPL~ ~override/CBKLPAL.SPL~
-    WRITE_LONG 0xa2 cbk_splprot_CBK_PROF_BATTLEAXE_GE_1
-  COPY ~%MOD_FOLDER%/res/CBKALGR.SPL~ ~override/CBKALGR.SPL~
-  COPY ~%MOD_FOLDER%/res/CBKALGA1.ITM~ ~override/CBKALGA1.ITM~
-  COPY ~%MOD_FOLDER%/res/CBKALGA2.ITM~ ~override/CBKALGA2.ITM~
-  COPY ~%MOD_FOLDER%/res/CBKALGA3.ITM~ ~override/CBKALGA3.ITM~
-  COPY ~%MOD_FOLDER%/res/CBKALGA4.ITM~ ~override/CBKALGA4.ITM~
-  COPY ~%MOD_FOLDER%/res/CBKALG0D.SPL~ ~override/CBKALG0D.SPL~
-  COPY ~%MOD_FOLDER%/res/CBKALG1.SPL~ ~override/CBKALG1.SPL~
-  COPY ~%MOD_FOLDER%/res/CBKALG2.SPL~ ~override/CBKALG2.SPL~
-    SET _cbk_pj = IDS_OF_SYMBOL (~projectl~ ~INAREAPA~)
-    PATCH_IF (_cbk_pj >= 0) BEGIN WRITE_SHORT 0x98 (_cbk_pj + 1) END
-END
-
 DEFINE_ACTION_FUNCTION cbk_install_res_bards BEGIN
   LAF cbk_ensure_resource_symbols RET cbk_state_CBK_BR_WINDED cbk_state_CBK_ELM_AIR cbk_state_CBK_ELM_EARTH cbk_state_CBK_ELM_FIRE cbk_state_CBK_ELM_HLA cbk_state_CBK_ELM_RESOLVED cbk_state_CBK_ELM_WATER cbk_state_CBK_ILMATER_ENDURE cbk_state_CBK_ILM_RESOLVED cbk_state_CBK_RAC_RESOLVED cbk_state_CBK_RAGE_EXTENDED cbk_state_CBK_SHAR_WEAVE cbk_state_CBK_STONEFIRE_ARMOR cbk_state_CBK_STR_CLAMP_1 cbk_state_CBM_BONUS_TYPED cbk_state_CBM_STR_FLOOR cbk_state_TRANSFORMATION cbk_splprot_CBK_HP_LE_10 cbk_splprot_CBK_PROF_BATTLEAXE_GE_1 cbk_splprot_CBK_PROF_BSWORD_GE_1 cbk_splprot_CBK_PROF_DAGGER_GE_1 cbk_splprot_CBK_PROF_LSWORD_GE_1 cbk_splprot_CBK_PROF_MACE_GE_1 cbk_splprot_CBK_PROF_SPEAR_GE_1 cbk_splprot_CBK_PROF_STAFF_GE_1 cbk_splprot_CBK_RESISTMAGIC_GE_50 cbk_splprot_CBK_STATE_104_EQ cbk_splprot_CBK_STATE_104_NEQ cbk_splprot_CBK_STATE_BR_WINDED_EQ cbk_splprot_CBK_STATE_ELM_HLA_EQ cbk_splprot_CBK_STATE_RAGE_EXT_EQ cbk_splprot_CBK_STATE_SF_ARMOR_EQ cbk_splprot_CBK_STATE_TRANSFORMATION_EQ cbk_splprot_CBK_STR_GE_2 END
   COPY ~%MOD_FOLDER%/res/SPCL751A.SPL~ ~override/SPCL751A.SPL~

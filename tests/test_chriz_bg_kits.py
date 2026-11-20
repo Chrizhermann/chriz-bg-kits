@@ -1,4 +1,4 @@
-"""Comprehensive verification suite for chriz-bg-kits v0.3.0."""
+"""Comprehensive verification suite for chriz-bg-kits v0.3.1."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ STEAM_EXE = pathlib.Path(
     r"C:\Program Files (x86)\Steam\steamapps\common\Baldur's Gate II Enhanced Edition\Baldur.exe"
 )
 
-ALL_COMPONENTS_110 = ["100", "110", "200", "201", "202", "203", "204", "205", "210", "220", "300", "310", "320"]
+ALL_COMPONENTS_110 = ["100", "110", "200", "201", "202", "203", "204", "210", "220", "300", "310", "320"]
 
 
 def _sha256_tree(root: pathlib.Path, ignore_prefixes: tuple[str, ...]) -> dict[str, str]:
@@ -96,7 +96,7 @@ def test_01_build_resources_check() -> None:
         timeout=60,
     )
     assert res.returncode == 0, f"build_resources.py --check failed:\n{res.stdout}\n{res.stderr}"
-    assert "137 files" in res.stdout
+    assert "128 files" in res.stdout
 
 
 # ---------------------------------------------------------------------------
@@ -228,31 +228,25 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
         assert {"0", "7", "8"}.issubset(kr_hb) and "9" not in kr_hb
         assert rc_rows["DRUID"][hb_col_idx] == "0"
 
-    # Comp 200: Tempus + Multiclass F/C & C/R
+    # Comp 200: Priest of Tempus (Single-Class + Dual-Class only; zero player multiclass kits!)
     ohtempus = (ovr / "OHTEMPUS.2DA").read_text(encoding="utf-8")
     assert "AP_CDHLYSYM" in ohtempus and "AP_CBKTMP1" in ohtempus and "AP_CBKTMDV" in ohtempus
     branwe = parse_cre_v1((ovr / "BRANWE.CRE").read_bytes())
     assert branwe["kit_ids"] == 0x4029 and branwe["profs"].get(92, 0) >= 1
-
-    pr01_hdr, pr01_map = _read_2da_header_and_map(ovr / "CLABPR01.2DA")
-    assert len(pr01_hdr) == 50 and "CBK_MC_P" in pr01_map
-    assert pr01_map["CBK_MC_P"][0] == "AP_CBKMCP01" and pr01_map["CBK_MC_P"][49] == "AP_CBKMCP50"
-    mcp01_fx = parse_spl((ovr / "CBKMCP01.SPL").read_bytes())["abilities"][0]["effects"]
-    tempus_mc_fx = [fx for fx in mcp01_fx if fx["opcode"] == 177 and fx["p1"] == 0x4029 and fx["p2"] == 9]
-    assert len(tempus_mc_fx) == 4
-    for fx in tempus_mc_fx:
-        ed = read_eff_v2((ovr / f"{fx['resource']}.EFF").read_bytes())
-        assert ed["parent_type"] == 1 and ed["parent_resource"] == fx["resource"]
+    assert not (ovr / "CBKMCP01.SPL").exists()
+    assert "LK_ALAGHOR" not in kl_by_name
 
     _, kt_all = _read_2da_header_and_map(ovr / "KITTABLE.2DA")
-    tempus_num = kl_by_name["OHTEMPUS"][0]
-    for r_i, tbl in enumerate(kt_all["FIGHTER_CLERIC"]):
-        kfc = [r[1] for r in _read_2da_rows(ovr / f"{tbl}.2DA")]
-        assert kfc[0] == "0" and tempus_num in kfc, f"{tbl}: {kfc}"
-    for r_name in ("HUMAN", "ELF", "HALF_ELF", "HALFLING"):
-        tbl = kt_all["CLERIC_RANGER"][rc_hdr.index(r_name)]
-        kcr = [r[1] for r in _read_2da_rows(ovr / f"{tbl}.2DA")]
-        assert kcr[0] == "0" and tempus_num in kcr, f"{tbl}: {kcr}"
+    for mc_cls in (
+        "FIGHTER_MAGE", "FIGHTER_CLERIC", "FIGHTER_THIEF", "FIGHTER_MAGE_THIEF", "MAGE_THIEF",
+        "CLERIC_MAGE", "CLERIC_THIEF", "FIGHTER_DRUID", "FIGHTER_MAGE_CLERIC", "CLERIC_RANGER",
+    ):
+        for tbl in kt_all[mc_cls]:
+            tpath = ovr / f"{tbl}.2DA"
+            if tpath.is_file():
+                assert [r[1] for r in _read_2da_rows(tpath)] == ["0"], f"{tbl} must stay unkitted!"
+    for req_mc_tbl in ("K_FC_H", "K_FC_D", "K_CT_H", "K_CR_H"):
+        assert [r[1] for r in _read_2da_rows(ovr / f"{req_mc_tbl}.2DA")] == ["0"]
 
     # Comp 201: Vanilla Deity Clerics (Lathander, Helm, Talos, Tyr)
     for clab_f, expected_toks in [
@@ -284,42 +278,24 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
         (62, 1, 0x20), (62, 1, 0x40), (166, 5, 0), (44, 1, 0), (142, 0, 0x3F),
     ]
 
-    # Comp 202: Alaghor of Clangeddin (LK_ALAGHOR)
-    assert "LK_ALAGHOR" in kl_by_name
-    alag_row = kl_by_name["LK_ALAGHOR"]
-    alag_num, alag_ids = alag_row[0], int(alag_row[9], 16)
-    assert alag_row[8] == "3" and int(alag_row[7], 16) == 0x00004000
-    assert alag_num in [r[1] for r in _read_2da_rows(ovr / "K_C_D.2DA")]
-    assert alag_num not in [r[1] for r in _read_2da_rows(ovr / "K_C_H.2DA")]
-    kfc_d = [r[1] for r in _read_2da_rows(ovr / "K_FC_D.2DA")]
-    kfc_h = [r[1] for r in _read_2da_rows(ovr / "K_FC_H.2DA")]
-    assert kfc_d[0] == "0" and alag_num in kfc_d and alag_num not in kfc_h
-    for tier in range(1, 5):
-        axe_itm = parse_itm_v1((ovr / f"CBKALGA{tier}.ITM").read_bytes())
-        assert axe_itm["enchantment"] == tier and axe_itm["prof"] == 92
-        assert not any(fx["opcode"] == 145 for fx in axe_itm["equipping_effects"])
-    yeslic = parse_cre_v1((ovr / "YESLIC.CRE").read_bytes())
-    assert yeslic["kit_ids"] == alag_ids
-    assert yeslic["levels"] == (5, 5, 0)  # Level bytes NEVER touched!
-    assert yeslic["profs"].get(92) == 2 and yeslic["profs"].get(97) == 2 and yeslic["profs"].get(107, 0) == 0
-
-    # Comp 203: Nightcloak of Shar (CBK_SHAR)
+    # Comp 202: Priest of Shar (CBK_SHAR — single-class Cleric + Viconia single-class sync)
     assert "CBK_SHAR" in kl_by_name
     shar_row = kl_by_name["CBK_SHAR"]
     shar_num, shar_ids = shar_row[0], int(shar_row[9], 16)
     assert shar_row[8] == "3" and int(shar_row[7], 16) == 0x00004000
-    for tbl in kt_all["CLERIC_THIEF"]:
-        kct = [r[1] for r in _read_2da_rows(ovr / f"{tbl}.2DA")]
-        assert kct[0] == "0" and shar_num in kct, f"{tbl}: {kct}"
+    assert tlk_strings[int(shar_row[2])] == "priest of shar"
+    assert tlk_strings[int(shar_row[3])] == "Priest of Shar"
     cbkshr2 = parse_spl((ovr / "CBKSHR2.SPL").read_bytes())
     assert not any(fx["opcode"] == 74 for ab in cbkshr2["abilities"] for fx in ab["effects"])  # NO blindness!
     viconi = parse_cre_v1((ovr / "VICONI9.CRE").read_bytes())
     assert viconi["kit_ids"] == shar_ids and viconi["levels"] == (8, 0, 0)  # Level bytes NEVER touched!
 
-    # Comp 204: Waveservant of Umberlee (CBK_UMBERLEE)
+    # Comp 203: Priest of Umberlee (CBK_UMBERLEE)
     assert "CBK_UMBERLEE" in kl_by_name
     umb_row = kl_by_name["CBK_UMBERLEE"]
     umb_num, umb_ids = umb_row[0], int(umb_row[9], 16)
+    assert tlk_strings[int(umb_row[2])] == "priest of umberlee"
+    assert tlk_strings[int(umb_row[3])] == "Priest of Umberlee"
     _, al_rows = _read_2da_header_and_map(ovr / "ALIGNMNT.2DA")
     assert al_rows["CBK_UMBERLEE"] == ["0", "0", "0", "0", "0", "1", "0", "1", "1"]  # NE, CN, CE only (NO CG!)
     assert umb_num not in [r[1] for r in _read_2da_rows(ovr / "K_C_D.2DA")]
@@ -327,10 +303,12 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
     cbkhumb = parse_itm_v1((ovr / "CBKHUMB.ITM").read_bytes())
     assert any(fx["opcode"] == 49 and fx["p1"] == 1 for fx in cbkhumb["equipping_effects"])
 
-    # Comp 205: Painbearer of Ilmater (CBK_ILMATER)
+    # Comp 204: Priest of Ilmater (CBK_ILMATER)
     assert "CBK_ILMATER" in kl_by_name
     ilm_row = kl_by_name["CBK_ILMATER"]
     ilm_num = ilm_row[0]
+    assert tlk_strings[int(ilm_row[2])] == "priest of ilmater"
+    assert tlk_strings[int(ilm_row[3])] == "Priest of Ilmater"
     assert al_rows["CBK_ILMATER"] == ["1", "1", "0", "1", "0", "0", "0", "0", "0"]  # LG, LN, NG
     assert ilm_num in [r[1] for r in _read_2da_rows(ovr / "K_C_D.2DA")]
     if extra_race:
@@ -345,27 +323,25 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
     cbkhilm = parse_itm_v1((ovr / "CBKHILM.ITM").read_bytes())
     assert any(fx["opcode"] == 10 and fx["p1"] == 1 for fx in cbkhilm["equipping_effects"])
 
-    # Verify dual-class WIS mins (17 / 15) on all new Cleric kits (LK_ALAGHOR, CBK_SHAR, CBK_UMBERLEE, CBK_ILMATER)
+    # Verify dual-class WIS mins (17 / 15) on all new Cleric kits (CBK_SHAR, CBK_UMBERLEE, CBK_ILMATER)
     _, dcd_all = _read_2da_header_and_map(ovr / "ABDCDSRQ.2DA")
     _, dcs_all = _read_2da_header_and_map(ovr / "ABDCSCRQ.2DA")
-    for ck in ("LK_ALAGHOR", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
+    for ck in ("CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
         assert dcd_all[ck] == ["0", "0", "0", "0", "17", "0"], f"ABDCDSRQ {ck}={dcd_all[ck]}"
         assert dcs_all[ck] == ["0", "0", "0", "0", "15", "0"], f"ABDCSCRQ {ck}={dcs_all[ck]}"
 
-    # Verify WEAPPROF.2DA EXTRA2..EXTRA20 (116..134) stay 0 across all v0.3.0 Cleric kits
+    # Verify WEAPPROF.2DA EXTRA2..EXTRA20 (116..134) stay 0 across all v0.3.1 Cleric kits
     wp_lines_all = (ovr / "WEAPPROF.2DA").read_text(encoding="utf-8").splitlines()
     wp_hdr_all = wp_lines_all[2].split()
-    for kit_col in ("HELM", "TALOS", "OHTYR", "LK_ALAGHOR", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
+    for kit_col in ("HELM", "TALOS", "OHTYR", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
         c_idx = wp_hdr_all.index(kit_col) + 1
         for line in wp_lines_all[3:]:
             parts = line.split()
             if parts and int(parts[1]) >= 116:
                 assert parts[c_idx] == "0", f"{kit_col} non-zero EXTRA row {parts[0]}={parts[c_idx]}"
 
-    # Verify CBKWPN rules for 201..204
+    # Verify CBKWPN rules for 202..203
     cbkwpn_all = _read_2da_rows(ovr / "CBKWPN.2DA")
-    alag_wpn = {(r[3], r[4], r[5]) for r in cbkwpn_all if r[2] == str(alag_ids)}
-    assert {("PROF", "92", "ALLOW"), ("PROF", "103", "DENY"), ("PROF", "107", "DENY")}.issubset(alag_wpn)
     shar_wpn = {(r[3], r[4], r[5]) for r in cbkwpn_all if r[2] == str(shar_ids)}
     assert ("PROF", "96", "ALLOW") in shar_wpn
     umb_wpn = {(r[3], r[4], r[5]) for r in cbkwpn_all if r[2] == str(umb_ids)}
@@ -513,53 +489,48 @@ def test_03b_comp_111_and_install_orders_and_fallbacks(tmp_path: pathlib.Path) -
     assert br_num2 in {r[1] for r in _read_2da_rows(ovr2 / "K_F_HB.2DA")}
     mg2 = _read_2da_rows(ovr2 / "MGSRCREQ.2DA")
     assert mg2[0][1] == "MAGE" and mg2[1][1] == "ILLUSIONIST"
-    # 3) Install 200..205 BEFORE 110 (with yeslick-npc pre-installed LK_ALAGHOR + QD_MCP01 & Icelance dedup)
+    # 3) Install 100..204 + 110 + 320 (with yeslick-npc pre-installed LK_ALAGHOR in KITLIST & K_FC_D)
     g3 = tmp_path / "order_clerics_then_110"
     create_fake_game(g3, mode="eet", extra_race_col=True, with_druid_icelance=True, with_yeslick_alaghor=True)
-    _install_list(g3, ["100", "200", "201", "202", "203", "204", "205"])
-    _install_list(g3, ["110"])
+    _install_list(g3, ["100", "200", "201", "202", "203", "204"])
+    _install_list(g3, ["110", "320"])
     ovr3 = g3 / "override"
     kl3 = {r[1]: r for r in _read_2da_rows(ovr3 / "KITLIST.2DA")}
     t3, a3, s3, u3, i3 = kl3["OHTEMPUS"][0], kl3["LK_ALAGHOR"][0], kl3["CBK_SHAR"][0], kl3["CBK_UMBERLEE"][0], kl3["CBK_ILMATER"][0]
     assert len([r for r in _read_2da_rows(ovr3 / "KITLIST.2DA") if r[1] == "LK_ALAGHOR"]) == 1
-    # QD_MCP01 cleanup: LK_ALAGHOR (0x402A) stripped, unrelated 0x4099 kept!
-    qd3_p1s = [fx["p1"] for fx in parse_spl((ovr3 / "QD_MCP01.SPL").read_bytes())["abilities"][0]["effects"] if fx["opcode"] == 177]
-    assert 0x402A not in qd3_p1s and 0x4099 in qd3_p1s
+    # External LK_ALAGHOR gets Battle Axe usability + Fighter/Cleric Battle Axe level-up pips automatically (100 & 320 idempotent)
+    cbkwpn3 = _read_2da_rows(ovr3 / "CBKWPN.2DA")
+    assert ("PROF", "92", "ALLOW") in {(r[3], r[4], r[5]) for r in cbkwpn3 if r[2] == str(0x402A)}
+    alag_kp3 = [r for r in _read_2da_rows(ovr3 / "CBRKPKIT.2DA") if r[0] == "LK_ALAGHOR_FC"]
+    assert alag_kp3 == [["LK_ALAGHOR_FC", "8", str(0x402A)]]
     # Umberlee Icelance deduplication when CLERIC_CBMAGIC_ICELANCE is present
     cbkumb0_3 = (ovr3 / "CBKUMB0.2DA").read_text(encoding="utf-8")
     assert "GA_CBKUMIL" not in cbkumb0_3 and "GA_CBKUMCC" in cbkumb0_3
-    # Reverse-order FR preservation across K_C_*, K_FC_*, K_CT_*, K_CR_*
+    # Reverse-order FR preservation across single-class K_C_* + zero player multiclass kits in K_FC_D!
     assert a3 in [r[1] for r in _read_2da_rows(ovr3 / "K_C_D.2DA")]
     assert a3 not in [r[1] for r in _read_2da_rows(ovr3 / "K_C_H.2DA")]
     assert u3 not in [r[1] for r in _read_2da_rows(ovr3 / "K_C_D.2DA")]
     assert u3 in [r[1] for r in _read_2da_rows(ovr3 / "K_C_H.2DA")]
     assert i3 not in [r[1] for r in _read_2da_rows(ovr3 / "K_C_HB.2DA")]
     assert t3 in [r[1] for r in _read_2da_rows(ovr3 / "K_C_D.2DA")]
-    kfc3_d = [r[1] for r in _read_2da_rows(ovr3 / "K_FC_D.2DA")]
-    kfc3_e = [r[1] for r in _read_2da_rows(ovr3 / "K_FC_E.2DA")]
-    kct3_hb = [r[1] for r in _read_2da_rows(ovr3 / "K_CT_HB.2DA")]
-    kcr3_e = [r[1] for r in _read_2da_rows(ovr3 / "K_CR_E.2DA")]
-    assert kfc3_d[0] == "0" and t3 in kfc3_d and a3 in kfc3_d
-    assert kfc3_e[0] == "0" and t3 in kfc3_e and a3 not in kfc3_e
-    assert kct3_hb[0] == "0" and s3 in kct3_hb
-    assert kcr3_e[0] == "0" and t3 in kcr3_e
+    assert [r[1] for r in _read_2da_rows(ovr3 / "K_FC_D.2DA")] == ["0"]
+    assert [r[1] for r in _read_2da_rows(ovr3 / "K_FC_E.2DA")] == ["0"]
+    assert [r[1] for r in _read_2da_rows(ovr3 / "K_CT_HB.2DA")] == ["0"]
+    assert [r[1] for r in _read_2da_rows(ovr3 / "K_CR_E.2DA")] == ["0"]
 
-    # 4) Install 200..205 BEFORE 111 -> Unlock All unlocks every Cleric kit & multiclass across all races
+    # 4) Install 200..204 BEFORE 111 -> Unlock All unlocks every Cleric kit across all single-class race tables (multiclasses stay ["0"])
     g4 = tmp_path / "order_clerics_then_111"
     create_fake_game(g4, mode="eet", extra_race_col=True)
-    _install_list(g4, ["100", "200", "201", "202", "203", "204", "205"])
+    _install_list(g4, ["100", "200", "201", "202", "203", "204"])
     _install_list(g4, ["111"])
     ovr4 = g4 / "override"
     kl4 = {r[1]: r for r in _read_2da_rows(ovr4 / "KITLIST.2DA")}
-    t4, a4, s4, u4, i4 = kl4["OHTEMPUS"][0], kl4["LK_ALAGHOR"][0], kl4["CBK_SHAR"][0], kl4["CBK_UMBERLEE"][0], kl4["CBK_ILMATER"][0]
-    assert {t4, a4, s4, u4, i4}.issubset(set(r[1] for r in _read_2da_rows(ovr4 / "K_C_D.2DA")))
-    assert {t4, a4, s4, u4, i4}.issubset(set(r[1] for r in _read_2da_rows(ovr4 / "K_C_HB.2DA")))
-    kfc4_h = [r[1] for r in _read_2da_rows(ovr4 / "K_FC_H.2DA")]
-    kct4_h = [r[1] for r in _read_2da_rows(ovr4 / "K_CT_H.2DA")]
-    kcr4_d = [r[1] for r in _read_2da_rows(ovr4 / "K_CR_D.2DA")]
-    assert kfc4_h[0] == "0" and t4 in kfc4_h and a4 in kfc4_h
-    assert kct4_h[0] == "0" and s4 in kct4_h
-    assert kcr4_d[0] == "0" and t4 in kcr4_d
+    t4, s4, u4, i4 = kl4["OHTEMPUS"][0], kl4["CBK_SHAR"][0], kl4["CBK_UMBERLEE"][0], kl4["CBK_ILMATER"][0]
+    assert {t4, s4, u4, i4}.issubset(set(r[1] for r in _read_2da_rows(ovr4 / "K_C_D.2DA")))
+    assert {t4, s4, u4, i4}.issubset(set(r[1] for r in _read_2da_rows(ovr4 / "K_C_HB.2DA")))
+    assert [r[1] for r in _read_2da_rows(ovr4 / "K_FC_H.2DA")] == ["0"]
+    assert [r[1] for r in _read_2da_rows(ovr4 / "K_CT_H.2DA")] == ["0"]
+    assert [r[1] for r in _read_2da_rows(ovr4 / "K_CR_D.2DA")] == ["0"]
 
 
 # ---------------------------------------------------------------------------
@@ -579,7 +550,7 @@ def test_04_we_overwrite_converges_from_mutated_state(tmp_path: pathlib.Path) ->
     ohtmps1 = parse_spl((ovr / "OHTMPS1.SPL").read_bytes())
     assert not any(fx["opcode"] == 99 for ab in ohtmps1["abilities"] for fx in ab["effects"])
 
-    # v0.2.0 + v0.3.0 We Overwrite checks on mutated ABRACEAD, RACETHAC, SPWI116, CHAN01, SW1HSEEK, SPCL741, OHTYR2, YESLIC, VICONI9
+    # v0.2.0 + v0.3.1 We Overwrite checks on mutated ABRACEAD, RACETHAC, SPWI116, CHAN01, SW1HSEEK, SPCL741, OHTYR2, VICONI9
     _, ab_rows = _read_2da_header_and_map(ovr / "ABRACEAD.2DA")
     assert ab_rows["DWARF"][5] == "-1"
     _, rt_rows = _read_2da_header_and_map(ovr / "RACETHAC.2DA")
@@ -596,9 +567,6 @@ def test_04_we_overwrite_converges_from_mutated_state(tmp_path: pathlib.Path) ->
         parsed_m = parse_spl((ovr / sp_m).read_bytes())
         assert not any(fx["opcode"] == 99 for ab in parsed_m["abilities"] for fx in ab["effects"])
     kl_m = {r[1]: r for r in _read_2da_rows(ovr / "KITLIST.2DA")}
-    yeslic_m = parse_cre_v1((ovr / "YESLIC.CRE").read_bytes())
-    assert yeslic_m["kit_ids"] == int(kl_m["LK_ALAGHOR"][9], 16) and yeslic_m["levels"] == (5, 5, 0)
-    assert yeslic_m["profs"].get(92) == 2 and yeslic_m["profs"].get(97) == 2 and yeslic_m["profs"].get(107, 0) == 0
     viconi_m = parse_cre_v1((ovr / "VICONI9.CRE").read_bytes())
     assert viconi_m["kit_ids"] == int(kl_m["CBK_SHAR"][9], 16) and viconi_m["levels"] == (8, 0, 0)
 
@@ -614,17 +582,12 @@ def test_05_idempotent_reinstall_and_uninstall(tmp_path: pathlib.Path) -> None:
     baseline = _sha256_tree(game, ignore)
 
     _install_all(game)
-    _install_all(game)  # Reinstall all 13 components once more
+    _install_all(game)  # Reinstall all 12 components once more
     ovr = game / "override"
     kl_rows = _read_2da_rows(ovr / "KITLIST.2DA")
-    for kname in ("CBKBLDRG", "CBK_STONEFIRE", "CBK_ELEMENTALIST", "LK_ALAGHOR", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
+    for kname in ("CBKBLDRG", "CBK_STONEFIRE", "CBK_ELEMENTALIST", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
         assert len([r for r in kl_rows if r[1] == kname]) == 1
-    assert len([r for r in _read_2da_rows(ovr / "CBRKPKIT.2DA") if r[0].startswith("OHTEMPUS_")]) == 2
-    assert len([r for r in _read_2da_rows(ovr / "CBRKPKIT.2DA") if r[0] == "LK_ALAGHOR_FC"]) == 1
-    assert len([r for r in _read_2da_rows(ovr / "CBRKPKIT.2DA") if r[0] == "CBK_SHAR_CT"]) == 1
-    # CBKMCP01 op177 idempotence: still exactly 4 Tempus entries after reinstall
-    mcp01_re = parse_spl((ovr / "CBKMCP01.SPL").read_bytes())["abilities"][0]["effects"]
-    assert len([fx for fx in mcp01_re if fx["opcode"] == 177 and fx["p1"] == 0x4029 and fx["p2"] == 9]) == 4
+    assert len([r for r in _read_2da_rows(ovr / "CBRKPKIT.2DA") if r[0].startswith(("OHTEMPUS_", "CBK_SHAR_"))]) == 0
 
     _uninstall_all(game)
     after_uninstall = _sha256_tree(game, ignore)

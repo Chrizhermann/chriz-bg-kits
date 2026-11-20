@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.1 (2026-11-20) — Single/Dual-Class Kits Only, External `yeslick-npc` Compat & `Priest of <Deity>` Naming
+- **No Player Multiclass Kits (Single-Class & Dual-Class Only):** Removed player multiclass kit delivery (`cbk_multiclass.tpa` / `cbk_enable_multiclass_cleric_kit`); Component `110` keeps all multiclass `K_*` tables strictly `1   0` unkitted even if an upstream mod previously wrote kit rows into them.
+- **Retired Standalone `Alaghor of Clangeddin` Component:** Removed `defs/alaghor.json`, `cbk_alaghor.tpa`, and bundled `CBKALG*`/`CBKLPAL` resources so `yeslick-npc` remains the canonical owner of `LK_ALAGHOR`. Added `cbk_sync_yeslick_alaghor` in `100` (`cbk_kernel.tpa`) and `320` (`cbk_core_fixes.tpa`) to automatically grant external `LK_ALAGHOR` Battle Axe usability (`CBKWPN.2DA`) and Fighter/Cleric Battle Axe level-up pips (`CBRKPKIT.2DA`) when `yeslick-npc` is installed.
+- **Unified `Priest of <Deity>` Naming & Single-Class Viconia:** Renumbered and renamed Components `202` **Priest of Shar** (`CBK_SHAR`, pure single-class Cleric + Viconia single-class sync), `203` **Priest of Umberlee** (`CBK_UMBERLEE`), and `204` **Priest of Ilmater** (`CBK_ILMATER`).
+
 ## v0.3.0 (2026-11-20) — Divine Pantheon & Multiclass Cleric Kits
 - **Shared Infrastructure (`cbk_holysym.tpa`, `cbk_multiclass.tpa`, `cbk_add_kit.tpa`, `cbk_races.tpa`):**
   - Clean-room Level-25 Holy Symbol builder (`cbk_make_holy_symbol`) modeled on vanilla `BELT12.ITM` / `OHTEMPUS.ITM` / `CDHLYSYM.SPL`.

@@ -1,4 +1,4 @@
--- M_CBKILM.lua: Painbearer of Ilmater (Component 205)
+-- M_CBKILM.lua: Priest of Ilmater (Component 204)
 -- Enforces a non-additive 25% Physical Resistance floor (Slashing, Crushing, Piercing, Missile)
 -- while CBK_ILMATER_ENDURE is active, guarded by idempotence marker CBK_ILM_RESOLVED.
 

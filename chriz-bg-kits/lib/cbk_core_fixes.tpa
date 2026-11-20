@@ -166,4 +166,7 @@ DEFINE_ACTION_FUNCTION cbk_install_core_fixes BEGIN
   // 4. Dual-Classes Keep Kit Names (including Barbarian 0x40000000 and mod kits)
   LAF cbk_rebuild_dcnam END
   COPY ~%MOD_FOLDER%/lua/M_CBKDCN.lua~ ~override/M_CBKDCN.lua~
+
+  // 5. Register external yeslick-npc LK_ALAGHOR Battle Axe usability & level-up pips if present
+  LAF cbk_sync_yeslick_alaghor END
 END

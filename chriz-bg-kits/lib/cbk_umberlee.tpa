@@ -1,4 +1,4 @@
-// cbk_umberlee.tpa: Component 204 — Waveservant of Umberlee (Cleric Kit, CBK_UMBERLEE)
+// cbk_umberlee.tpa: Component 203 — Priest of Umberlee (Cleric Kit, CBK_UMBERLEE)
 
 DEFINE_ACTION_FUNCTION cbk_umb_spell_resref_from_ids
   STR_VAR sym = ~~

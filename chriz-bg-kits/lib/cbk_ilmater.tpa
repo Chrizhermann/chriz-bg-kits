@@ -1,4 +1,4 @@
-// cbk_ilmater.tpa: Component 205 — Painbearer of Ilmater (Cleric Kit, CBK_ILMATER)
+// cbk_ilmater.tpa: Component 204 — Priest of Ilmater (Cleric Kit, CBK_ILMATER)
 
 DEFINE_ACTION_FUNCTION cbk_install_ilmater BEGIN
   LAF cbk_install_res_ilmater END
