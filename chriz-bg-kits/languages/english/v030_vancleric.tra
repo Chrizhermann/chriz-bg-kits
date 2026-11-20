@@ -1,0 +1,92 @@
+@2300 = ~Boon of Lathander~
+@2301 = ~Boon of Lathander
+Duration: 1 round/level
+Casting Time: 1
+
+The Priest of Lathander channels the Morninglord's radiance, gaining +1 to THAC0, +1 to damage rolls, +1 to all Saving Throws, +1 extra attack per round (does not stack with Haste or Improved Haste), and immunity to Level Drain for the duration.~
+@2302 = ~PRIEST OF LATHANDER: Clerics of the Morninglord are champions of dawn, vitality, and the destruction of undead.
+Advantages:
+- Automatically receives 1 Mace proficiency pip at 1st level in addition to starting proficiencies.
+- May cast Boon of Lathander once per day at 1st level (plus 1 additional use every 5 levels): grants +1 THAC0, +1 damage, +1 to all Saving Throws, +1 extra attack per round (capped vs. Haste/Improved Haste), and immunity to Level Drain for 1 round per level.
+- May cast Hold Undead once per day at 1st level (plus 1 additional use every 10 levels).
+- Receives a Holy Symbol of Lathander at 25th level.
+Disadvantages:
+- Alignment restricted to Lawful Good, Neutral Good, Chaotic Good, or True Neutral.~
+
+@2310 = ~Seeking Sword~
+@2311 = ~Seeking Sword
+Duration: 1 round/level
+Casting Time: 5
+
+Summons a +4 Bastard Sword of radiant vigilance into the Priest of Helm's hands. The Seeking Sword deals 2d4 slashing damage, grants 3 base attacks per round and a +2 bonus to Armor Class, and does not restrict spellcasting while equipped. May be dismissed at will via Dismiss Seeking Sword.~
+@2312 = ~Seeking Sword~
+@2313 = ~This radiant +4 Bastard Sword is summoned by a Priest of Helm to guard the faithful. It sets base attacks per round to 3, grants a +2 bonus to Armor Class, and allows unhindered spellcasting while wielded.
+
+STATISTICS:
+
+THAC0: +4
+Damage: 2d4 (slashing)
+Enchantment: +4
+Special:
+  3 base attacks per round
+  +2 Armor Class
+  Spellcasting remains enabled
+Speed Factor: 1
+Proficiency Type: Bastard Sword
+Type: One-handed
+Weight: 0~
+@2314 = ~Dismiss Seeking Sword~
+@2315 = ~Dismiss Seeking Sword
+Dismisses the summoned Seeking Sword immediately.~
+@2316 = ~PRIEST OF HELM: Clerics of the Vigilant One stand watch over their allies with blade and ward alike.
+Advantages:
+- Automatically receives 1 Bastard Sword proficiency pip at 1st level in addition to starting proficiencies, and may equip and become proficient in Bastard Swords.
+- May cast Seeking Sword once per day at 1st level (plus 1 additional use every 10 levels): summons a +4 Bastard Sword (2d4 slashing, 3 base attacks per round, +2 Armor Class) without disabling spellcasting, and may dismiss it at will.
+- May cast True Sight once per day at 1st level (plus 1 additional use every 5 levels).
+- Receives a Holy Symbol of Helm at 25th level.
+Disadvantages:
+- Alignment restricted to Lawful Good, Lawful Neutral, True Neutral, or Lawful Evil.~
+
+@2320 = ~Lightning of Talos~
+@2321 = ~Lightning of Talos
+Range: 40 ft.
+Duration: Instant (stagger 1 round)
+Casting Time: 2
+Saving Throw: Breath (half damage; negates stagger)
+
+Calls down a targeted bolt of lightning upon a single foe, dealing 1d6 electrical damage per caster level (max 10d6; Save vs. Breath for half). A creature that fails its Saving Throw vs. Breath is also staggered for 1 round (-2 THAC0 and -2 Armor Class).~
+@2322 = ~PRIEST OF TALOS: Stormlords revel in unleashed fury, wielding thunder, lightning, and the spear of the tempest.
+Advantages:
+- Automatically receives 1 Spear proficiency pip at 1st level in addition to starting proficiencies, and may equip and become proficient in Spears and Daggers.
+- +25% baseline resistance to Electricity.
+- May cast Lightning of Talos once per day at 1st level (plus 1 additional use every 5 levels): calls down a targeted, non-bouncing strike for 1d6 electrical damage per level (max 10d6, Save vs. Breath for half) plus a 1-round stagger (-2 THAC0, -2 Armor Class; Save vs. Breath negates).
+- May cast Storm Shield once per day at 1st level (plus 1 additional use every 10 levels).
+- Receives a Holy Symbol of Talos at 25th level.
+Disadvantages:
+- Alignment restricted to Chaotic Neutral, Neutral Evil, or Chaotic Evil.~
+
+@2330 = ~Divine Favor~
+@2331 = ~Divine Favor
+Duration: 4 rounds
+Casting Time: 1
+
+Calling upon Tyr's righteous judgment, the priest gains a scaling bonus to THAC0 and melee/ranged damage rolls (+1 at 1st level, +2 at 6th, +3 at 9th, +4 at 12th, +5 at 15th, and +6 at 18th level) for 4 rounds.~
+@2332 = ~Holy Symbol of Tyr~
+@2333 = ~This sacred symbol is bestowed upon faithful Priests of Tyr who reach 25th level.
+
+STATISTICS:
+
+Equipped abilities:
+- Strength: +1
+- Magic Resistance: +5%
+- Memorize 1 extra 6th-level and 1 extra 7th-level Priest spell
+
+Weight: 0~
+@2334 = ~PRIEST OF TYR: Clerics of the Maimed God uphold justice and righteous judgment with blade and prayer.
+Advantages:
+- Automatically receives 1 Long Sword proficiency pip at 1st level in addition to starting proficiencies, and may equip and become proficient in Long Swords.
+- May cast Divine Favor once per day at 1st level (plus 1 additional use every 5 levels): grants +1 to +6 THAC0 and damage (scaling at levels 1, 6, 9, 12, 15, and 18) for 4 rounds.
+- May cast Exaltation once per day at 1st level (plus 1 additional use every 10 levels).
+- Receives a Holy Symbol of Tyr at 25th level (+1 Strength, +5% Magic Resistance, +1 6th- and 7th-level Priest spell).
+Disadvantages:
+- Alignment restricted to Lawful Good, Lawful Neutral, or Neutral Good.~

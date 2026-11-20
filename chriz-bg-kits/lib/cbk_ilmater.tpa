@@ -1,0 +1,124 @@
+// cbk_ilmater.tpa: Component 205 — Painbearer of Ilmater (Cleric Kit, CBK_ILMATER)
+
+DEFINE_ACTION_FUNCTION cbk_install_ilmater BEGIN
+  LAF cbk_install_res_ilmater END
+  LAF cbk_ensure_resource_symbols
+    RET
+      cbk_state_CBK_ILMATER_ENDURE = cbk_state_CBK_ILMATER_ENDURE
+      cbk_state_CBK_ILM_RESOLVED   = cbk_state_CBK_ILM_RESOLVED
+  END
+
+  // 1. Stamp innate names & descriptions
+  COPY_EXISTING ~CBKILM1.SPL~ ~override~ SAY NAME1 @2553 SAY UNIDENTIFIED_DESC @2554
+  COPY_EXISTING ~CBKILM2.SPL~ ~override~ SAY NAME1 @2555 SAY UNIDENTIFIED_DESC @2556
+
+  // 2. Build CBKILM0.2DA (50 cols)
+  OUTER_SPRINT ilm_hdr ~2DA V1.0%WNL%****%WNL%           ~
+  OUTER_SPRINT r_a1 ~ABILITY1   ~
+  OUTER_SPRINT r_a2 ~ABILITY2   ~
+  OUTER_SPRINT r_a3 ~ABILITY3   ~
+  OUTER_SPRINT r_a4 ~ABILITY4   ~
+
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT ilm_hdr ~%ilm_hdr% %lv%~
+
+    // ABILITY1: L1 free Quarterstaff lore pip
+    ACTION_IF (lv = 1) BEGIN OUTER_SPRINT c1 ~AP_CBKLPIL~ END ELSE BEGIN OUTER_SPRINT c1 ~****~ END
+    OUTER_SPRINT r_a1 ~%r_a1% %c1%~
+
+    // ABILITY2: L1 passive + L25 Holy Symbol
+    ACTION_IF (lv = 1) BEGIN
+      OUTER_SPRINT c2 ~AP_CBKILM0~
+    END ELSE ACTION_IF (lv = 25) BEGIN
+      OUTER_SPRINT c2 ~AP_CBKHSYIL~
+    END ELSE BEGIN
+      OUTER_SPRINT c2 ~****~
+    END
+    OUTER_SPRINT r_a2 ~%r_a2% %c2%~
+
+    // ABILITY3: Ilmater's Endurance (1,6,11,16,21,26,31,36,41,46)
+    ACTION_IF ((lv MODULO 5) = 1) BEGIN OUTER_SPRINT c3 ~GA_CBKILM1~ END ELSE BEGIN OUTER_SPRINT c3 ~****~ END
+    OUTER_SPRINT r_a3 ~%r_a3% %c3%~
+
+    // ABILITY4: Martyr's Grace (3,8,13,18,23,28,33,38,43,48)
+    ACTION_IF ((lv MODULO 5) = 3) BEGIN OUTER_SPRINT c4 ~GA_CBKILM2~ END ELSE BEGIN OUTER_SPRINT c4 ~****~ END
+    OUTER_SPRINT r_a4 ~%r_a4% %c4%~
+  END
+
+  OUTER_SPRINT ilm_clab ~%ilm_hdr%%WNL%%r_a1%%WNL%%r_a2%%WNL%%r_a3%%WNL%%r_a4%%WNL%~
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKILM0.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    INSERT_BYTES 0 (STRING_LENGTH ~%ilm_clab%~)
+    WRITE_ASCIIE 0 ~%ilm_clab%~
+    PRETTY_PRINT_2DA
+
+  // 3. Register CBK_ILMATER (class 3 = CLERIC, LG/LN/NG only, race_policy = CLONE)
+  OUTER_SET ilm_lower = RESOLVE_STR_REF (@2550)
+  OUTER_SET ilm_mixed = RESOLVE_STR_REF (@2551)
+  OUTER_SET ilm_help  = RESOLVE_STR_REF (@2552)
+
+  LAF cbk_register_kit
+    INT_VAR
+      class_id      = 3
+      unusable_mask = 0x00004000
+      lower_ref     = ilm_lower
+      mixed_ref     = ilm_mixed
+      help_ref      = ilm_help
+    STR_VAR
+      kit_name       = ~CBK_ILMATER~
+      class_label    = ~CLERIC~
+      clone_kit      = ~OHTEMPUS~
+      clone_prof_col = ~CLERIC~
+      clab           = ~CBKILM0~
+      lua_abbr       = ~Cl0~
+      hpclass        = ~HPPRS~
+      clasweap_row   = ~0 0 1 1 0 1 0 0~
+      abclasrq_row   = ~0 0 12 0 9 0~
+      alignmnt_row   = ~1 1 0 1 0 0 0 0 0~
+      dualclas_row   = ~1 0 1 1 0 1~
+      race_policy    = ~CLONE~
+    RET
+      ilm_kit_num  = kit_num
+      ilm_kit_ids  = kit_ids
+      ilm_data_col = kit_data_col
+  END
+
+  // 4. WEAPPROF.2DA: Quarterstaff (102=1) + standard Cleric blunt/sling/styles (1)
+  OUTER_SET cbk_ilm_wp_4   = 1
+  OUTER_SET cbk_ilm_wp_5   = 1
+  OUTER_SET cbk_ilm_wp_7   = 1
+  OUTER_SET cbk_ilm_wp_97  = 1
+  OUTER_SET cbk_ilm_wp_100 = 1
+  OUTER_SET cbk_ilm_wp_101 = 1
+  OUTER_SET cbk_ilm_wp_102 = 1
+  OUTER_SET cbk_ilm_wp_107 = 1
+  OUTER_SET cbk_ilm_wp_111 = 1
+  OUTER_SET cbk_ilm_wp_112 = 1
+  OUTER_SET cbk_ilm_wp_113 = 1
+  OUTER_SET cbk_ilm_wp_114 = 1
+  OUTER_SET cbk_ilm_wp_115 = 1
+  LAF cbk_set_weapprof_col INT_VAR col_idx = ilm_data_col STR_VAR prof_map_prefix = ~cbk_ilm_wp~ default_val = ~0~ END
+
+  // 5. Holy Symbol of Ilmater (+1 CON, unusable by Evil & Chaotic -> 0x607f3843)
+  OUTER_SET ilm_hs_name = RESOLVE_STR_REF (@2557)
+  OUTER_SET ilm_hs_desc = RESOLVE_STR_REF (@2558)
+  LAF cbk_make_holy_symbol
+    INT_VAR
+      name_ref = ilm_hs_name
+      desc_ref = ilm_hs_desc
+      str_bon  = 0
+      wis_bon  = 0
+      con_bon  = 1
+      unus     = 0x607f3843
+    STR_VAR
+      spl_res  = ~CBKHSYIL~
+      itm_res  = ~CBKHILM~
+      icon_bam = ~IBELT12~
+  END
+
+  // 6. Install M_CBKILM.lua with resolved spell states
+  OUTER_SET CBK_STATE_ILMATER_ENDURE = cbk_state_CBK_ILMATER_ENDURE
+  OUTER_SET CBK_STATE_ILM_RESOLVED   = cbk_state_CBK_ILM_RESOLVED
+  COPY ~%MOD_FOLDER%/lua/M_CBKILM.lua~ ~override/M_CBKILM.lua~
+    EVALUATE_BUFFER
+END

@@ -1,0 +1,181 @@
+// Component 203: Nightcloak of Shar (CBK_SHAR) — Cleric & Cleric/Thief Kit
+
+DEFINE_ACTION_FUNCTION cbk_install_shar BEGIN
+  LAF cbk_install_res_shar END
+  LAF cbk_ensure_resource_symbols
+    RET
+      cbk_state_CBK_SHAR_WEAVE = cbk_state_CBK_SHAR_WEAVE
+  END
+
+  // 1. Stamp spell names & descriptions
+  COPY_EXISTING ~CBKSHR1.SPL~ ~override~
+    SAY NAME1 @2453
+    SAY UNIDENTIFIED_DESC @2454
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKSHR2.SPL~ ~override~
+    SAY NAME1 @2455
+    SAY UNIDENTIFIED_DESC @2456
+  BUT_ONLY
+
+  // 2. Holy Symbol of Shar (L25 grant: AP_CBKHSYSH -> CBKHSHR.ITM, +1 WIS)
+  OUTER_SET shar_hs_name = RESOLVE_STR_REF (@2457)
+  OUTER_SET shar_hs_desc = RESOLVE_STR_REF (@2458)
+  LAF cbk_make_holy_symbol
+    INT_VAR
+      name_ref = shar_hs_name
+      desc_ref = shar_hs_desc
+      str_bon  = 0
+      wis_bon  = 1
+      con_bon  = 0
+      unus     = 0x607f3840
+    STR_VAR
+      spl_res  = ~CBKHSYSH~
+      itm_res  = ~CBKHSHR~
+      icon_bam = ~IBELT14~
+  END
+
+  // 3. Build CBKSHR0.2DA (50 columns, We Overwrite)
+  OUTER_SPRINT clab_hdr ~2DA V1.0%WNL%****%WNL%           ~
+  OUTER_SPRINT r_a1 ~ABILITY1   ~
+  OUTER_SPRINT r_a2 ~ABILITY2   ~
+  OUTER_SPRINT r_a3 ~ABILITY3   ~
+  OUTER_SPRINT r_a4 ~ABILITY4   ~
+
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT clab_hdr ~%clab_hdr% %lv%~
+
+    // ABILITY1: Shadow Veil (1, 6, 11, 16, 21, 26, 31, 36, 41, 46)
+    ACTION_IF ((lv MODULO 5) = 1) BEGIN
+      OUTER_SPRINT c1 ~GA_CBKSHR1~
+    END ELSE BEGIN
+      OUTER_SPRINT c1 ~****~
+    END
+    OUTER_SPRINT r_a1 ~%r_a1% %c1%~
+
+    // ABILITY2: Shadow Bolt (3, 8, 13, 18, 23, 28, 33, 38, 43, 48)
+    ACTION_IF ((lv MODULO 5) = 3) BEGIN
+      OUTER_SPRINT c2 ~GA_CBKSHR2~
+    END ELSE BEGIN
+      OUTER_SPRINT c2 ~****~
+    END
+    OUTER_SPRINT r_a2 ~%r_a2% %c2%~
+
+    // ABILITY3: L1 free Dagger pip, L25 Holy Symbol of Shar
+    ACTION_IF (lv = 1) BEGIN
+      OUTER_SPRINT c3 ~AP_CBKLPSH~
+    END ELSE ACTION_IF (lv = 25) BEGIN
+      OUTER_SPRINT c3 ~AP_CBKHSYSH~
+    END ELSE BEGIN
+      OUTER_SPRINT c3 ~****~
+    END
+    OUTER_SPRINT r_a3 ~%r_a3% %c3%~
+
+    // ABILITY4: L1 Blindness Immunity + CBK_SHAR_WEAVE state
+    ACTION_IF (lv = 1) BEGIN
+      OUTER_SPRINT c4 ~AP_CBKSHR0~
+    END ELSE BEGIN
+      OUTER_SPRINT c4 ~****~
+    END
+    OUTER_SPRINT r_a4 ~%r_a4% %c4%~
+  END
+
+  OUTER_SPRINT clab_full ~%clab_hdr%%WNL%%r_a1%%WNL%%r_a2%%WNL%%r_a3%%WNL%%r_a4%%WNL%~
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKSHR0.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    INSERT_BYTES 0 (STRING_LENGTH ~%clab_full%~)
+    WRITE_ASCIIE 0 ~%clab_full%~
+    PRETTY_PRINT_2DA
+
+  // 4. Register CBK_SHAR (class 3 = CLERIC, LE/NN/NE/CE, min DEX 10 & WIS 9)
+  OUTER_SET shar_lower = RESOLVE_STR_REF (@2450)
+  OUTER_SET shar_mixed = RESOLVE_STR_REF (@2451)
+  OUTER_SET shar_help  = RESOLVE_STR_REF (@2452)
+
+  LAF cbk_register_kit
+    INT_VAR
+      class_id      = 3
+      lower_ref     = shar_lower
+      mixed_ref     = shar_mixed
+      help_ref      = shar_help
+      unusable_mask = 0x00004000
+    STR_VAR
+      kit_name       = ~CBK_SHAR~
+      class_label    = ~CLERIC~
+      clone_kit      = ~CLERIC~
+      clone_prof_col = ~CLERIC~
+      clab           = ~CBKSHR0~
+      lua_abbr       = ~Cl0~
+      hpclass        = ~HPPRS~
+      clasweap_row   = ~1 0 1 1 0 1 0 0~
+      abclasrq_row   = ~0 10 0 0 9 0~
+      abcdsrq_row    = ~0 0 0 0 17 0~
+      abdcsrq_row    = ~0 0 0 0 15 0~
+      alignmnt_row   = ~0 0 1 0 1 1 0 0 1~
+      dualclas_row   = ~1 0 1 1 0 1~
+      race_policy    = ~CLONE~
+    RET
+      shar_num      = kit_num
+      shar_ids      = kit_ids
+      shar_prof     = kit_prof
+      shar_data_col = kit_data_col
+  END
+
+  // 5. WEAPPROF.2DA: Dagger (96)=1 + standard Cleric blunt/sling/styles=1,
+  //    all other weapons & EXTRA2..EXTRA20 (116..134)=0
+  OUTER_SET cbk_shar_wp_96  = 1
+  OUTER_SET cbk_shar_wp_97  = 1
+  OUTER_SET cbk_shar_wp_100 = 1
+  OUTER_SET cbk_shar_wp_101 = 1
+  OUTER_SET cbk_shar_wp_102 = 1
+  OUTER_SET cbk_shar_wp_107 = 1
+  OUTER_SET cbk_shar_wp_115 = 1
+  OUTER_SET cbk_shar_wp_111 = 1
+  OUTER_SET cbk_shar_wp_112 = 1
+  OUTER_SET cbk_shar_wp_113 = 1
+  OUTER_SET cbk_shar_wp_114 = 1
+  LAF cbk_set_weapprof_col
+    INT_VAR col_idx = shar_data_col
+    STR_VAR prof_map_prefix = ~cbk_shar_wp~ default_val = ~0~
+  END
+
+  // 6. CBKWPN.2DA: Allow Dagger (96)
+  OUTER_PATCH ~~ BEGIN SPRINTF shar_dec ~%d~ (shar_ids) END
+  LAF cbk_append_2da_row_unique
+    INT_VAR cols = 6
+    STR_VAR
+      file      = ~CBKWPN.2DA~
+      match_key = ~CBK_SHAR_P96~
+      row_line  = EVAL ~CBK_SHAR_P96 * %shar_dec% PROF 96 ALLOW~
+  END
+
+  // 7. Multiclass Cleric/Thief support
+  LAF cbk_enable_multiclass_cleric_kit
+    INT_VAR
+      kit_num   = shar_num
+      kit_ids   = shar_ids
+      enable_fc = 0
+      enable_ct = 1
+      enable_cr = 0
+    STR_VAR
+      kit_name    = ~CBK_SHAR~
+      clab        = ~CBKSHR0~
+      race_policy = ~CLONE~
+  END
+
+  // 8. Install M_CBKSHR.lua (Shadow Weave Magic CheckSave listener)
+  OUTER_SET CBK_SHAR_KIT_IDS = shar_ids
+  OUTER_SET CBK_STATE_SHAR_WEAVE = cbk_state_CBK_SHAR_WEAVE
+  COPY ~%MOD_FOLDER%/lua/M_CBKSHR.lua~ ~override/M_CBKSHR.lua~
+    EVALUATE_BUFFER
+
+  // 9. Viconia Sync (kit ONLY — NEVER touch CRE level bytes 0x234..0x236!)
+  ACTION_FOR_EACH cre IN ~VICONI~ ~VICONI4~ ~VICONI6~ ~VICONI6_~ ~VICONI7~ ~VICONI8~ ~VICONI9~ ~VICONI11~ ~VICONI13~ ~VICONI16~ ~BDVICONI~ BEGIN
+    ACTION_IF (FILE_EXISTS_IN_GAME ~%cre%.CRE~) BEGIN
+      COPY_EXISTING ~%cre%.CRE~ ~override~
+        WRITE_SHORT 0x244 ((shar_ids >> 16) & 0xffff)
+        WRITE_SHORT 0x246 (shar_ids & 0xffff)
+      BUT_ONLY
+    END
+  END
+END

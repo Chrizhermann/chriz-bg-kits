@@ -1,0 +1,123 @@
+// Components 202 (Alaghor of Clangeddin) and 203 (Nightcloak of Shar) — 100% English
+
+// Component 202: Alaghor of Clangeddin (@2400..@2449)
+@2400 = ~alaghor of clangeddin~
+@2401 = ~Alaghor of Clangeddin~
+@2402 = ~ALAGHOR OF CLANGEDDIN: Battle-priests of the Father of Battle, Alaghor of Clangeddin Silverbeard lead dwarven shield-walls from the front, swinging twin axes and war hammers while inspiring their comrades with roaring battle chants.
+
+Advantages:
+- Automatically receives 1 Battle Axe proficiency at 1st level in addition to starting proficiency pips.
+- May equip Battle Axes and Specialize (2 slots) in Battle Axes, War Hammers, and Two-Weapon Style; may place 1 slot in standard cleric blunt weapons and other fighting styles.
+- Gains +1/2 attack per round when wielding a weapon in which the priest holds 2 or more proficiency pips (without double-stacking on Fighter/Cleric multiclasses).
+- Dwarven Battle-Hardening: Gains +5% resistance to Slashing, Piercing, and Crushing damage at 5th level, increasing to +10% at 15th level.
+- May cast Spiritual Axe of Clangeddin once per day at 1st level and an additional time every 10 levels thereafter. Conjures a magical battle axe (+1 at 1st level, +2 at 6th, +3 at 12th, +4 at 18th) dealing 1d8 slashing plus 1d4 magic damage while keeping spellcasting fully enabled, and grants Dismiss Spiritual Axe to end it early.
+- May cast Battle Chant of Clangeddin once per day at 3rd level and an additional time every 5 levels thereafter, granting nearby allies +2 THAC0, +2 melee damage, and cure/immunity to Fear and Panic for 4 rounds.
+- Receives the Holy Symbol of Clangeddin (+1 Strength, +5% Magic Resistance, +1 bonus 6th- and 7th-level Priest spell) at 25th level.
+- Available to single-class Clerics and Dwarven Fighter/Cleric multiclasses.
+
+Disadvantages:
+- Restricted to Dwarves of Lawful Good, Lawful Neutral, or Neutral Good alignment (unless racial restrictions are unlocked).
+- Requires minimum Strength 12, Constitution 12, and Wisdom 9.
+- Disdains skirmishing from afar: cannot place proficiency pips in or equip any ranged weapons (Crossbows, Bows, Darts, or Slings).~
+
+@2403 = ~Spiritual Axe of Clangeddin~
+@2404 = ~Spiritual Axe of Clangeddin
+Range: 0
+Duration: 10 / 15 / 20 / 30 rounds (levels 1 / 6 / 12 / 18)
+Casting Time: 2
+Area of Effect: Caster
+Saving Throw: None
+
+Calls forth a gleaming spectral battle axe blessed by Clangeddin Silverbeard into the Alaghor's weapon hand. The axe strikes as a +1 magical battle axe at 1st level (+2 at 6th, +3 at 12th, and +4 at 18th), dealing 1d8 slashing damage plus 1d4 magic damage on every hit while allowing the Alaghor to continue casting spells freely. Casting this ability also grants Dismiss Spiritual Axe to dismiss the conjured weapon at will.~
+
+@2405 = ~Spiritual Axe +1~
+@2406 = ~Spiritual Axe +2~
+@2407 = ~Spiritual Axe +3~
+@2408 = ~Spiritual Axe +4~
+@2409 = ~Spiritual Axe of Clangeddin
+Forged from radiant silver force in the likeness of Clangeddin Silverbeard's sacred weapon, this conjured battle axe strikes with divine precision and deals 1d8 slashing plus 1d4 magic damage without impeding spellcasting.
+
+STATISTICS:
+
+Damage: 1d8 slashing + 1d4 magic (plus enchantment bonus)
+Proficiency Type: Axe
+Type: One-handed
+Weight: 0~
+
+@2410 = ~Dismiss Spiritual Axe~
+@2411 = ~Dismiss Spiritual Axe
+Immediately dispels the conjured Spiritual Axe of Clangeddin and returns the Alaghor's normal equipped weapons to hand.~
+
+@2412 = ~Battle Chant of Clangeddin~
+@2413 = ~Battle Chant of Clangeddin
+Range: 0
+Duration: 4 rounds
+Casting Time: 1
+Area of Effect: 15-ft. radius (party)
+Saving Throw: None
+
+The Alaghor raises a booming dwarven war-hymn to Clangeddin Silverbeard. All allied party members within 15 feet are immediately cured of Fear and Panic and gain +2 THAC0, +2 melee weapon damage, and immunity to Fear and Panic for 4 rounds.~
+
+@2414 = ~Holy Symbol of Clangeddin~
+@2415 = ~Holy Symbol of Clangeddin
+Forged of gleaming silver in the shape of crossed battle axes, this sacred emblem marks an exalted Alaghor of the Father of Battle.
+
+STATISTICS:
+
+Equipped abilities:
+- Strength: +1
+- Magic Resistance: +5%
+- Memorize one extra 6th- and 7th-level Priest spell
+
+Weight: 0~
+
+// Component 203: Nightcloak of Shar (@2450..@2499)
+@2450 = ~nightcloak of shar~
+@2451 = ~Nightcloak of Shar~
+@2452 = ~NIGHTCLOAK OF SHAR: Devotees of the Lady of Loss weave hidden strands of the Shadow Weave into divine magic, shrouding themselves in darkness and weakening foes with chilling bolts of oblivion.
+
+Advantages:
+- Automatically receives 1 Dagger proficiency at 1st level in addition to starting proficiency pips, and may equip Daggers alongside standard cleric weapons.
+- Immune to Blindness.
+- Shadow Weave Magic: Enemies suffer a -2 penalty to Saving Throws against all Enchantment, Illusion, and Necromancy spells cast by the Nightcloak, as well as against Shadow Bolt.
+- May cast Shadow Veil once per day at 1st level and an additional time every 5 levels thereafter, instantly gaining Improved Invisibility, Non-Detection, +4 Armor Class, and +2 to all Saving Throws for 5 rounds.
+- May cast Shadow Bolt once per day at 3rd level and an additional time every 5 levels thereafter, hurling a dark bolt at a single target for 2d6 / 3d6 / 4d6 / 5d6 / 6d6 half cold and half magic damage (at levels 1 / 7 / 11 / 15 / 19; Save vs. Spell for half) and inflicting Touch of Loss (-2 THAC0 and -2 to all Saving Throws for 4 rounds on a failed Save vs. Spell).
+- Receives the Holy Symbol of Shar (+1 Wisdom, +5% Magic Resistance, +1 bonus 6th- and 7th-level Priest spell) at 25th level.
+- Available to single-class Clerics and Cleric/Thief multiclasses.
+
+Disadvantages:
+- Restricted to Lawful Evil, True Neutral, Neutral Evil, or Chaotic Evil alignment.
+- Requires minimum Dexterity 10 and Wisdom 9.~
+
+@2453 = ~Shadow Veil~
+@2454 = ~Shadow Veil
+Range: 0
+Duration: 5 rounds
+Casting Time: 1
+Area of Effect: Caster
+Saving Throw: None
+
+Wraps the Nightcloak in a silent mantle drawn from the Shadow Weave. For 5 rounds, the caster gains Improved Invisibility, Non-Detection, +4 Armor Class, and +2 to all Saving Throws.~
+
+@2455 = ~Shadow Bolt~
+@2456 = ~Shadow Bolt
+Range: 40 ft.
+Duration: Instant / 4 rounds
+Casting Time: 2
+Area of Effect: 1 creature
+Saving Throw: Spell (half damage; negates Touch of Loss)
+
+Launches a concentrated lance of Shadow Weave energy at a single target within 40 feet, dealing 2d6 damage at 1st level, 3d6 at 7th, 4d6 at 11th, 5d6 at 15th, and 6d6 at 19th (half cold, half magic; Save vs. Spell for half). If the target fails a Save vs. Spell, it is also afflicted with Touch of Loss, suffering -2 THAC0 and -2 to all Saving Throws for 4 rounds. Shadow Weave Magic applies an additional -2 penalty to the target's saving throws against this ability.~
+
+@2457 = ~Holy Symbol of Shar~
+@2458 = ~Holy Symbol of Shar
+A smooth obsidian disc rimmed in deep violet, signifying a Nightcloak favored by the Mistress of the Night.
+
+STATISTICS:
+
+Equipped abilities:
+- Wisdom: +1
+- Magic Resistance: +5%
+- Memorize one extra 6th- and 7th-level Priest spell
+
+Weight: 0~
