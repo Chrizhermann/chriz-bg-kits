@@ -1,0 +1,298 @@
+// Component 202: Alaghor of Clangeddin (LK_ALAGHOR) — Dwarf Cleric & Fighter/Cleric Kit
+
+DEFINE_PATCH_FUNCTION cbk_alaghor_set_cre_prof
+  INT_VAR
+    prof_id = 0
+    pips = 0
+    add_if_missing = 1
+BEGIN
+  READ_LONG 0x2c4 fx_off
+  READ_LONG 0x2c8 fx_cnt
+  READ_BYTE 0x33 fx_ver
+  SET found = 0
+  PATCH_IF (fx_ver = 1) BEGIN
+    FOR (fi = 0; fi < fx_cnt; ++fi) BEGIN
+      SET o = fx_off + fi * 0x108
+      READ_LONG (o + 0x08) op
+      READ_LONG (o + 0x18) p2
+      PATCH_IF (op = 233 AND p2 = prof_id) BEGIN
+        PATCH_IF (found = 0) BEGIN
+          WRITE_LONG (o + 0x14) pips
+          SET found = 1
+        END ELSE BEGIN
+          WRITE_LONG (o + 0x14) 0
+        END
+      END
+    END
+    PATCH_IF (found = 0 AND add_if_missing = 1 AND pips > 0) BEGIN
+      SET ins_at = fx_off + fx_cnt * 0x108
+      INSERT_BYTES ins_at 0x108
+      WRITE_LONG (ins_at + 0x08) 233
+      WRITE_LONG (ins_at + 0x0c) 1
+      WRITE_LONG (ins_at + 0x14) pips
+      WRITE_LONG (ins_at + 0x18) prof_id
+      WRITE_LONG (ins_at + 0x1c) 9
+      WRITE_SHORT (ins_at + 0x24) 100
+      WRITE_LONG 0x2c8 (fx_cnt + 1)
+      FOR (hi = 0x2a0; hi <= 0x2bc; hi += 8) BEGIN
+        PATCH_IF (hi = 0x2b8) BEGIN
+          READ_LONG 0x2b8 cv
+          PATCH_IF (cv >= ins_at) BEGIN WRITE_LONG 0x2b8 (cv + 0x108) END
+          READ_LONG 0x2bc cv2
+          PATCH_IF (cv2 >= ins_at) BEGIN WRITE_LONG 0x2bc (cv2 + 0x108) END
+        END ELSE BEGIN
+          READ_LONG hi cv
+          PATCH_IF (cv >= ins_at) BEGIN WRITE_LONG hi (cv + 0x108) END
+        END
+      END
+    END
+  END ELSE BEGIN
+    FOR (fi = 0; fi < fx_cnt; ++fi) BEGIN
+      SET o = fx_off + fi * 0x30
+      READ_SHORT (o + 0x00) op
+      READ_LONG (o + 0x08) p2
+      PATCH_IF (op = 233 AND p2 = prof_id) BEGIN
+        PATCH_IF (found = 0) BEGIN
+          WRITE_LONG (o + 0x04) pips
+          SET found = 1
+        END ELSE BEGIN
+          WRITE_LONG (o + 0x04) 0
+        END
+      END
+    END
+    PATCH_IF (found = 0 AND add_if_missing = 1 AND pips > 0) BEGIN
+      SET ins_at = fx_off + fx_cnt * 0x30
+      INSERT_BYTES ins_at 0x30
+      WRITE_SHORT (ins_at + 0x00) 233
+      WRITE_BYTE (ins_at + 0x02) 1
+      WRITE_LONG (ins_at + 0x04) pips
+      WRITE_LONG (ins_at + 0x08) prof_id
+      WRITE_BYTE (ins_at + 0x0c) 9
+      WRITE_BYTE (ins_at + 0x12) 100
+      WRITE_LONG 0x2c8 (fx_cnt + 1)
+      FOR (hi = 0x2a0; hi <= 0x2bc; hi += 8) BEGIN
+        PATCH_IF (hi = 0x2b8) BEGIN
+          READ_LONG 0x2b8 cv
+          PATCH_IF (cv >= ins_at) BEGIN WRITE_LONG 0x2b8 (cv + 0x30) END
+          READ_LONG 0x2bc cv2
+          PATCH_IF (cv2 >= ins_at) BEGIN WRITE_LONG 0x2bc (cv2 + 0x30) END
+        END ELSE BEGIN
+          READ_LONG hi cv
+          PATCH_IF (cv >= ins_at) BEGIN WRITE_LONG hi (cv + 0x30) END
+        END
+      END
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_install_alaghor BEGIN
+  LAF cbk_install_res_alaghor END
+
+  // 1. Stamp spell and conjured Spiritual Axe names & descriptions
+  COPY_EXISTING ~CBKALG1.SPL~ ~override~
+    SAY NAME1 @2403
+    SAY UNIDENTIFIED_DESC @2404
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKALGA1.ITM~ ~override~
+    SAY NAME1 @2405
+    SAY NAME2 @2405
+    SAY UNIDENTIFIED_DESC @2409
+    SAY IDENTIFIED_DESC @2409
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKALGA2.ITM~ ~override~
+    SAY NAME1 @2406
+    SAY NAME2 @2406
+    SAY UNIDENTIFIED_DESC @2409
+    SAY IDENTIFIED_DESC @2409
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKALGA3.ITM~ ~override~
+    SAY NAME1 @2407
+    SAY NAME2 @2407
+    SAY UNIDENTIFIED_DESC @2409
+    SAY IDENTIFIED_DESC @2409
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKALGA4.ITM~ ~override~
+    SAY NAME1 @2408
+    SAY NAME2 @2408
+    SAY UNIDENTIFIED_DESC @2409
+    SAY IDENTIFIED_DESC @2409
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKALG0D.SPL~ ~override~
+    SAY NAME1 @2410
+    SAY UNIDENTIFIED_DESC @2411
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKALG2.SPL~ ~override~
+    SAY NAME1 @2412
+    SAY UNIDENTIFIED_DESC @2413
+  BUT_ONLY
+
+  // 2. Holy Symbol of Clangeddin (L25 grant: AP_CBKHSYAL -> CBKHALG.ITM, +1 STR)
+  OUTER_SET alag_hs_name = RESOLVE_STR_REF (@2414)
+  OUTER_SET alag_hs_desc = RESOLVE_STR_REF (@2415)
+  LAF cbk_make_holy_symbol
+    INT_VAR
+      name_ref = alag_hs_name
+      desc_ref = alag_hs_desc
+      str_bon  = 1
+      wis_bon  = 0
+      con_bon  = 0
+      unus     = 0x607f3840
+    STR_VAR
+      spl_res  = ~CBKHSYAL~
+      itm_res  = ~CBKHALG~
+      icon_bam = ~IBELT12~
+  END
+
+  // 3. Build CBKALGH.2DA (50 columns, We Overwrite)
+  OUTER_SPRINT clab_hdr ~2DA V1.0%WNL%****%WNL%           ~
+  OUTER_SPRINT r_a1 ~ABILITY1   ~
+  OUTER_SPRINT r_a2 ~ABILITY2   ~
+  OUTER_SPRINT r_a3 ~ABILITY3   ~
+
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT clab_hdr ~%clab_hdr% %lv%~
+
+    // ABILITY1: Spiritual Axe of Clangeddin (1, 11, 21, 31, 41)
+    ACTION_IF ((lv MODULO 10) = 1) BEGIN
+      OUTER_SPRINT c1 ~GA_CBKALG1~
+    END ELSE BEGIN
+      OUTER_SPRINT c1 ~****~
+    END
+    OUTER_SPRINT r_a1 ~%r_a1% %c1%~
+
+    // ABILITY2: Battle Chant of Clangeddin (3, 8, 13, 18, 23, 28, 33, 38, 43, 48)
+    ACTION_IF ((lv MODULO 5) = 3) BEGIN
+      OUTER_SPRINT c2 ~GA_CBKALG2~
+    END ELSE BEGIN
+      OUTER_SPRINT c2 ~****~
+    END
+    OUTER_SPRINT r_a2 ~%r_a2% %c2%~
+
+    // ABILITY3: L1 free Battle Axe pip, L5 & L15 +5% S/P/C DR, L25 Holy Symbol of Clangeddin
+    ACTION_IF (lv = 1) BEGIN
+      OUTER_SPRINT c3 ~AP_CBKLPAL~
+    END ELSE ACTION_IF (lv = 5 OR lv = 15) BEGIN
+      OUTER_SPRINT c3 ~AP_CBKALGR~
+    END ELSE ACTION_IF (lv = 25) BEGIN
+      OUTER_SPRINT c3 ~AP_CBKHSYAL~
+    END ELSE BEGIN
+      OUTER_SPRINT c3 ~****~
+    END
+    OUTER_SPRINT r_a3 ~%r_a3% %c3%~
+  END
+
+  OUTER_SPRINT clab_full ~%clab_hdr%%WNL%%r_a1%%WNL%%r_a2%%WNL%%r_a3%%WNL%~
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKALGH.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    INSERT_BYTES 0 (STRING_LENGTH ~%clab_full%~)
+    WRITE_ASCIIE 0 ~%clab_full%~
+    PRETTY_PRINT_2DA
+
+  // 4. Register LK_ALAGHOR (class 3 = CLERIC, Dwarf-only, LG/LN/NG)
+  OUTER_SET alag_lower = RESOLVE_STR_REF (@2400)
+  OUTER_SET alag_mixed = RESOLVE_STR_REF (@2401)
+  OUTER_SET alag_help  = RESOLVE_STR_REF (@2402)
+
+  LAF cbk_register_kit
+    INT_VAR
+      class_id      = 3
+      lower_ref     = alag_lower
+      mixed_ref     = alag_mixed
+      help_ref      = alag_help
+      unusable_mask = 0x00004000
+    STR_VAR
+      kit_name       = ~LK_ALAGHOR~
+      class_label    = ~CLERIC~
+      clone_kit      = ~CLERIC~
+      clone_prof_col = ~CLERIC~
+      clab           = ~CBKALGH~
+      lua_abbr       = ~Cl0~
+      hpclass        = ~HPPRS~
+      clasweap_row   = ~0 0 1 0 0 1 1 0~
+      abclasrq_row   = ~12 0 12 0 9 0~
+      abcdsrq_row    = ~0 0 0 0 17 0~
+      abdcsrq_row    = ~0 0 0 0 15 0~
+      alignmnt_row   = ~1 1 0 1 0 0 0 0 0~
+      dualclas_row   = ~1 0 1 1 0 1~
+      race_policy    = ~DWARF_ONLY~
+    RET
+      alag_num      = kit_num
+      alag_ids      = kit_ids
+      alag_prof     = kit_prof
+      alag_data_col = kit_data_col
+  END
+
+  // 5. WEAPPROF.2DA: Battle Axe (92)=2, War Hammer (97)=2, Cleric blunt melee=1,
+  //    styles 111..113=1, 2WEAPON (114)=2, ranged 103..107=0, EXTRA2..EXTRA20 (116..134)=0
+  OUTER_SET cbk_alag_wp_92  = 2
+  OUTER_SET cbk_alag_wp_97  = 2
+  OUTER_SET cbk_alag_wp_100 = 1
+  OUTER_SET cbk_alag_wp_101 = 1
+  OUTER_SET cbk_alag_wp_102 = 1
+  OUTER_SET cbk_alag_wp_115 = 1
+  OUTER_SET cbk_alag_wp_111 = 1
+  OUTER_SET cbk_alag_wp_112 = 1
+  OUTER_SET cbk_alag_wp_113 = 1
+  OUTER_SET cbk_alag_wp_114 = 2
+  OUTER_SET cbk_alag_wp_103 = 0
+  OUTER_SET cbk_alag_wp_104 = 0
+  OUTER_SET cbk_alag_wp_105 = 0
+  OUTER_SET cbk_alag_wp_106 = 0
+  OUTER_SET cbk_alag_wp_107 = 0
+  LAF cbk_set_weapprof_col
+    INT_VAR col_idx = alag_data_col
+    STR_VAR prof_map_prefix = ~cbk_alag_wp~ default_val = ~0~
+  END
+
+  // 6. CBKWPN.2DA: Allow Battle Axe (92), Deny all ranged weapons (103..107)
+  OUTER_PATCH ~~ BEGIN SPRINTF alag_dec ~%d~ (alag_ids) END
+  LAF cbk_append_2da_row_unique
+    INT_VAR cols = 6
+    STR_VAR
+      file      = ~CBKWPN.2DA~
+      match_key = ~LK_ALAGHOR_P92~
+      row_line  = EVAL ~LK_ALAGHOR_P92 * %alag_dec% PROF 92 ALLOW~
+  END
+  ACTION_FOR_EACH pid IN ~103~ ~104~ ~105~ ~106~ ~107~ BEGIN
+    LAF cbk_append_2da_row_unique
+      INT_VAR cols = 6
+      STR_VAR
+        file      = ~CBKWPN.2DA~
+        match_key = EVAL ~LK_ALAGHOR_DENY%pid%~
+        row_line  = EVAL ~LK_ALAGHOR_DENY%pid% * %alag_dec% PROF %pid% DENY~
+    END
+  END
+
+  // 7. Multiclass Fighter/Cleric support (also cleans stale QD_MCP* entries for LK_ALAGHOR)
+  LAF cbk_enable_multiclass_cleric_kit
+    INT_VAR
+      kit_num   = alag_num
+      kit_ids   = alag_ids
+      enable_fc = 1
+      enable_ct = 0
+      enable_cr = 0
+    STR_VAR
+      kit_name    = ~LK_ALAGHOR~
+      clab        = ~CBKALGH~
+      race_policy = ~DWARF_ONLY~
+  END
+
+  // 8. Yeslick Sync (kit + profs ONLY — NEVER touch CRE level bytes 0x234..0x236!)
+  ACTION_FOR_EACH cre IN ~YESLIC~ ~YESLIC5~ ~LK#YESL~ ~LK#YES25~ BEGIN
+    ACTION_IF (FILE_EXISTS_IN_GAME ~%cre%.CRE~) BEGIN
+      COPY_EXISTING ~%cre%.CRE~ ~override~
+        WRITE_SHORT 0x244 ((alag_ids >> 16) & 0xffff)
+        WRITE_SHORT 0x246 (alag_ids & 0xffff)
+        LPF cbk_alaghor_set_cre_prof INT_VAR prof_id = 92  pips = 2 add_if_missing = 1 END
+        LPF cbk_alaghor_set_cre_prof INT_VAR prof_id = 97  pips = 2 add_if_missing = 1 END
+        LPF cbk_alaghor_set_cre_prof INT_VAR prof_id = 107 pips = 0 add_if_missing = 0 END
+      BUT_ONLY
+    END
+  END
+END

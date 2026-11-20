@@ -1,0 +1,877 @@
+{
+  "texts": {},
+  "states": [
+    "CBK_SHAR_WEAVE"
+  ],
+  "splprots": {
+    "CBK_PROF_DAGGER_GE_1": {
+      "stat": 96,
+      "value": 1,
+      "relation": 4
+    }
+  },
+  "resources": [
+    {
+      "file": "CBKLPSH.SPL",
+      "spell_type": 4,
+      "flags": 0,
+      "school": 0,
+      "sectype": 0,
+      "level": 1,
+      "icon": "",
+      "casting_effects": [],
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 318,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": {
+                "splprot": "CBK_PROF_DAGGER_GE_1"
+              },
+              "timing": 0,
+              "dispel": 0,
+              "duration": 1,
+              "prob1": 100,
+              "prob2": 0,
+              "resource": "CBKLPSH"
+            },
+            {
+              "opcode": 233,
+              "target": 1,
+              "power": 0,
+              "p1": 1,
+              "p2": 96,
+              "timing": 9,
+              "dispel": 0,
+              "duration": 0,
+              "prob1": 100,
+              "prob2": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSHR0.SPL",
+      "spell_type": 4,
+      "flags": 0,
+      "school": 0,
+      "sectype": 0,
+      "level": 1,
+      "icon": "",
+      "casting_effects": [],
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 101,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 74,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 169,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 8,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 267,
+              "target": 1,
+              "power": 0,
+              "p1": 14674,
+              "p2": 0,
+              "timing": 9,
+              "dispel": 0
+            },
+            {
+              "opcode": 328,
+              "target": 1,
+              "power": 0,
+              "p1": 1,
+              "p2": {
+                "state": "CBK_SHAR_WEAVE"
+              },
+              "timing": 9,
+              "dispel": 0,
+              "special": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSHR1.SPL",
+      "spell_type": 4,
+      "flags": 0,
+      "school": 5,
+      "sectype": 0,
+      "level": 1,
+      "icon": "SPWI505C",
+      "casting_effects": [],
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI505B",
+          "target": 5,
+          "range": 0,
+          "min_level": 1,
+          "speed": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "power": 0,
+              "timing": 1,
+              "dispel": 2,
+              "resource": "CBKSHR1"
+            },
+            {
+              "opcode": 0,
+              "target": 1,
+              "power": 0,
+              "p1": 4,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 33,
+              "target": 1,
+              "power": 0,
+              "p1": 2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 34,
+              "target": 1,
+              "power": 0,
+              "p1": 2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 35,
+              "target": 1,
+              "power": 0,
+              "p1": 2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 36,
+              "target": 1,
+              "power": 0,
+              "p1": 2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 37,
+              "target": 1,
+              "power": 0,
+              "p1": 2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 20,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 1,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 69,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            },
+            {
+              "opcode": 142,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 31,
+              "timing": 0,
+              "dispel": 3,
+              "duration": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKSHR2.SPL",
+      "spell_type": 4,
+      "flags": 0,
+      "school": 7,
+      "sectype": 0,
+      "level": 1,
+      "icon": "SPWI119C",
+      "casting_effects": [],
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI119B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 2,
+          "projectile": 49,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 0,
+              "timing": 1,
+              "dispel": 0,
+              "save": 0,
+              "resource": "CBKSHR2"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 1,
+              "sides": 6,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 4194304,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 1,
+              "sides": 6,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 54,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 33,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 34,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 35,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 36,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 37,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 100,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI119B",
+          "target": 1,
+          "range": 40,
+          "min_level": 7,
+          "speed": 2,
+          "projectile": 49,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 0,
+              "timing": 1,
+              "dispel": 0,
+              "save": 0,
+              "resource": "CBKSHR2"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 3,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 4194304,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 3,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 54,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 33,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 34,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 35,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 36,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 37,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 100,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI119B",
+          "target": 1,
+          "range": 40,
+          "min_level": 11,
+          "speed": 2,
+          "projectile": 49,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 0,
+              "timing": 1,
+              "dispel": 0,
+              "save": 0,
+              "resource": "CBKSHR2"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 2,
+              "sides": 6,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 4194304,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 2,
+              "sides": 6,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 54,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 33,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 34,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 35,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 36,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 37,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 100,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI119B",
+          "target": 1,
+          "range": 40,
+          "min_level": 15,
+          "speed": 2,
+          "projectile": 49,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 0,
+              "timing": 1,
+              "dispel": 0,
+              "save": 0,
+              "resource": "CBKSHR2"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 5,
+              "sides": 3,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 4194304,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 5,
+              "sides": 3,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 54,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 33,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 34,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 35,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 36,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 37,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 100,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            }
+          ]
+        },
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI119B",
+          "target": 1,
+          "range": 40,
+          "min_level": 19,
+          "speed": 2,
+          "projectile": 49,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 0,
+              "timing": 1,
+              "dispel": 0,
+              "save": 0,
+              "resource": "CBKSHR2"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 6,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 4194304,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 6,
+              "save": 1,
+              "special": 256
+            },
+            {
+              "opcode": 54,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 33,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 34,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 35,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 36,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 37,
+              "target": 2,
+              "power": 3,
+              "p1": -2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 100,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 24,
+              "save": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
