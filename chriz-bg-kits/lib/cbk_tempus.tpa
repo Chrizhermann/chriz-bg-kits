@@ -2,7 +2,7 @@
 
 DEFINE_ACTION_FUNCTION cbk_install_tempus BEGIN
   LAF cbk_install_res_tempus END
-  LAF cbk_get_kit_info STR_VAR kit_name = ~OHTEMPUS~ RET tempus_ids = kit_ids tempus_prof = kit_prof END
+  LAF cbk_get_kit_info STR_VAR kit_name = ~OHTEMPUS~ RET tempus_num = kit_num tempus_ids = kit_ids tempus_prof = kit_prof END
   ACTION_IF (tempus_ids < 0) BEGIN
     FAIL ~OHTEMPUS not found in KITLIST.2DA~
   END
@@ -208,8 +208,17 @@ DEFINE_ACTION_FUNCTION cbk_install_tempus BEGIN
     END
   END
   LAF cbk_append_2da_row_unique INT_VAR cols = 4 STR_VAR file = ~CBKAPKIT.2DA~ match_key = ~OHTEMPUS~ row_line = EVAL ~OHTEMPUS %tempus_dec% 2 1~ END
-  LAF cbk_append_2da_row_unique INT_VAR cols = 3 STR_VAR file = ~CBRKPKIT.2DA~ match_key = ~OHTEMPUS_FC~ row_line = EVAL ~OHTEMPUS_FC 8 %tempus_dec%~ END
-  LAF cbk_append_2da_row_unique INT_VAR cols = 3 STR_VAR file = ~CBRKPKIT.2DA~ match_key = ~OHTEMPUS_CR~ row_line = EVAL ~OHTEMPUS_CR 18 %tempus_dec%~ END
+  LAF cbk_enable_multiclass_cleric_kit
+    INT_VAR
+      kit_num   = tempus_num
+      kit_ids   = tempus_ids
+      enable_fc = 1
+      enable_cr = 1
+    STR_VAR
+      kit_name    = ~OHTEMPUS~
+      clab        = ~OHTEMPUS~
+      race_policy = ~CLONE~
+  END
 
   // 6. KITLIST & CLASTEXT description update (We Overwrite)
   OUTER_SET tx_desc = RESOLVE_STR_REF (@205)

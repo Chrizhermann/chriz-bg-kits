@@ -1,0 +1,555 @@
+// Clean-room multiclass Cleric kit delivery & table registration for chriz-bg-kits.
+// Delivers kit CLAB AP_/GA_ abilities to multiclass Clerics (F/C, C/T, C/R) via CLABPR01.2DA
+// -> CBKMCP01..50.SPL -> op177 (KIT == kit_ids) -> deterministic 8-char .EFF (op146 / op171).
+// Idempotent across reinstalls and coexists cleanly with qd_multiclass / yeslick-npc.
+
+DEFINE_PATCH_FUNCTION cbk_mc_pad2
+  INT_VAR n = 0
+  RET out
+BEGIN
+  PATCH_IF (n < 10) BEGIN
+    SPRINT out ~0%n%~
+  END ELSE BEGIN
+    SPRINT out ~%n%~
+  END
+END
+
+DEFINE_PATCH_FUNCTION cbk_mc_to_b36_2
+  INT_VAR val = 0
+  RET out
+BEGIN
+  SET v = val MODULO 1296
+  PATCH_IF (v < 0) BEGIN SET v += 1296 END
+  SET hi = v / 36
+  SET lo = v MODULO 36
+  INNER_PATCH ~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ~ BEGIN
+    READ_ASCII hi c_hi (1)
+    READ_ASCII lo c_lo (1)
+  END
+  SPRINT out ~%c_hi%%c_lo%~
+END
+
+DEFINE_ACTION_FUNCTION cbk_enable_multiclass_cleric_kit
+  INT_VAR
+    kit_num   = 0
+    kit_ids   = 0
+    enable_fc = 0
+    enable_ct = 0
+    enable_cr = 0
+  STR_VAR
+    kit_name    = ~~
+    clab        = ~~
+    race_policy = ~CLONE~
+BEGIN
+  OUTER_SPRINT kit_name    EVALUATE_BUFFER ~%kit_name%~
+  OUTER_SPRINT clab        EVALUATE_BUFFER ~%clab%~
+  OUTER_SPRINT race_policy EVALUATE_BUFFER ~%race_policy%~
+  ACTION_TO_UPPER kit_name
+  ACTION_TO_UPPER clab
+  ACTION_TO_UPPER race_policy
+
+  ACTION_IF (kit_num <= 0 AND kit_ids > 0x4000) BEGIN
+    OUTER_SET kit_num = kit_ids - 0x4000
+  END
+
+  // 1. Ensure CLABPR01.2DA exists with >= 50 level columns and row CBK_MC_P AP_CBKMCP01 .. AP_CBKMCP50
+  ACTION_IF !(FILE_EXISTS_IN_GAME ~CLABPR01.2DA~) BEGIN
+    OUTER_SPRINT pr_hdr ~2DA V1.0%WNL%****%WNL%            ~
+    OUTER_SPRINT pr_a1  ~ABILITY1    ~
+    OUTER_SPRINT pr_mc  ~CBK_MC_P    ~
+    OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+      OUTER_PATCH ~~ BEGIN LPF cbk_mc_pad2 INT_VAR n = lv RET lp = out END END
+      OUTER_SPRINT pr_hdr ~%pr_hdr% %lv%~
+      OUTER_SPRINT pr_a1  ~%pr_a1% ****~
+      OUTER_SPRINT pr_mc  ~%pr_mc% AP_CBKMCP%lp%~
+    END
+    OUTER_SPRINT pr_full ~%pr_hdr%%WNL%%pr_a1%%WNL%%pr_mc%%WNL%~
+    COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CLABPR01.2DA~
+      DELETE_BYTES 0 BUFFER_LENGTH
+      INSERT_BYTES 0 (STRING_LENGTH ~%pr_full%~)
+      WRITE_ASCIIE 0 ~%pr_full%~
+      PRETTY_PRINT_2DA
+  END ELSE BEGIN
+    COPY_EXISTING ~CLABPR01.2DA~ ~override~
+      COUNT_2DA_COLS cur_cols
+      SET cur_max_lv = cur_cols - 1
+      SET target_max_lv = (cur_max_lv < 50) ? 50 : cur_max_lv
+      SET target_cols = target_max_lv + 1
+
+      // Build the canonical CBK_MC_P row for target_max_lv columns
+      SPRINT cbk_row ~CBK_MC_P~
+      FOR (lv = 1; lv <= target_max_lv; ++lv) BEGIN
+        PATCH_IF (lv <= 50) BEGIN
+          LPF cbk_mc_pad2 INT_VAR n = lv RET lp = out END
+          SPRINT cbk_row ~%cbk_row% AP_CBKMCP%lp%~
+        END ELSE BEGIN
+          SPRINT cbk_row ~%cbk_row% ****~
+        END
+      END
+
+      PATCH_IF (cur_max_lv < 50) BEGIN
+        // Extend vanilla 40-col (or shorter) CLABPR01 cleanly to 50 columns preserving all rows
+        READ_2DA_ENTRIES_NOW pr_rows cur_cols
+        SPRINT hdr_ln ~2DA V1.0%WNL%****%WNL%            ~
+        FOR (lv = 1; lv <= 50; ++lv) BEGIN
+          SPRINT hdr_ln ~%hdr_ln% %lv%~
+        END
+        SPRINT body_out ~%hdr_ln%%WNL%~
+        SET has_cbk = 0
+        FOR (r = 0; r < pr_rows; ++r) BEGIN
+          READ_2DA_ENTRY_FORMER pr_rows r 0 rlbl
+          PATCH_IF (~%rlbl%~ STR_EQ ~CBK_MC_P~) BEGIN
+            SET has_cbk = 1
+            SPRINT body_out ~%body_out%%cbk_row%%WNL%~
+          END ELSE BEGIN
+            SPRINT rline ~%rlbl%~
+            FOR (c = 1; c < cur_cols; ++c) BEGIN
+              READ_2DA_ENTRY_FORMER pr_rows r c cell
+              SPRINT rline ~%rline% %cell%~
+            END
+            FOR (c = cur_cols; c < target_cols; ++c) BEGIN
+              SPRINT rline ~%rline% ****~
+            END
+            SPRINT body_out ~%body_out%%rline%%WNL%~
+          END
+        END
+        PATCH_IF (has_cbk = 0) BEGIN
+          SPRINT body_out ~%body_out%%cbk_row%%WNL%~
+        END
+        DELETE_BYTES 0 BUFFER_LENGTH
+        INSERT_BYTES 0 (STRING_LENGTH ~%body_out%~)
+        WRITE_ASCIIE 0 ~%body_out%~
+        PRETTY_PRINT_2DA
+      END ELSE BEGIN
+        // Already >= 50 cols: update or append CBK_MC_P in place without disturbing other rows
+        COUNT_REGEXP_INSTANCES CASE_INSENSITIVE ~^[ %TAB%]*CBK_MC_P[ %TAB%]~ has_cbk
+        PATCH_IF (has_cbk > 0) BEGIN
+          REPLACE_TEXTUALLY CASE_INSENSITIVE ~^[ %TAB%]*CBK_MC_P[ %TAB%].*$~ ~%cbk_row%~
+        END ELSE BEGIN
+          SET end_pos = BUFFER_LENGTH
+          SPRINT app_ln ~%WNL%%cbk_row%%WNL%~
+          INSERT_BYTES end_pos (STRING_LENGTH ~%app_ln%~)
+          WRITE_ASCIIE end_pos ~%app_ln%~
+        END
+        PRETTY_PRINT_2DA
+      END
+    BUT_ONLY
+  END
+
+  // 2. Create template EFFs (CBKMCAP.EFF = op146 instant cast, CBKMCGA.EFF = op171 grant innate)
+  CREATE EFF ~CBKMCAP~
+    WRITE_LONG  0x10 146  // Cast Spell
+    WRITE_LONG  0x14 2    // Preset target
+    WRITE_LONG  0x1c 0    // Cast at caster level
+    WRITE_LONG  0x20 1    // Cast instantly
+    WRITE_LONG  0x24 1    // Instant/Permanent
+    WRITE_SHORT 0x2c 100  // Probability 1 = 100
+
+  CREATE EFF ~CBKMCGA~
+    WRITE_LONG  0x10 171  // Give Innate Ability
+    WRITE_LONG  0x14 2    // Preset target
+    WRITE_LONG  0x1c 0
+    WRITE_LONG  0x20 0
+    WRITE_LONG  0x24 1    // Instant/Permanent
+    WRITE_SHORT 0x2c 100  // Probability 1 = 100
+
+  // 3. Ensure 50 shell spells CBKMCP01..50.SPL exist (reusable across kits) and strip prior kit_ids op177 entries
+  //    from CBKMCP01..50.SPL AND QD_MCP01..50.SPL / QD#MCP01..50.SPL (idempotence + yeslick-npc coexistence).
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_PATCH ~~ BEGIN LPF cbk_mc_pad2 INT_VAR n = lv RET lv_pad = out END END
+
+    ACTION_IF !(FILE_EXISTS_IN_GAME ~CBKMCP%lv_pad%.SPL~) BEGIN
+      CREATE SPL ~CBKMCP%lv_pad%~
+        INSERT_BYTES 0x72 0x28
+        WRITE_SHORT 0x1c 4
+        WRITE_LONG  0x34 1
+        WRITE_LONG  0x64 0x72
+        WRITE_SHORT 0x68 1
+        WRITE_LONG  0x6a 0x9a
+        WRITE_SHORT 0x6e 0
+        WRITE_SHORT 0x70 0
+        WRITE_BYTE  (0x72 + 0x00) 1
+        WRITE_SHORT (0x72 + 0x02) 4
+        WRITE_BYTE  (0x72 + 0x0c) 5
+        WRITE_SHORT (0x72 + 0x10) 1
+        WRITE_SHORT (0x72 + 0x24) 1
+        WRITE_SHORT (0x72 + 0x26) 1
+    END ELSE BEGIN
+      COPY_EXISTING ~CBKMCP%lv_pad%.SPL~ ~override~
+        LPF DELETE_EFFECT
+          INT_VAR
+            check_globals    = 0
+            check_headers    = 1
+            match_opcode     = 177
+            match_parameter1 = kit_ids
+            match_parameter2 = 9
+            silent           = 1
+        END
+      BUT_ONLY
+    END
+
+    ACTION_IF (FILE_EXISTS_IN_GAME ~QD_MCP%lv_pad%.SPL~) BEGIN
+      COPY_EXISTING ~QD_MCP%lv_pad%.SPL~ ~override~
+        LPF DELETE_EFFECT
+          INT_VAR
+            check_globals    = 0
+            check_headers    = 1
+            match_opcode     = 177
+            match_parameter1 = kit_ids
+            match_parameter2 = 9
+            silent           = 1
+        END
+      BUT_ONLY
+    END
+
+    ACTION_IF (FILE_EXISTS_IN_GAME ~QD#MCP%lv_pad%.SPL~) BEGIN
+      COPY_EXISTING ~QD#MCP%lv_pad%.SPL~ ~override~
+        LPF DELETE_EFFECT
+          INT_VAR
+            check_globals    = 0
+            check_headers    = 1
+            match_opcode     = 177
+            match_parameter1 = kit_ids
+            match_parameter2 = 9
+            silent           = 1
+        END
+      BUT_ONLY
+    END
+  END
+
+  // 4. Parse %clab%.2DA and clone deterministic 8-char .EFFs + append op177 to CBKMCP01..50.SPL
+  ACTION_CLEAR_ARRAY cbk_mc_cnt
+  ACTION_CLEAR_ARRAY cbk_mc_kind
+  ACTION_CLEAR_ARRAY cbk_mc_res
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SET $cbk_mc_cnt(~%lv%~) = 0
+  END
+  ACTION_IF (!(~%clab%~ STR_EQ ~~) AND FILE_EXISTS_IN_GAME ~%clab%.2DA~) BEGIN
+    COPY_EXISTING ~%clab%.2DA~ ~override~
+      COUNT_2DA_COLS c_cols
+      PATCH_IF (c_cols >= 2) BEGIN
+        READ_2DA_ENTRIES_NOW c_hdr (c_cols - 1)
+        READ_2DA_ENTRIES_NOW c_rows c_cols
+        // Map column index -> level number (1..50)
+        FOR (c = 1; c < c_cols; ++c) BEGIN
+          READ_2DA_ENTRY_FORMER c_hdr 0 (c - 1) lv_tok
+          PATCH_IF (IS_AN_INT lv_tok AND lv_tok >= 1 AND lv_tok <= 50) BEGIN
+            SET $cbk_col_to_lv(~%c%~) = lv_tok
+          END ELSE PATCH_IF (c >= 1 AND c <= 50) BEGIN
+            SET $cbk_col_to_lv(~%c%~) = c
+          END ELSE BEGIN
+            SET $cbk_col_to_lv(~%c%~) = 0
+          END
+        END
+        FOR (r = 0; r < c_rows; ++r) BEGIN
+          FOR (c = 1; c < c_cols; ++c) BEGIN
+            SET lv = $cbk_col_to_lv(~%c%~)
+            PATCH_IF (lv >= 1 AND lv <= 50) BEGIN
+              READ_2DA_ENTRY_FORMER c_rows r c cell
+              TO_UPPER cell
+              SPRINT kind ~~
+              SPRINT resref ~~
+              PATCH_IF (~%cell%~ STRING_MATCHES_REGEXP ~^AP_.+$~ = 0) BEGIN
+                SPRINT kind ~AP~
+                INNER_PATCH_SAVE resref ~%cell%~ BEGIN
+                  REPLACE_TEXTUALLY ~^AP_~ ~~
+                END
+              END ELSE PATCH_IF (~%cell%~ STRING_MATCHES_REGEXP ~^GA_.+$~ = 0) BEGIN
+                SPRINT kind ~GA~
+                INNER_PATCH_SAVE resref ~%cell%~ BEGIN
+                  REPLACE_TEXTUALLY ~^GA_~ ~~
+                END
+              END
+              PATCH_IF (!(~%kind%~ STR_EQ ~~) AND !(~%resref%~ STR_EQ ~~) AND !(~%resref%~ STR_EQ ~****~)) BEGIN
+                SET idx = $cbk_mc_cnt(~%lv%~)
+                SPRINT $cbk_mc_kind(~%lv%_%idx%~) ~%kind%~
+                SPRINT $cbk_mc_res(~%lv%_%idx%~)  ~%resref%~
+                SET $cbk_mc_cnt(~%lv%~) = idx + 1
+              END
+            END
+          END
+        END
+      END
+    BUT_ONLY
+
+    OUTER_PATCH ~~ BEGIN LPF cbk_mc_to_b36_2 INT_VAR val = kit_num RET kit_b36 = out END END
+
+    OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+      OUTER_SET lv_cnt = $cbk_mc_cnt(~%lv%~)
+      ACTION_IF (lv_cnt > 0) BEGIN
+        OUTER_PATCH ~~ BEGIN LPF cbk_mc_pad2 INT_VAR n = lv RET lv_pad = out END END
+        OUTER_FOR (idx = 0; idx < lv_cnt; ++idx) BEGIN
+          OUTER_SPRINT kind $cbk_mc_kind(~%lv%_%idx%~)
+          OUTER_SPRINT res  $cbk_mc_res(~%lv%_%idx%~)
+          OUTER_PATCH ~~ BEGIN LPF cbk_mc_to_b36_2 INT_VAR val = idx RET idx_b36 = out END END
+          OUTER_SPRINT eff_name ~CM%kit_b36%%lv_pad%%idx_b36%~
+          ACTION_IF (~%kind%~ STR_EQ ~AP~) BEGIN
+            OUTER_SPRINT src_eff ~CBKMCAP~
+          END ELSE BEGIN
+            OUTER_SPRINT src_eff ~CBKMCGA~
+          END
+          COPY_EXISTING ~%src_eff%.EFF~ ~override/%eff_name%.EFF~
+            WRITE_ASCIIE 0x30 ~%res%~ #8
+            WRITE_LONG   0x90 1
+            WRITE_ASCIIE 0x94 ~%eff_name%~ #8
+        END
+        COPY_EXISTING ~CBKMCP%lv_pad%.SPL~ ~override~
+          FOR (idx = 0; idx < lv_cnt; ++idx) BEGIN
+            LPF cbk_mc_to_b36_2 INT_VAR val = idx RET idx_b36 = out END
+            SPRINT eff_name ~CM%kit_b36%%lv_pad%%idx_b36%~
+            LPF ADD_SPELL_EFFECT
+              INT_VAR
+                opcode        = 177
+                target        = 1
+                parameter1    = kit_ids
+                parameter2    = 9
+                timing        = 1
+                resist_dispel = 0
+                probability1  = 100
+              STR_VAR
+                resource      = EVAL ~%eff_name%~
+            END
+          END
+        BUT_ONLY
+      END
+    END
+  END
+
+  // 5. Register kit in multiclass KITTABLE.2DA, K_<MC>_<SFX>.2DA (preserving 1 0), and CBRKPKIT.2DA
+  LAF cbk_get_race_mode RET cur_race_mode = race_mode END
+
+  ACTION_CLEAR_ARRAY cbk_mc_targets
+  ACTION_IF (enable_fc = 1) BEGIN OUTER_SPRINT $cbk_mc_targets(~FIGHTER_CLERIC~) ~FC~ END
+  ACTION_IF (enable_ct = 1) BEGIN OUTER_SPRINT $cbk_mc_targets(~CLERIC_THIEF~)   ~CT~ END
+  ACTION_IF (enable_cr = 1) BEGIN OUTER_SPRINT $cbk_mc_targets(~CLERIC_RANGER~)  ~CR~ END
+
+  // Read CLSRCREQ.2DA eligibility for enabled multiclasses and the kit row (if present)
+  ACTION_CLEAR_ARRAY cbk_mc_rc_ok
+  ACTION_CLEAR_ARRAY cbk_kit_rc_ok
+  OUTER_SET has_clsrcreq = 0
+  OUTER_SET has_kit_rc_row = 0
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CLSRCREQ.2DA~) BEGIN
+    OUTER_SET has_clsrcreq = 1
+    COPY_EXISTING ~CLSRCREQ.2DA~ ~override~
+      COUNT_2DA_COLS rc_cols
+      READ_2DA_ENTRIES_NOW rc_hdr (rc_cols - 1)
+      READ_2DA_ENTRIES_NOW rc_rows rc_cols
+      FOR (c = 1; c < rc_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER rc_hdr 0 (c - 1) rcol
+        TO_UPPER rcol
+        SPRINT $cbk_rc_cname(~%c%~) ~%rcol%~
+      END
+      FOR (r = 0; r < rc_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER rc_rows r 0 rn
+        TO_UPPER rn
+        PATCH_IF (VARIABLE_IS_SET $cbk_mc_targets(~%rn%~)) BEGIN
+          FOR (c = 1; c < rc_cols; ++c) BEGIN
+            SPRINT rcol $cbk_rc_cname(~%c%~)
+            READ_2DA_ENTRY_FORMER rc_rows r c rv
+            SET $cbk_mc_rc_ok(~%rn%_%rcol%~) = (IS_AN_INT rv AND rv > 0) ? 1 : 0
+          END
+        END
+        PATCH_IF (~%rn%~ STR_EQ ~%kit_name%~) BEGIN
+          SET has_kit_rc_row = 1
+          FOR (c = 1; c < rc_cols; ++c) BEGIN
+            SPRINT rcol $cbk_rc_cname(~%c%~)
+            READ_2DA_ENTRY_FORMER rc_rows r c rv
+            SET $cbk_kit_rc_ok(~%rcol%~) = (IS_AN_INT rv AND rv > 0) ? 1 : 0
+          END
+        END
+      END
+    BUT_ONLY
+  END
+
+  ACTION_CLEAR_ARRAY cbk_race_sfx_fallback
+  ACTION_DEFINE_ASSOCIATIVE_ARRAY cbk_race_sfx_fallback BEGIN
+    ~HUMAN~     => ~H~
+    ~ELF~       => ~E~
+    ~HALF_ELF~  => ~HE~
+    ~DWARF~     => ~D~
+    ~HALFLING~  => ~HL~
+    ~GNOME~     => ~G~
+    ~HALFORC~   => ~HO~
+    ~HOBGOBLIN~ => ~HB~
+  END
+
+  ACTION_CLEAR_ARRAY cbk_mc_kt_cells
+  ACTION_IF (FILE_EXISTS_IN_GAME ~KITTABLE.2DA~) BEGIN
+    COPY_EXISTING ~KITTABLE.2DA~ ~override~
+      COUNT_2DA_COLS kt_cols
+      READ_2DA_ENTRIES_NOW kt_hdr (kt_cols - 1)
+      READ_2DA_ENTRIES_NOW kt_rows kt_cols
+      FOR (c = 1; c < kt_cols; ++c) BEGIN
+        READ_2DA_ENTRY_FORMER kt_hdr 0 (c - 1) rcol
+        TO_UPPER rcol
+        SPRINT $cbk_kt_rcol(~%c%~) ~%rcol%~
+      END
+      // Derive race suffixes from CLERIC row (fallback to standard suffixes / HB for HOBGOBLIN)
+      FOR (r = 0; r < kt_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER kt_rows r 0 cls_lbl
+        TO_UPPER cls_lbl
+        PATCH_IF (~%cls_lbl%~ STR_EQ ~CLERIC~) BEGIN
+          FOR (c = 1; c < kt_cols; ++c) BEGIN
+            SPRINT rcol $cbk_kt_rcol(~%c%~)
+            READ_2DA_ENTRY_FORMER kt_rows r c c_tbl
+            TO_UPPER c_tbl
+            PATCH_IF (~%c_tbl%~ STRING_MATCHES_REGEXP ~^K_C_.+$~ = 0) BEGIN
+              INNER_PATCH_SAVE sfx ~%c_tbl%~ BEGIN
+                REPLACE_TEXTUALLY ~^K_C_~ ~~
+              END
+              SPRINT $cbk_race_sfx(~%rcol%~) ~%sfx%~
+            END
+          END
+        END
+      END
+      FOR (c = 1; c < kt_cols; ++c) BEGIN
+        SPRINT rcol $cbk_kt_rcol(~%c%~)
+        PATCH_IF !(VARIABLE_IS_SET $cbk_race_sfx(~%rcol%~)) BEGIN
+          PATCH_IF (VARIABLE_IS_SET $cbk_race_sfx_fallback(~%rcol%~)) BEGIN
+            SPRINT sfx $cbk_race_sfx_fallback(~%rcol%~)
+          END ELSE BEGIN
+            SPRINT sfx ~H~
+          END
+          SPRINT $cbk_race_sfx(~%rcol%~) ~%sfx%~
+        END
+      END
+
+      // Populate missing '*' cells for enabled multiclasses and collect target K_* table names
+      SET kt_changed = 0
+      FOR (r = 0; r < kt_rows; ++r) BEGIN
+        READ_2DA_ENTRY_FORMER kt_rows r 0 cls_lbl
+        TO_UPPER cls_lbl
+        PATCH_IF (VARIABLE_IS_SET $cbk_mc_targets(~%cls_lbl%~)) BEGIN
+          SPRINT mc_pfx $cbk_mc_targets(~%cls_lbl%~)
+          FOR (c = 1; c < kt_cols; ++c) BEGIN
+            SPRINT rcol $cbk_kt_rcol(~%c%~)
+            READ_2DA_ENTRY_FORMER kt_rows r c tbl_name
+            PATCH_IF (~%tbl_name%~ STR_EQ ~*~ OR ~%tbl_name%~ STR_EQ ~~) BEGIN
+              SPRINT sfx $cbk_race_sfx(~%rcol%~)
+              SPRINT tbl_name ~K_%mc_pfx%_%sfx%~
+              SET_2DA_ENTRY_LATER kt_mc_out r c ~%tbl_name%~
+              SET kt_changed = 1
+            END
+            SPRINT $cbk_mc_kt_cells(~%cls_lbl%~ ~%rcol%~) ~%tbl_name%~
+          END
+        END
+      END
+      PATCH_IF (kt_changed = 1) BEGIN
+        SET_2DA_ENTRIES_NOW kt_mc_out kt_cols
+        PRETTY_PRINT_2DA
+      END
+    BUT_ONLY
+
+    ACTION_PHP_EACH cbk_mc_kt_cells AS cell => tbl_name BEGIN
+      OUTER_SPRINT mc_cls ~%cell_0%~
+      OUTER_SPRINT rcol   ~%cell_1%~
+      OUTER_SET want_in_tbl = 1
+
+      ACTION_IF (cur_race_mode = 111) BEGIN
+        OUTER_SET want_in_tbl = 1
+      END ELSE ACTION_IF (~%race_policy%~ STR_EQ ~DWARF_ONLY~) BEGIN
+        ACTION_IF (~%rcol%~ STR_EQ ~DWARF~) BEGIN
+          OUTER_SET want_in_tbl = 1
+        END ELSE BEGIN
+          OUTER_SET want_in_tbl = 0
+        END
+      END ELSE ACTION_IF (~%race_policy%~ STR_EQ ~NO_DWARF~) BEGIN
+        ACTION_IF (~%rcol%~ STR_EQ ~DWARF~) BEGIN
+          OUTER_SET want_in_tbl = 0
+        END ELSE ACTION_IF (has_clsrcreq = 1 AND VARIABLE_IS_SET $cbk_mc_rc_ok(~%mc_cls%_%rcol%~)) BEGIN
+          OUTER_SET want_in_tbl = $cbk_mc_rc_ok(~%mc_cls%_%rcol%~)
+        END ELSE BEGIN
+          OUTER_SET want_in_tbl = 1
+        END
+      END ELSE BEGIN
+        // CLONE: follow CLSRCREQ of the multiclass and kit
+        OUTER_SET mc_ok = 1
+        ACTION_IF (has_clsrcreq = 1 AND VARIABLE_IS_SET $cbk_mc_rc_ok(~%mc_cls%_%rcol%~)) BEGIN
+          OUTER_SET mc_ok = $cbk_mc_rc_ok(~%mc_cls%_%rcol%~)
+        END
+        OUTER_SET kit_ok = 1
+        ACTION_IF (has_kit_rc_row = 1 AND VARIABLE_IS_SET $cbk_kit_rc_ok(~%rcol%~)) BEGIN
+          OUTER_SET kit_ok = $cbk_kit_rc_ok(~%rcol%~)
+        END
+        OUTER_SET want_in_tbl = (mc_ok = 1 AND kit_ok = 1) ? 1 : 0
+      END
+
+      // Initialize missing K_<MC>_<SFX>.2DA with `1   0` so unkitted multiclasses stay playable!
+      ACTION_IF (!(FILE_EXISTS_IN_GAME ~%tbl_name%.2DA~) AND want_in_tbl = 1) BEGIN
+        COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/%tbl_name%.2DA~
+          DELETE_BYTES 0 BUFFER_LENGTH
+          SPRINT init_mc ~2DA V1.0%WNL%*%WNL%    KIT%WNL%1   0%WNL%~
+          INSERT_BYTES 0 (STRING_LENGTH ~%init_mc%~)
+          WRITE_ASCIIE 0 ~%init_mc%~
+          PRETTY_PRINT_2DA
+      END ELSE ACTION_IF (FILE_EXISTS_IN_GAME ~%tbl_name%.2DA~ AND want_in_tbl = 1) BEGIN
+        // Guarantee row 1 has 0 (unkitted multiclass) even if a prior table lacked it
+        COPY_EXISTING ~%tbl_name%.2DA~ ~override~
+          READ_2DA_ENTRIES_NOW existing_k 2
+          SET has_zero = 0
+          FOR (kr = 0; kr < existing_k; ++kr) BEGIN
+            READ_2DA_ENTRY_FORMER existing_k kr 0 krnum
+            READ_2DA_ENTRY_FORMER existing_k kr 1 kid
+            PATCH_IF (IS_AN_INT krnum AND IS_AN_INT kid AND ~%kid%~ STR_EQ ~0~) BEGIN SET has_zero = 1 END
+          END
+          PATCH_IF (has_zero = 0) BEGIN
+            SPRINT reb ~2DA V1.0%WNL%*%WNL%    KIT%WNL%1   0%WNL%~
+            SET oidx = 1
+            FOR (kr = 0; kr < existing_k; ++kr) BEGIN
+              READ_2DA_ENTRY_FORMER existing_k kr 0 krnum
+              READ_2DA_ENTRY_FORMER existing_k kr 1 kid
+              PATCH_IF (IS_AN_INT krnum AND IS_AN_INT kid) BEGIN
+                SET oidx += 1
+                SPRINT reb ~%reb%%oidx%   %kid%%WNL%~
+              END
+            END
+            DELETE_BYTES 0 BUFFER_LENGTH
+            INSERT_BYTES 0 (STRING_LENGTH ~%reb%~)
+            WRITE_ASCIIE 0 ~%reb%~
+            PRETTY_PRINT_2DA
+          END
+        BUT_ONLY
+      END
+
+      LAF cbk_ensure_kit_in_k_table
+        INT_VAR
+          kit_num = kit_num
+          enable  = want_in_tbl
+        STR_VAR
+          tbl_name = EVAL ~%tbl_name%~
+      END
+    END
+  END
+
+  // 6. Append unique rows to CBRKPKIT.2DA for M_CBKKP.lua multiclass WEAPPROF redirection
+  ACTION_IF (FILE_EXISTS_IN_GAME ~CBRKPKIT.2DA~) BEGIN
+    OUTER_PATCH ~~ BEGIN SPRINTF kit_ids_dec ~%d~ (kit_ids) END
+    ACTION_IF (enable_fc = 1) BEGIN
+      LAF cbk_append_2da_row_unique
+        INT_VAR cols = 3
+        STR_VAR
+          file      = ~CBRKPKIT.2DA~
+          match_key = EVAL ~%kit_name%_FC~
+          row_line  = EVAL ~%kit_name%_FC 8 %kit_ids_dec%~
+      END
+    END
+    ACTION_IF (enable_ct = 1) BEGIN
+      LAF cbk_append_2da_row_unique
+        INT_VAR cols = 3
+        STR_VAR
+          file      = ~CBRKPKIT.2DA~
+          match_key = EVAL ~%kit_name%_CT~
+          row_line  = EVAL ~%kit_name%_CT 15 %kit_ids_dec%~
+      END
+    END
+    ACTION_IF (enable_cr = 1) BEGIN
+      LAF cbk_append_2da_row_unique
+        INT_VAR cols = 3
+        STR_VAR
+          file      = ~CBRKPKIT.2DA~
+          match_key = EVAL ~%kit_name%_CR~
+          row_line  = EVAL ~%kit_name%_CR 18 %kit_ids_dec%~
+      END
+    END
+  END
+END

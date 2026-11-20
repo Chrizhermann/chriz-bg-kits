@@ -1,0 +1,182 @@
+// Clean-room Level-25 Holy Symbol generator (.ITM + grant .SPL) for chriz-bg-kits.
+// Modeled cleanly on BG2:EE Holy Symbols (BELT12.ITM / OHTEMPUS.ITM / CDHLYSYM.SPL).
+
+DEFINE_ACTION_FUNCTION cbk_make_holy_symbol
+  INT_VAR
+    name_ref = 0
+    desc_ref = 0
+    str_bon  = 0
+    wis_bon  = 0
+    con_bon  = 0
+    unus     = 0x607f3840
+  STR_VAR
+    spl_res  = ~~
+    itm_res  = ~~
+    icon_bam = ~IBELT12~
+BEGIN
+  OUTER_SPRINT spl_res  EVALUATE_BUFFER ~%spl_res%~
+  OUTER_SPRINT itm_res  EVALUATE_BUFFER ~%itm_res%~
+  OUTER_SPRINT icon_bam EVALUATE_BUFFER ~%icon_bam%~
+  ACTION_TO_UPPER spl_res
+  ACTION_TO_UPPER itm_res
+  ACTION_TO_UPPER icon_bam
+
+  ACTION_IF (~%spl_res%~ STR_EQ ~~ OR ~%itm_res%~ STR_EQ ~~) BEGIN
+    FAIL ~cbk_make_holy_symbol requires non-empty spl_res and itm_res~
+  END
+
+  // 1. Generate %itm_res%.ITM (Ring slot, 0 abilities, standard Holy Symbol equipping effects)
+  CREATE ITM ~%itm_res%~
+    WRITE_LONG   0x08 name_ref        // Unidentified name
+    WRITE_LONG   0x0c name_ref        // Identified name
+    WRITE_LONG   0x18 0x0000006c      // Movable/droppable + displayable + not copyable + magical (vanilla BELT12/OHTEMPUS)
+    WRITE_SHORT  0x1c 10              // Item type: Ring slot
+    WRITE_LONG   0x1e unus            // Class/alignment usability bitmask
+    WRITE_SHORT  0x24 0               // Minimum level
+    WRITE_LONG   0x34 5000            // Price
+    WRITE_SHORT  0x38 1               // Max stack
+    WRITE_ASCIIE 0x3a ~%icon_bam%~ #8 // Inventory icon BAM
+    WRITE_SHORT  0x42 0               // Lore to identify (pre-identified)
+    WRITE_ASCII  0x44 ~GRING01~ #8    // Ground icon BAM
+    WRITE_LONG   0x4c 0               // Weight
+    WRITE_LONG   0x50 desc_ref        // Unidentified description
+    WRITE_LONG   0x54 desc_ref        // Identified description
+    PATCH_IF (~%icon_bam%~ STR_EQ ~IBELT12~) BEGIN
+      WRITE_ASCII 0x58 ~PBELT12~ #8   // Description icon BAM
+    END
+    WRITE_LONG   0x64 0x72            // Ability table offset
+    WRITE_SHORT  0x68 0               // Ability count
+    WRITE_LONG   0x6a 0x72            // Effects table offset
+    WRITE_SHORT  0x6e 0               // First equipping effect index
+    WRITE_SHORT  0x70 0               // Equipping effect count (incremented below)
+
+    // +1 Level 6 Priest spell slot
+    LPF ADD_ITEM_EQEFFECT
+      INT_VAR
+        opcode        = 62
+        target        = 1
+        parameter1    = 1
+        parameter2    = 0x20
+        timing        = 2
+        resist_dispel = 2
+        probability1  = 100
+        insert_point  = 0 - 1
+    END
+    // +1 Level 7 Priest spell slot
+    LPF ADD_ITEM_EQEFFECT
+      INT_VAR
+        opcode        = 62
+        target        = 1
+        parameter1    = 1
+        parameter2    = 0x40
+        timing        = 2
+        resist_dispel = 2
+        probability1  = 100
+        insert_point  = 0 - 1
+    END
+    // +5% Magic Resistance
+    LPF ADD_ITEM_EQEFFECT
+      INT_VAR
+        opcode        = 166
+        target        = 1
+        parameter1    = 5
+        parameter2    = 0
+        timing        = 2
+        resist_dispel = 2
+        probability1  = 100
+        insert_point  = 0 - 1
+    END
+    // Optional stat bonuses
+    PATCH_IF (str_bon != 0) BEGIN
+      LPF ADD_ITEM_EQEFFECT
+        INT_VAR
+          opcode        = 44
+          target        = 1
+          parameter1    = str_bon
+          parameter2    = 0
+          timing        = 2
+          resist_dispel = 2
+          probability1  = 100
+          insert_point  = 0 - 1
+      END
+    END
+    PATCH_IF (wis_bon != 0) BEGIN
+      LPF ADD_ITEM_EQEFFECT
+        INT_VAR
+          opcode        = 49
+          target        = 1
+          parameter1    = wis_bon
+          parameter2    = 0
+          timing        = 2
+          resist_dispel = 2
+          probability1  = 100
+          insert_point  = 0 - 1
+      END
+    END
+    PATCH_IF (con_bon != 0) BEGIN
+      LPF ADD_ITEM_EQEFFECT
+        INT_VAR
+          opcode        = 10
+          target        = 1
+          parameter1    = con_bon
+          parameter2    = 0
+          timing        = 2
+          resist_dispel = 2
+          probability1  = 100
+          insert_point  = 0 - 1
+      END
+    END
+    // Holy Symbol portrait icon (0x3f = 63)
+    LPF ADD_ITEM_EQEFFECT
+      INT_VAR
+        opcode        = 142
+        target        = 1
+        parameter1    = 0
+        parameter2    = 0x3f
+        timing        = 2
+        resist_dispel = 2
+        probability1  = 100
+        insert_point  = 0 - 1
+    END
+
+  // 2. Generate %spl_res%.SPL (Innate grant spell applied at Level 25 via CLAB)
+  CREATE SPL ~%spl_res%~
+    INSERT_BYTES 0x72 0x28
+    WRITE_SHORT 0x1c 4                // Innate spell
+    WRITE_LONG  0x34 1                // Level 1
+    WRITE_LONG  0x64 0x72             // Ability offset
+    WRITE_SHORT 0x68 1                // Ability count
+    WRITE_LONG  0x6a 0x9a             // Effects offset (0x72 + 0x28)
+    WRITE_SHORT 0x6e 0                // First casting effect index
+    WRITE_SHORT 0x70 0                // Casting effect count
+    WRITE_BYTE  (0x72 + 0x00) 1       // Ability type: Melee/Standard
+    WRITE_SHORT (0x72 + 0x02) 4       // Location: Innate
+    WRITE_BYTE  (0x72 + 0x0c) 5       // Target: Caster
+    WRITE_SHORT (0x72 + 0x10) 1       // Min level
+    WRITE_SHORT (0x72 + 0x24) 1       // Charges
+    WRITE_SHORT (0x72 + 0x26) 1       // Projectile: None
+    LPF ADD_SPELL_EFFECT
+      INT_VAR
+        opcode        = 122           // Create Inventory Item
+        target        = 1
+        parameter1    = 1
+        parameter2    = 0
+        timing        = 9
+        resist_dispel = 2
+        probability1  = 100
+      STR_VAR
+        resource      = EVAL ~%itm_res%~
+    END
+    LPF ADD_SPELL_EFFECT
+      INT_VAR
+        opcode        = 215           // Play Visual Effect
+        target        = 1
+        parameter1    = 0
+        parameter2    = 0
+        timing        = 1
+        resist_dispel = 0
+        probability1  = 100
+      STR_VAR
+        resource      = ~SPDISPMA~
+    END
+END

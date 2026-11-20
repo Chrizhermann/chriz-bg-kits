@@ -178,16 +178,19 @@ BEGIN
         SET out_idx = 0
         SPRINT rebuilt ~2DA V1.0%WNL%*%WNL%    KIT%WNL%~
         FOR (rr = 0; rr < rf_rows; ++rr) BEGIN
+          READ_2DA_ENTRY_FORMER rf_rows rr 0 rnum
           READ_2DA_ENTRY_FORMER rf_rows rr 1 kid
-          PATCH_IF (~%kid%~ STR_EQ ~%kit_num%~) BEGIN
-            SET has_kit = 1
-            PATCH_IF (enable = 1) BEGIN
+          PATCH_IF (IS_AN_INT rnum AND IS_AN_INT kid) BEGIN
+            PATCH_IF (~%kid%~ STR_EQ ~%kit_num%~) BEGIN
+              SET has_kit = 1
+              PATCH_IF (enable = 1) BEGIN
+                SET out_idx += 1
+                SPRINT rebuilt ~%rebuilt%%out_idx%   %kid%%WNL%~
+              END
+            END ELSE BEGIN
               SET out_idx += 1
               SPRINT rebuilt ~%rebuilt%%out_idx%   %kid%%WNL%~
             END
-          END ELSE BEGIN
-            SET out_idx += 1
-            SPRINT rebuilt ~%rebuilt%%out_idx%   %kid%%WNL%~
           END
         END
         PATCH_IF (enable = 1 AND has_kit = 0) BEGIN
@@ -227,7 +230,7 @@ DEFINE_ACTION_FUNCTION cbk_register_kit
     abdcsrq_row  = ~0 0 0 0 0 0~
     alignmnt_row = ~1 1 1 1 1 1 1 1 1~
     dualclas_row = ~0 0 0 0 0 0~
-    race_policy = ~CLONE~ // CLONE | DWARF_ONLY | NO_HALFLING_HOBGOBLIN | DRUID_RACES
+    race_policy = ~CLONE~ // CLONE | DWARF_ONLY | NO_DWARF | NO_HALFLING_HOBGOBLIN | DRUID_RACES
   RET kit_num kit_ids kit_ids_hex kit_prof kit_data_col
 BEGIN
   LAF cbk_append_weapprof_col STR_VAR kit_name = EVAL ~%kit_name%~ clone_col = EVAL ~%clone_prof_col%~ RET kit_prof = prof_index kit_data_col = data_col_index END
@@ -328,9 +331,27 @@ BEGIN
         END ELSE PATCH_IF (~%race_policy%~ STR_EQ ~DWARF_ONLY~) BEGIN
           PATCH_IF (~%rcol_name%~ STR_EQ ~DWARF~) BEGIN
             SPRINT rv ~1~
-            SET dwarf_sorc_unlock = c
+            PATCH_IF (~%class_label%~ STR_EQ ~SORCERER~) BEGIN
+              SET dwarf_sorc_unlock = c
+            END
           END ELSE BEGIN
             SPRINT rv ~0~
+          END
+        END ELSE PATCH_IF (~%race_policy%~ STR_EQ ~NO_DWARF~) BEGIN
+          PATCH_IF (~%rcol_name%~ STR_EQ ~DWARF~) BEGIN
+            SPRINT rv ~0~
+          END ELSE PATCH_IF (cur_race_mode = 110) BEGIN
+            PATCH_IF (fallback_row >= 0) BEGIN
+              READ_2DA_ENTRY_FORMER rc_rows fallback_row c rv
+            END ELSE BEGIN
+              SPRINT rv ~1~
+            END
+          END ELSE BEGIN
+            PATCH_IF (clone_row >= 0) BEGIN
+              READ_2DA_ENTRY_FORMER rc_rows clone_row c rv
+            END ELSE BEGIN
+              SPRINT rv ~1~
+            END
           END
         END ELSE PATCH_IF (~%race_policy%~ STR_EQ ~NO_HALFLING_HOBGOBLIN~ AND cur_race_mode = 110) BEGIN
           PATCH_IF (~%rcol_name%~ STR_EQ ~HALFLING~ OR ~%rcol_name%~ STR_EQ ~HOBGOBLIN~) BEGIN
@@ -338,6 +359,8 @@ BEGIN
           END ELSE BEGIN
             SPRINT rv ~1~
           END
+        END ELSE PATCH_IF (~%kit_name%~ STR_EQ ~CBK_ILMATER~ AND cur_race_mode = 110 AND ~%rcol_name%~ STR_EQ ~HOBGOBLIN~) BEGIN
+          SPRINT rv ~0~
         END ELSE BEGIN
           PATCH_IF (clone_row >= 0) BEGIN
             READ_2DA_ENTRY_FORMER rc_rows clone_row c rv
@@ -359,7 +382,7 @@ BEGIN
     BUT_ONLY
     LAF cbk_ensure_kit_table_row STR_VAR table_file = ~CLSRCREQ.2DA~ row_key = EVAL ~%kit_name%~ row_values = EVAL ~%rc_vals%~ END
     // If Stonefire is registered without Sorcerer row existing yet in minimal fakegame, ensure SORCERER row allows Dwarf
-    ACTION_IF (~%race_policy%~ STR_EQ ~DWARF_ONLY~ AND sorc_row < 0) BEGIN
+    ACTION_IF (~%race_policy%~ STR_EQ ~DWARF_ONLY~ AND ~%class_label%~ STR_EQ ~SORCERER~ AND sorc_row < 0) BEGIN
       LAF cbk_ensure_kit_table_row STR_VAR table_file = ~CLSRCREQ.2DA~ row_key = ~SORCERER~ row_values = EVAL ~%rc_vals%~ END
     END
   END
@@ -396,6 +419,12 @@ BEGIN
         END ELSE BEGIN
           OUTER_SET want_in_tbl = 0
         END
+      END ELSE ACTION_IF (~%race_policy%~ STR_EQ ~NO_DWARF~) BEGIN
+        ACTION_IF (~%rcol%~ STR_EQ ~DWARF~) BEGIN
+          OUTER_SET want_in_tbl = 0
+        END ELSE BEGIN
+          OUTER_SET want_in_tbl = 1
+        END
       END ELSE ACTION_IF (~%race_policy%~ STR_EQ ~NO_HALFLING_HOBGOBLIN~ AND cur_race_mode = 110) BEGIN
         ACTION_IF (~%rcol%~ STR_EQ ~HALFLING~ OR ~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN
           OUTER_SET want_in_tbl = 0
@@ -404,8 +433,10 @@ BEGIN
         ACTION_IF (~%rcol%~ STR_EQ ~DWARF~ OR ~%rcol%~ STR_EQ ~GNOME~ OR ~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN
           OUTER_SET want_in_tbl = 0
         END
+      END ELSE ACTION_IF (~%kit_name%~ STR_EQ ~CBK_ILMATER~ AND cur_race_mode = 110 AND ~%rcol%~ STR_EQ ~HOBGOBLIN~) BEGIN
+        OUTER_SET want_in_tbl = 0
       END
-      ACTION_IF (~%race_policy%~ STR_EQ ~DWARF_ONLY~ AND cur_race_mode != 111 AND ~%rcol%~ STR_EQ ~DWARF~) BEGIN
+      ACTION_IF (~%race_policy%~ STR_EQ ~DWARF_ONLY~ AND ~%class_label%~ STR_EQ ~SORCERER~ AND cur_race_mode != 111 AND ~%rcol%~ STR_EQ ~DWARF~) BEGIN
         // Dwarf Sorcerer in FR / default mode: ONLY CBK_STONEFIRE (no generic Sorcerer 0 or Dragon Disciple 35)
         COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/%tbl_name%.2DA~
           DELETE_BYTES 0 BUFFER_LENGTH

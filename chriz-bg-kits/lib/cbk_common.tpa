@@ -113,8 +113,9 @@ END
 
 DEFINE_ACTION_FUNCTION cbk_get_kit_info
   STR_VAR kit_name = ~~
-  RET kit_ids kit_prof kit_class kit_clab kit_mixed kit_lower
+  RET kit_num kit_ids kit_prof kit_class kit_clab kit_mixed kit_lower
 BEGIN
+  OUTER_SET kit_num = 0 - 1
   OUTER_SET kit_ids = 0 - 1
   OUTER_SET kit_prof = 0 - 1
   OUTER_SET kit_class = 0 - 1
@@ -126,6 +127,7 @@ BEGIN
     FOR (r = 0; r < krows; ++r) BEGIN
       READ_2DA_ENTRY r 1 10 rname
       PATCH_IF (~%rname%~ STR_EQ ~%kit_name%~) BEGIN
+        READ_2DA_ENTRY r 0 10 kit_num
         READ_2DA_ENTRY r 2 10 kit_lower
         READ_2DA_ENTRY r 3 10 kit_mixed
         READ_2DA_ENTRY r 5 10 kit_clab
