@@ -1,0 +1,642 @@
+{
+  "texts": {},
+  "states": [],
+  "splprots": {
+    "CBK_PROF_SPEAR_GE_1": {
+      "stat": 98,
+      "value": 1,
+      "relation": 4
+    }
+  },
+  "resources": [
+    {
+      "file": "CBKLPUM.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 318,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": {
+                "splprot": "CBK_PROF_SPEAR_GE_1"
+              },
+              "timing": 0,
+              "duration": 1,
+              "resource": "CBKLPUM"
+            },
+            {
+              "opcode": 233,
+              "target": 1,
+              "power": 0,
+              "p1": 1,
+              "p2": 98,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKUMB0.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 5,
+          "min_level": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 28,
+              "target": 1,
+              "p1": 25,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 85,
+              "target": 1,
+              "p1": 25,
+              "p2": 0,
+              "timing": 9
+            },
+            {
+              "opcode": 29,
+              "target": 1,
+              "p1": 25,
+              "p2": 0,
+              "timing": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKUMB1.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "school": 6,
+      "icon": "SPWI503C",
+      "abilities": [
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 4,
+          "range": 35,
+          "min_level": 1,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "resource": "CBKUMB1"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 1,
+              "sides": 6,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 1,
+              "sides": 6,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 41,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 4,
+          "range": 35,
+          "min_level": 5,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "resource": "CBKUMB1"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 41,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 4,
+          "range": 35,
+          "min_level": 9,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "resource": "CBKUMB1"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 2,
+              "sides": 6,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 2,
+              "sides": 6,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 41,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 4,
+          "range": 35,
+          "min_level": 13,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "resource": "CBKUMB1"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 5,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 5,
+              "sides": 3,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 41,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            }
+          ]
+        },
+        {
+          "form": 2,
+          "location": 4,
+          "icon": "SPWI503B",
+          "target": 4,
+          "range": 35,
+          "min_level": 17,
+          "speed": 3,
+          "projectile": {
+            "proj": "INAREANP",
+            "default": 158
+          },
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "resource": "CBKUMB1"
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 6,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 3,
+              "sides": 6,
+              "save": 16777218,
+              "special": 256
+            },
+            {
+              "opcode": 40,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            },
+            {
+              "opcode": 142,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 41,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 12,
+              "save": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKUMB2.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "school": 1,
+      "icon": "SPWI403C",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "icon": "SPWI403B",
+          "target": 5,
+          "range": 0,
+          "min_level": 1,
+          "speed": 1,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 321,
+              "target": 1,
+              "power": 0,
+              "timing": 1,
+              "dispel": 2,
+              "resource": "CBKUMB2"
+            },
+            {
+              "opcode": 0,
+              "target": 1,
+              "power": 0,
+              "p1": 2,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 2,
+              "duration": 30
+            },
+            {
+              "opcode": 89,
+              "target": 1,
+              "power": 0,
+              "p1": 50,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 2,
+              "duration": 30
+            },
+            {
+              "opcode": 232,
+              "target": 1,
+              "power": 0,
+              "p1": 1,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 2,
+              "duration": 30,
+              "resource": "CBKUMB2B"
+            },
+            {
+              "opcode": 142,
+              "target": 1,
+              "power": 0,
+              "p1": 0,
+              "p2": 69,
+              "timing": 0,
+              "dispel": 2,
+              "duration": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKUMB2B.SPL",
+      "spell_type": 4,
+      "level": 1,
+      "school": 6,
+      "abilities": [
+        {
+          "form": 1,
+          "location": 4,
+          "target": 1,
+          "range": 10,
+          "min_level": 1,
+          "speed": 0,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 0,
+              "p1": 2,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 0,
+              "dice": 1,
+              "sides": 6,
+              "save": 16777216
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKUMIL.SPL",
+      "spell_type": 2,
+      "level": 3,
+      "school": 6,
+      "icon": "SPWI304C",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI304B",
+          "target": 1,
+          "range": 40,
+          "min_level": 1,
+          "speed": 3,
+          "projectile": 1,
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 5,
+              "sides": 6,
+              "save": 16777216
+            },
+            {
+              "opcode": 45,
+              "target": 2,
+              "power": 3,
+              "p1": 0,
+              "p2": 0,
+              "timing": 0,
+              "dispel": 1,
+              "duration": 18,
+              "save": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CBKUMCC.SPL",
+      "spell_type": 2,
+      "level": 5,
+      "school": 6,
+      "icon": "SPWI503C",
+      "abilities": [
+        {
+          "form": 1,
+          "location": 2,
+          "icon": "SPWI503B",
+          "target": 4,
+          "range": 20,
+          "min_level": 1,
+          "speed": 5,
+          "projectile": {
+            "proj": "CONECOLD",
+            "default": 255
+          },
+          "effects": [
+            {
+              "opcode": 12,
+              "target": 2,
+              "power": 5,
+              "p1": 10,
+              "p2": 131072,
+              "timing": 1,
+              "dispel": 1,
+              "dice": 10,
+              "sides": 4,
+              "save": 16777217,
+              "special": 256
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

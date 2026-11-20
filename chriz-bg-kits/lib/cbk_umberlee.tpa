@@ -1,0 +1,241 @@
+// cbk_umberlee.tpa: Component 204 — Waveservant of Umberlee (Cleric Kit, CBK_UMBERLEE)
+
+DEFINE_ACTION_FUNCTION cbk_umb_spell_resref_from_ids
+  STR_VAR sym = ~~
+  RET     res
+BEGIN
+  OUTER_SPRINT res ~~
+  ACTION_IF !(~%sym%~ STR_EQ ~~) BEGIN
+    OUTER_SET num = IDS_OF_SYMBOL (~spell~ ~%sym%~)
+    ACTION_IF (num > 1000) BEGIN
+      OUTER_SET stype = num / 1000
+      OUTER_SET snum  = num MODULO 1000
+      ACTION_IF (snum < 10) BEGIN
+        OUTER_SPRINT pad ~00%snum%~
+      END ELSE ACTION_IF (snum < 100) BEGIN
+        OUTER_SPRINT pad ~0%snum%~
+      END ELSE BEGIN
+        OUTER_SPRINT pad ~%snum%~
+      END
+      ACTION_IF (stype = 1) BEGIN
+        OUTER_SPRINT cand ~SPPR%pad%~
+      END ELSE ACTION_IF (stype = 2) BEGIN
+        OUTER_SPRINT cand ~SPWI%pad%~
+      END ELSE ACTION_IF (stype = 3) BEGIN
+        OUTER_SPRINT cand ~SPIN%pad%~
+      END ELSE ACTION_IF (stype = 4) BEGIN
+        OUTER_SPRINT cand ~SPCL%pad%~
+      END ELSE BEGIN
+        OUTER_SPRINT cand ~~
+      END
+      ACTION_IF (!(~%cand%~ STR_EQ ~~) AND FILE_EXISTS_IN_GAME ~%cand%.SPL~) BEGIN
+        OUTER_SPRINT res ~%cand%~
+      END
+    END
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_setup_umb_spell
+  INT_VAR
+    priest_lv         = 1
+    fallback_name_tra = 0
+    fallback_desc_tra = 0
+  STR_VAR
+    dst        = ~~
+    ids_sym    = ~~
+    direct_res = ~~
+BEGIN
+  LAF cbk_umb_spell_resref_from_ids STR_VAR sym = EVAL ~%ids_sym%~ RET src_res = res END
+  ACTION_IF (~%src_res%~ STR_EQ ~~ AND !(~%direct_res%~ STR_EQ ~~) AND FILE_EXISTS_IN_GAME ~%direct_res%.SPL~) BEGIN
+    OUTER_SPRINT src_res ~%direct_res%~
+  END
+
+  ACTION_IF !(~%src_res%~ STR_EQ ~~) BEGIN
+    COPY_EXISTING ~%src_res%.SPL~ ~override/%dst%.SPL~
+      PATCH_IF (SOURCE_SIZE >= 0x72) BEGIN
+        WRITE_SHORT 0x1c 2
+        WRITE_LONG  0x1e 0
+        WRITE_LONG  0x34 priest_lv
+        READ_LONG   0x64 ab_off
+        READ_SHORT  0x68 ab_num
+        READ_LONG   0x6a fx_off
+        READ_SHORT  0x70 eq_cnt
+        SET total_fx = eq_cnt
+        FOR (a = 0; a < ab_num; ++a) BEGIN
+          SET ao = ab_off + (a * 0x28)
+          PATCH_IF (ao + 0x28 <= SOURCE_SIZE) BEGIN
+            WRITE_SHORT (ao + 0x02) 2
+            READ_SHORT  (ao + 0x1e) fcnt
+            READ_SHORT  (ao + 0x20) fidx
+            PATCH_IF (fidx + fcnt > total_fx) BEGIN
+              SET total_fx = fidx + fcnt
+            END
+          END
+        END
+        FOR (f = 0; f < total_fx; ++f) BEGIN
+          SET fo = fx_off + (f * 0x30)
+          PATCH_IF (fo + 0x30 <= SOURCE_SIZE) BEGIN
+            READ_SHORT fo op
+            PATCH_IF (op = 206 OR op = 318 OR op = 321 OR op = 324) BEGIN
+              READ_ASCII (fo + 0x14) rref (8) NULL
+              PATCH_IF (~%rref%~ STR_EQ ~%src_res%~) BEGIN
+                WRITE_ASCIIE (fo + 0x14) ~%dst%~ #8
+              END
+            END
+          END
+        END
+      END
+  END ELSE BEGIN
+    COPY_EXISTING ~%dst%.SPL~ ~override~
+      SET nref = RESOLVE_STR_REF ((AT fallback_name_tra))
+      SET dref = RESOLVE_STR_REF ((AT fallback_desc_tra))
+      WRITE_LONG 0x08 nref
+      WRITE_LONG 0x50 dref
+  END
+END
+
+DEFINE_ACTION_FUNCTION cbk_install_umberlee BEGIN
+  LAF cbk_install_res_umberlee END
+
+  // 1. Stamp innate names & descriptions
+  COPY_EXISTING ~CBKUMB1.SPL~ ~override~ SAY NAME1 @2503 SAY UNIDENTIFIED_DESC @2504
+  COPY_EXISTING ~CBKUMB2.SPL~ ~override~ SAY NAME1 @2505 SAY UNIDENTIFIED_DESC @2506
+
+  // 2. Bonus Domain Priest Spells (Icelance L3, Cone of Cold L5; clone installed arcane if present, else fallback)
+  LAF cbk_setup_umb_spell INT_VAR priest_lv = 3 fallback_name_tra = 2507 fallback_desc_tra = 2508 STR_VAR dst = ~CBKUMIL~ ids_sym = ~WIZARD_ICELANCE~     direct_res = ~SPWI327~ END
+  LAF cbk_setup_umb_spell INT_VAR priest_lv = 5 fallback_name_tra = 2509 fallback_desc_tra = 2510 STR_VAR dst = ~CBKUMCC~ ids_sym = ~WIZARD_CONE_OF_COLD~ direct_res = ~SPWI503~ END
+
+  OUTER_SET has_priest_icelance = 0
+  ACTION_IF (IDS_OF_SYMBOL (~spell~ ~CLERIC_ICELANCE~) >= 0) OR (IDS_OF_SYMBOL (~spell~ ~CLERIC_CBMAGIC_ICELANCE~) >= 0) BEGIN
+    OUTER_SET has_priest_icelance = 1
+  END
+
+  // 3. Build CBKUMB0.2DA (50 cols; L25 Tempest Shroud in ABILITY3 so AP_CBKHSYUM at L25 has its own slot in ABILITY2)
+  OUTER_SPRINT umb_hdr ~2DA V1.0%WNL%****%WNL%           ~
+  OUTER_SPRINT r_a1 ~ABILITY1   ~
+  OUTER_SPRINT r_a2 ~ABILITY2   ~
+  OUTER_SPRINT r_a3 ~ABILITY3   ~
+  OUTER_SPRINT r_a4 ~ABILITY4   ~
+  OUTER_SPRINT r_a5 ~ABILITY5   ~
+  OUTER_SPRINT r_a6 ~ABILITY6   ~
+
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT umb_hdr ~%umb_hdr% %lv%~
+
+    // ABILITY1: L1 free Spear lore pip
+    ACTION_IF (lv = 1) BEGIN OUTER_SPRINT c1 ~AP_CBKLPUM~ END ELSE BEGIN OUTER_SPRINT c1 ~****~ END
+    OUTER_SPRINT r_a1 ~%r_a1% %c1%~
+
+    // ABILITY2: L1 passive + L25 Holy Symbol
+    ACTION_IF (lv = 1) BEGIN
+      OUTER_SPRINT c2 ~AP_CBKUMB0~
+    END ELSE ACTION_IF (lv = 25) BEGIN
+      OUTER_SPRINT c2 ~AP_CBKHSYUM~
+    END ELSE BEGIN
+      OUTER_SPRINT c2 ~****~
+    END
+    OUTER_SPRINT r_a2 ~%r_a2% %c2%~
+
+    // ABILITY3: Tempest Shroud (5,10,15,20,25,30,35,40,45,50)
+    ACTION_IF ((lv MODULO 5) = 0) BEGIN OUTER_SPRINT c3 ~GA_CBKUMB2~ END ELSE BEGIN OUTER_SPRINT c3 ~****~ END
+    OUTER_SPRINT r_a3 ~%r_a3% %c3%~
+
+    // ABILITY4: Crushing Undertow (1,6,11,16,21,26,31,36,41,46)
+    ACTION_IF ((lv MODULO 5) = 1) BEGIN OUTER_SPRINT c4 ~GA_CBKUMB1~ END ELSE BEGIN OUTER_SPRINT c4 ~****~ END
+    OUTER_SPRINT r_a4 ~%r_a4% %c4%~
+
+    // ABILITY5 / ABILITY6: Bonus Domain Priest Spells at L1
+    ACTION_IF (lv = 1) BEGIN
+      OUTER_SPRINT c5 ~GA_CBKUMCC~
+      OUTER_SPRINT c6 ~GA_CBKUMIL~
+    END ELSE BEGIN
+      OUTER_SPRINT c5 ~****~
+      OUTER_SPRINT c6 ~****~
+    END
+    OUTER_SPRINT r_a5 ~%r_a5% %c5%~
+    OUTER_SPRINT r_a6 ~%r_a6% %c6%~
+  END
+
+  OUTER_SPRINT umb_clab ~%umb_hdr%%WNL%%r_a1%%WNL%%r_a2%%WNL%%r_a3%%WNL%%r_a4%%WNL%%r_a5%%WNL%~
+  ACTION_IF (has_priest_icelance = 0) BEGIN
+    OUTER_SPRINT umb_clab ~%umb_clab%%r_a6%%WNL%~
+  END
+
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/CBKUMB0.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    INSERT_BYTES 0 (STRING_LENGTH ~%umb_clab%~)
+    WRITE_ASCIIE 0 ~%umb_clab%~
+    PRETTY_PRINT_2DA
+
+  // 4. Register CBK_UMBERLEE (class 3 = CLERIC, NE/CN/CE only, NO_DWARF)
+  OUTER_SET umb_lower = RESOLVE_STR_REF (@2500)
+  OUTER_SET umb_mixed = RESOLVE_STR_REF (@2501)
+  OUTER_SET umb_help  = RESOLVE_STR_REF (@2502)
+
+  LAF cbk_register_kit
+    INT_VAR
+      class_id      = 3
+      unusable_mask = 0x00004000
+      lower_ref     = umb_lower
+      mixed_ref     = umb_mixed
+      help_ref      = umb_help
+    STR_VAR
+      kit_name       = ~CBK_UMBERLEE~
+      class_label    = ~CLERIC~
+      clone_kit      = ~OHTEMPUS~
+      clone_prof_col = ~CLERIC~
+      clab           = ~CBKUMB0~
+      lua_abbr       = ~Cl0~
+      hpclass        = ~HPPRS~
+      clasweap_row   = ~1 0 1 1 0 1 0 1~
+      abclasrq_row   = ~0 0 0 0 9 0~
+      alignmnt_row   = ~0 0 0 0 0 1 0 1 1~
+      dualclas_row   = ~1 0 1 1 0 1~
+      race_policy    = ~NO_DWARF~
+    RET
+      umb_kit_num  = kit_num
+      umb_kit_ids  = kit_ids
+      umb_data_col = kit_data_col
+  END
+
+  // 5. WEAPPROF.2DA + CBKWPN.2DA: Spear (98=1), Dagger (96=1), 2HANDED (111=1), standard Cleric blunt/sling/styles (1)
+  OUTER_SET cbk_umb_wp_1   = 1
+  OUTER_SET cbk_umb_wp_3   = 1
+  OUTER_SET cbk_umb_wp_4   = 1
+  OUTER_SET cbk_umb_wp_5   = 1
+  OUTER_SET cbk_umb_wp_7   = 1
+  OUTER_SET cbk_umb_wp_96  = 1
+  OUTER_SET cbk_umb_wp_97  = 1
+  OUTER_SET cbk_umb_wp_98  = 1
+  OUTER_SET cbk_umb_wp_100 = 1
+  OUTER_SET cbk_umb_wp_101 = 1
+  OUTER_SET cbk_umb_wp_102 = 1
+  OUTER_SET cbk_umb_wp_107 = 1
+  OUTER_SET cbk_umb_wp_111 = 1
+  OUTER_SET cbk_umb_wp_112 = 1
+  OUTER_SET cbk_umb_wp_113 = 1
+  OUTER_SET cbk_umb_wp_114 = 1
+  OUTER_SET cbk_umb_wp_115 = 1
+  LAF cbk_set_weapprof_col INT_VAR col_idx = umb_data_col STR_VAR prof_map_prefix = ~cbk_umb_wp~ default_val = ~0~ END
+
+  OUTER_PATCH ~~ BEGIN SPRINTF umb_dec ~%d~ (umb_kit_ids) END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKUMB_SPEAR~  row_line = EVAL ~CBKUMB_SPEAR * %umb_dec% PROF 98 ALLOW~ END
+  LAF cbk_append_2da_row_unique INT_VAR cols = 6 STR_VAR file = ~CBKWPN.2DA~ match_key = ~CBKUMB_DAGGER~ row_line = EVAL ~CBKUMB_DAGGER * %umb_dec% PROF 96 ALLOW~ END
+
+  // 6. Holy Symbol of Umberlee (+1 WIS, unusable by Good & Lawful -> 0x607f3854)
+  OUTER_SET umb_hs_name = RESOLVE_STR_REF (@2511)
+  OUTER_SET umb_hs_desc = RESOLVE_STR_REF (@2512)
+  LAF cbk_make_holy_symbol
+    INT_VAR
+      name_ref = umb_hs_name
+      desc_ref = umb_hs_desc
+      str_bon  = 0
+      wis_bon  = 1
+      con_bon  = 0
+      unus     = 0x607f3854
+    STR_VAR
+      spl_res  = ~CBKHSYUM~
+      itm_res  = ~CBKHUMB~
+      icon_bam = ~IBELT14~
+  END
+END
