@@ -213,12 +213,29 @@ function state.ApplyRacialStats(sprite)
         local item = equipment.m_items and equipment.m_items:get(selected)
         if not item then return end
 
-        local abNum = equipment.m_selectedWeaponAbility or 0
-        local ab = item.getAbility and item:getAbility(abNum) or nil
-        if ab and (ab.type or 1) ~= 1 then return end
-
         local header = item.pRes and item.pRes.pHeader
         if not header or not FINESSE_PROFS[header.proficiencyType] then return end
+
+        local abNum = equipment.m_selectedWeaponAbility or 0
+        local actionType = nil
+        if abNum > 0 and header.abilityOffset ~= nil
+            and type(EEex_UDToPtr) == "function" and type(EEex_ReadU8) == "function" then
+            local okP, hPtr = pcall(EEex_UDToPtr, header)
+            if okP and type(hPtr) == "number" and hPtr ~= 0 then
+                actionType = EEex_ReadU8(hPtr + header.abilityOffset + 0x38 * abNum)
+            end
+        end
+        if actionType == nil then
+            local ab = item.getAbility and item:getAbility(abNum) or nil
+            if ab then
+                if ab.actionType ~= nil then
+                    actionType = ab.actionType
+                elseif ab.type ~= nil then
+                    actionType = ab.type
+                end
+            end
+        end
+        if actionType ~= nil and actionType ~= 1 then return end
 
         local finHit, finDmg = state.GetFinesseBonus(dex)
         local strHit, strDmg = state.GetStrengthBonus(str, stats.m_nSTRExtra)

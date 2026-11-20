@@ -189,6 +189,8 @@ DEFINE_ACTION_FUNCTION cbk_install_umberlee BEGIN
       hpclass        = ~HPPRS~
       clasweap_row   = ~1 0 1 1 0 1 0 1~
       abclasrq_row   = ~0 0 0 0 9 0~
+      abcdsrq_row    = ~0 0 0 0 17 0~
+      abdcsrq_row    = ~0 0 0 0 15 0~
       alignmnt_row   = ~0 0 0 0 0 1 0 1 1~
       dualclas_row   = ~1 0 1 1 0 1~
       race_policy    = ~NO_DWARF~

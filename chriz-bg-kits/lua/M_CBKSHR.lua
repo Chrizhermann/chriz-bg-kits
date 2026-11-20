@@ -149,7 +149,9 @@ if not state.listenersRegistered then
             if eff.m_sourceId and eff.m_sourceId ~= 0 and eff.m_sourceId ~= -1
                 and isCallable(EEex_GameObject_Get) then
                 local ok, sp = pcall(EEex_GameObject_Get, eff.m_sourceId)
-                if ok then return sp end
+                if ok and sp and (not isCallable(EEex_GameObject_IsSprite) or EEex_GameObject_IsSprite(sp, true)) then
+                    return sp
+                end
             end
             return nil
         end

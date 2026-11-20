@@ -345,6 +345,13 @@ def test_03_clean_install_all_components(tmp_path: pathlib.Path, mode: str, extr
     cbkhilm = parse_itm_v1((ovr / "CBKHILM.ITM").read_bytes())
     assert any(fx["opcode"] == 10 and fx["p1"] == 1 for fx in cbkhilm["equipping_effects"])
 
+    # Verify dual-class WIS mins (17 / 15) on all new Cleric kits (LK_ALAGHOR, CBK_SHAR, CBK_UMBERLEE, CBK_ILMATER)
+    _, dcd_all = _read_2da_header_and_map(ovr / "ABDCDSRQ.2DA")
+    _, dcs_all = _read_2da_header_and_map(ovr / "ABDCSCRQ.2DA")
+    for ck in ("LK_ALAGHOR", "CBK_SHAR", "CBK_UMBERLEE", "CBK_ILMATER"):
+        assert dcd_all[ck] == ["0", "0", "0", "0", "17", "0"], f"ABDCDSRQ {ck}={dcd_all[ck]}"
+        assert dcs_all[ck] == ["0", "0", "0", "0", "15", "0"], f"ABDCSCRQ {ck}={dcs_all[ck]}"
+
     # Verify WEAPPROF.2DA EXTRA2..EXTRA20 (116..134) stay 0 across all v0.3.0 Cleric kits
     wp_lines_all = (ovr / "WEAPPROF.2DA").read_text(encoding="utf-8").splitlines()
     wp_hdr_all = wp_lines_all[2].split()
@@ -808,15 +815,21 @@ def test_08_lua_runtime_and_coexistence() -> None:
     assert g.CBKWeaponUsability.EvaluateRule(7, 0x40000000, 0, 2, 0, robe_hdr, 1) == 1
     assert g.CBKWeaponUsability.EvaluateRule(7, 0x40000000, 0, 2, 0, plate_hdr, 1) == 0
 
-    # 2) M_CBKKP.lua + M_CBKSP.lua coexistence
+    # 2) M_CBKKP.lua + M_CBKSP.lua coexistence (restoreSize=7, jmp_fail on use_kit_col, rbx kit_num normalization!)
     kp_src = _load_mod_lua("M_CBKKP.lua")
     assert "jnz use_kit_col" in kp_src and "jz use_kit_col" not in kp_src
-    lua2, init2, _ = _new_lua_env({"CBRKPKIT": [["8", "16417"], ["18", "16417"]]})
+    assert "EEex_HookConditionalJumpOnSuccessWithLabels(site, 7," in kp_src
+    assert "use_kit_col:\n                #DESTROY_SHADOW_SPACE\n                jmp #L(jmp_fail)" in kp_src
+    lua2, init2, _ = _new_lua_env({"CBRKPKIT": [["8", "16425"], ["18", "16425"]]})
     lua2.execute(kp_src)
     lua2.execute(kp_src)
     assert len(init2) == 1
     init2[0]()
-    assert lua2.globals().CBKKitProficiency_ShouldOverride(8, 16417) is True
+    # Baldur.exe strips 0x4000 in rbx (16425 -> 41); both 41 and 16425 must match!
+    assert lua2.globals().CBKKitProficiency_ShouldOverride(8, 41) is True
+    assert lua2.globals().CBKKitProficiency_ShouldOverride(8, 16425) is True
+    assert lua2.globals().CBKKitProficiency_ShouldOverride(18, 41) is True
+    assert lua2.globals().CBKKitProficiency_ShouldOverride(8, 99) is False
 
     lua3, init3, _ = _new_lua_env({
         "CBRSPKIT": [["5", "16384", "CBRIWD7"], ["5", "16398", "CBRBG6"]],
@@ -973,10 +986,14 @@ def test_08_lua_runtime_and_coexistence() -> None:
     g7.CBKCombat_OnDamageAfter({}, nil_src, human_sp)
     assert human_sp.m_baseStats.m_hitPoints == 35
 
-    # M_CBKRAC: Elf +1 Save vs. Spell, Half-Elf +10 Lore, Halfling Finesse (19 DEX > 14 STR vs 21 STR Giant Belt)
+    # M_CBKRAC: Elf +1 Save vs. Spell, Half-Elf +10 Lore, Halfling Finesse (19 DEX > 14 STR vs 21 STR Giant Belt, ranged actionType=2 rejected)
     lua7.execute("""
-        function _make_rac_sp(race, str, strEx, dex, prof)
+        _mock_mem_u8 = {}
+        function EEex_ReadU8(addr) return _mock_mem_u8[addr] end
+        function _make_rac_sp(race, str, strEx, dex, prof, actionType, abNum)
             local words = { [0]=0,[1]=0,[2]=0,[3]=0,[4]=0,[5]=0,[6]=0,[7]=0 }
+            local at = actionType or 1
+            local an = abNum or 0
             return {
                 m_typeAI = { m_Race = race },
                 m_derivedStats = {
@@ -989,11 +1006,11 @@ def test_08_lua_runtime_and_coexistence() -> None:
                     },
                 },
                 m_equipment = {
-                    m_selectedWeapon = 0, m_selectedWeaponAbility = 0,
+                    m_selectedWeapon = 0, m_selectedWeaponAbility = an,
                     m_items = { get = function(self, i)
                         return {
-                            getAbility = function(s, a) return { type = 1 } end,
-                            pRes = { pHeader = { proficiencyType = prof } },
+                            getAbility = function(s, a) return { actionType = at } end,
+                            pRes = { pHeader = { _ptr = 0x50000, abilityOffset = 0x72, proficiencyType = prof } },
                         }
                     end },
                 },
@@ -1009,13 +1026,23 @@ def test_08_lua_runtime_and_coexistence() -> None:
     g7.CBKRaces.ApplyRacialStats(sp_he)
     assert sp_he.m_derivedStats.m_nLore == 30
 
-    # Halfling 19 DEX (+2/+4) & 14 STR (0/0) with Dagger (96) -> +2 hit / +4 dmg
-    sp_hl_dex = lua7.eval("_make_rac_sp(5, 14, 0, 19, 96)")
+    # Halfling 19 DEX (+2/+4) & 14 STR (0/0) with melee Dagger (96, actionType=1) -> +2 hit / +4 dmg
+    sp_hl_dex = lua7.eval("_make_rac_sp(5, 14, 0, 19, 96, 1, 0)")
     g7.CBKRaces.ApplyRacialStats(sp_hl_dex)
     assert sp_hl_dex.m_derivedStats.m_nMeleeTHAC0Bonus == 2
     assert sp_hl_dex.m_derivedStats.m_nMeleeDamageBonus == 4
+    # Halfling 19 DEX with ranged Throwing Dagger (actionType=2) -> +0/+0!
+    sp_hl_ranged = lua7.eval("_make_rac_sp(5, 14, 0, 19, 96, 2, 0)")
+    g7.CBKRaces.ApplyRacialStats(sp_hl_ranged)
+    assert sp_hl_ranged.m_derivedStats.m_nMeleeTHAC0Bonus == 0
+    assert sp_hl_ranged.m_derivedStats.m_nMeleeDamageBonus == 0
+    # Halfling secondary ability (abNum=1): reads raw EEex_ReadU8(0x50000 + 0x72 + 0x38*1) = 2 (ranged) -> +0/+0!
+    lua7.execute("_mock_mem_u8[0x50000 + 0x72 + 0x38] = 2")
+    sp_hl_ab1_rng = lua7.eval("_make_rac_sp(5, 14, 0, 19, 96, 1, 1)")
+    g7.CBKRaces.ApplyRacialStats(sp_hl_ab1_rng)
+    assert sp_hl_ab1_rng.m_derivedStats.m_nMeleeTHAC0Bonus == 0
     # Halfling 19 DEX & 21 STR Giant Strength Belt (+4/+9) -> DEX <= STR -> +0/+0 (zero double-stacking!)
-    sp_hl_belt = lua7.eval("_make_rac_sp(5, 21, 0, 19, 96)")
+    sp_hl_belt = lua7.eval("_make_rac_sp(5, 21, 0, 19, 96, 1, 0)")
     g7.CBKRaces.ApplyRacialStats(sp_hl_belt)
     assert sp_hl_belt.m_derivedStats.m_nMeleeTHAC0Bonus == 0
     assert sp_hl_belt.m_derivedStats.m_nMeleeDamageBonus == 0
@@ -1169,6 +1196,16 @@ def test_08_lua_runtime_and_coexistence() -> None:
     g7.CBKCombat_OnCheckSaveBefore(non_shar_eff, demon_tgt)
     assert non_shar_eff.m_saveMod == 1
     g7.CBKCombat_OnCheckSaveAfter(non_shar_eff, demon_tgt)
+    # Non-sprite trap source via m_sourceId must be rejected by EEex_GameObject_IsSprite without touching m_saveMod
+    lua7.execute("""
+        _trap_obj = { _isTrap = true, _spellStates = { [148] = true } }
+        function EEex_GameObject_Get(id) return id == 999 and _trap_obj or nil end
+        function EEex_GameObject_IsSprite(obj, allowDead) return obj ~= _trap_obj end
+    """)
+    trap_eff = lua7.eval("{ m_sourceId = 999, m_sourceRes = 'SPPR102', m_sourceType = 1, m_saveMod = 2 }")
+    g7.CBKCombat_OnCheckSaveBefore(trap_eff, demon_tgt)
+    assert trap_eff.m_saveMod == 2
+    g7.CBKCombat_OnCheckSaveAfter(trap_eff, demon_tgt)
 
     # M_CBKILM.lua: 25% Physical DR floor, non-additive with 40% Hardiness, idempotent via CBK_ILM_RESOLVED
     ilm_sp = lua7.eval("""

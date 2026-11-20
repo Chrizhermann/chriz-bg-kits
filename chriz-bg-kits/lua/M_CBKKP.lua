@@ -13,9 +13,24 @@ end
 
 local entries = {}
 
+local function normalizeKit(nKit)
+    if type(nKit) ~= "number" then return nil end
+    local k = math.floor(nKit)
+    if k < 0 then return nil end
+    if bit and bit.band then
+        return bit.band(k, 0xFFFFBFFF)
+    end
+    if k >= 0x4000 and k < 0x8000 then
+        return k - 0x4000
+    end
+    return k
+end
+
 function state.ShouldUseKitColumn(nClass, nKit)
     local byKit = entries[nClass]
-    return byKit ~= nil and byKit[nKit] == true
+    if byKit == nil then return false end
+    local norm = normalizeKit(nKit)
+    return norm ~= nil and byKit[norm] == true
 end
 
 function CBKKitProficiency_ShouldOverride(nClass, nKit)
@@ -29,11 +44,14 @@ local function installHook()
     for row in EEex_Resource_Get2DARowTableIterator(registry, false) do
         local cls, kit = tonumber(row[1]), tonumber(row[2])
         if cls and kit and cls >= 1 and cls <= 255 and kit >= 0 then
-            cls, kit = math.floor(cls), math.floor(kit)
-            entries[cls] = entries[cls] or {}
-            if not entries[cls][kit] then
-                entries[cls][kit] = true
-                count = count + 1
+            cls = math.floor(cls)
+            local normKit = normalizeKit(kit)
+            if normKit ~= nil then
+                entries[cls] = entries[cls] or {}
+                if not entries[cls][normKit] then
+                    entries[cls][normKit] = true
+                    count = count + 1
+                end
             end
         end
     end
@@ -48,7 +66,7 @@ local function installHook()
         return
     end
     EEex_DisableCodeProtection()
-    EEex_HookConditionalJumpOnSuccessWithLabels(site, 0, {
+    EEex_HookConditionalJumpOnSuccessWithLabels(site, 7, {
         {"hook_integrity_watchdog_ignore_registers", {
             EEex_HookIntegrityWatchdogRegister.RAX, EEex_HookIntegrityWatchdogRegister.RCX,
             EEex_HookIntegrityWatchdogRegister.RDX, EEex_HookIntegrityWatchdogRegister.R8,
@@ -76,6 +94,7 @@ local function installHook()
                 jmp #L(jmp_success)
                 use_kit_col:
                 #DESTROY_SHADOW_SPACE
+                jmp #L(jmp_fail)
             ]]},
         })
     )

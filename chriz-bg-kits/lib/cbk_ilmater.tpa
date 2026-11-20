@@ -74,6 +74,8 @@ DEFINE_ACTION_FUNCTION cbk_install_ilmater BEGIN
       hpclass        = ~HPPRS~
       clasweap_row   = ~0 0 1 1 0 1 0 0~
       abclasrq_row   = ~0 0 12 0 9 0~
+      abcdsrq_row    = ~0 0 0 0 17 0~
+      abdcsrq_row    = ~0 0 0 0 15 0~
       alignmnt_row   = ~1 1 0 1 0 0 0 0 0~
       dualclas_row   = ~1 0 1 1 0 1~
       race_policy    = ~CLONE~
