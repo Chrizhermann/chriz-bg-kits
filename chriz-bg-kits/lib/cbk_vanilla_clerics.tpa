@@ -1,0 +1,224 @@
+// Component 201: Vanilla Deity Cleric Overhaul (Lathander, Helm, Talos, Tyr)
+
+DEFINE_ACTION_FUNCTION cbk_build_vanilla_cleric_clab
+  STR_VAR
+    clab_file = ~~
+    ga5       = ~~
+    ga10      = ~~
+    ap1a      = ~~
+    ap1b      = ~~
+    ap25      = ~~
+BEGIN
+  OUTER_SPRINT clab_hdr ~2DA V1.0%WNL%****%WNL%            ~
+  OUTER_FOR (lv = 1; lv <= 50; ++lv) BEGIN
+    OUTER_SPRINT clab_hdr ~%clab_hdr%%lv%          ~
+  END
+
+  OUTER_SPRINT r1 ~ABILITY1    %ga5%  ~
+  OUTER_SPRINT r2 ~ABILITY2    %ga10%  ~
+  OUTER_SPRINT r3 ~ABILITY3    %ap1a%  ~
+  OUTER_SPRINT r4 ~~
+  ACTION_IF !(~%ap1b%~ STR_EQ ~~) BEGIN
+    OUTER_SPRINT r4 ~ABILITY4    %ap1b%  ~
+  END
+
+  OUTER_FOR (lv = 2; lv <= 50; ++lv) BEGIN
+    ACTION_IF ((lv MODULO 5) = 1) BEGIN
+      OUTER_SPRINT r1 ~%r1%%ga5%  ~
+    END ELSE BEGIN
+      OUTER_SPRINT r1 ~%r1%****        ~
+    END
+
+    ACTION_IF ((lv MODULO 10) = 1) BEGIN
+      OUTER_SPRINT r2 ~%r2%%ga10%  ~
+    END ELSE BEGIN
+      OUTER_SPRINT r2 ~%r2%****        ~
+    END
+
+    ACTION_IF (lv = 25) BEGIN
+      OUTER_SPRINT r3 ~%r3%%ap25% ~
+    END ELSE BEGIN
+      OUTER_SPRINT r3 ~%r3%****        ~
+    END
+
+    ACTION_IF !(~%ap1b%~ STR_EQ ~~) BEGIN
+      OUTER_SPRINT r4 ~%r4%****        ~
+    END
+  END
+
+  OUTER_SPRINT full_clab ~%clab_hdr%%WNL%%r1%%WNL%%r2%%WNL%%r3%%WNL%~
+  ACTION_IF !(~%ap1b%~ STR_EQ ~~) BEGIN
+    OUTER_SPRINT full_clab ~%full_clab%%r4%%WNL%~
+  END
+
+  COPY ~%MOD_FOLDER%/2da/CBRSPVER.2DA~ ~override/%clab_file%.2DA~
+    DELETE_BYTES 0 BUFFER_LENGTH
+    INSERT_BYTES 0 (STRING_LENGTH ~%full_clab%~)
+    WRITE_ASCIIE 0 ~%full_clab%~
+    PRETTY_PRINT_2DA
+END
+
+DEFINE_ACTION_FUNCTION cbk_install_vanilla_clerics BEGIN
+  LAF cbk_install_res_vanilla_clerics END
+
+  // 1. Stamp names and descriptions for overwritten abilities and summoned weapon
+  COPY_EXISTING ~SPCL741.SPL~ ~override~
+    SAY NAME1 @2300
+    SAY UNIDENTIFIED_DESC @2301
+  BUT_ONLY
+
+  COPY_EXISTING ~SPCL731.SPL~ ~override~
+    SAY NAME1 @2310
+    SAY UNIDENTIFIED_DESC @2311
+  BUT_ONLY
+
+  COPY_EXISTING ~SW1HSEEK.ITM~ ~override~
+    SAY NAME1 @2312
+    SAY NAME2 @2312
+    SAY UNIDENTIFIED_DESC @2313
+    SAY IDENTIFIED_DESC @2313
+  BUT_ONLY
+
+  COPY_EXISTING ~CBKHLM0.SPL~ ~override~
+    SAY NAME1 @2314
+    SAY UNIDENTIFIED_DESC @2315
+  BUT_ONLY
+
+  COPY_EXISTING ~SPCL722.SPL~ ~override~
+    SAY NAME1 @2320
+    SAY UNIDENTIFIED_DESC @2321
+  BUT_ONLY
+
+  COPY_EXISTING ~OHTYR2.SPL~ ~override~
+    SAY NAME1 @2330
+    SAY UNIDENTIFIED_DESC @2331
+  BUT_ONLY
+
+  // 2. Build Tyr's missing Level-25 Holy Symbol (CBKHTYR.ITM + CBKHSYTY.SPL)
+  OUTER_SET tyr_sym_name = RESOLVE_STR_REF (@2332)
+  OUTER_SET tyr_sym_desc = RESOLVE_STR_REF (@2333)
+  LAF cbk_make_holy_symbol
+    INT_VAR
+      name_ref = tyr_sym_name
+      desc_ref = tyr_sym_desc
+      str_bon  = 1
+    STR_VAR
+      spl_res  = ~CBKHSYTY~
+      itm_res  = ~CBKHTYR~
+      icon_bam = ~IBELT12~
+  END
+
+  // 3. Rebuild clean 50-col CLABs (keeping full Phase-1 Priest spellbooks intact)
+  LAF cbk_build_vanilla_cleric_clab
+    STR_VAR
+      clab_file = ~CLABPR04~
+      ga5       = ~GA_SPCL741~
+      ga10      = ~GA_SPCL742~
+      ap1a      = ~AP_CBKLPLA~
+      ap25      = ~AP_CDHLYSYM~
+  END
+
+  LAF cbk_build_vanilla_cleric_clab
+    STR_VAR
+      clab_file = ~CLABPR03~
+      ga5       = ~GA_SPCL732~
+      ga10      = ~GA_SPCL731~
+      ap1a      = ~AP_CBKLPHM~
+      ap25      = ~AP_CDHLYSYM~
+  END
+
+  LAF cbk_build_vanilla_cleric_clab
+    STR_VAR
+      clab_file = ~CLABPR02~
+      ga5       = ~GA_SPCL722~
+      ga10      = ~GA_SPCL721~
+      ap1a      = ~AP_CBKLPTL~
+      ap1b      = ~AP_CBKTAL0~
+      ap25      = ~AP_CDHLYSYM~
+  END
+
+  LAF cbk_build_vanilla_cleric_clab
+    STR_VAR
+      clab_file = ~OHTYR~
+      ga5       = ~GA_OHTYR2~
+      ga10      = ~GA_OHTYR1~
+      ap1a      = ~AP_CBKLPTY~
+      ap25      = ~AP_CBKHSYTY~
+  END
+
+  // 4. Lathander: standard Cleric WEAPPROF stays 1 pip; update LATHANDER (+ LATHANDER_X if present)
+  OUTER_SET lath_desc = RESOLVE_STR_REF (@2302)
+  LAF cbk_get_kit_info STR_VAR kit_name = ~LATHANDER~ RET lath_ids = kit_ids END
+  ACTION_IF (lath_ids >= 0) BEGIN
+    LAF cbk_update_kit_desc INT_VAR desc_strref = lath_desc STR_VAR kit_name = ~LATHANDER~ END
+  END
+  LAF cbk_get_kit_info STR_VAR kit_name = ~LATHANDER_X~ RET lathx_ids = kit_ids END
+  ACTION_IF (lathx_ids >= 0) BEGIN
+    LAF cbk_update_kit_desc INT_VAR desc_strref = lath_desc STR_VAR kit_name = ~LATHANDER_X~ END
+  END
+
+  // 5. Helm: WEAPPROF Bastard Sword (89 = 1) + styles (111..114 = 1), CBKWPN, description
+  LAF cbk_get_kit_info STR_VAR kit_name = ~HELM~ RET helm_ids = kit_ids helm_prof = kit_prof END
+  ACTION_IF (helm_prof >= 0) BEGIN
+    OUTER_SET cbk_hlm_wp_89  = 1
+    OUTER_SET cbk_hlm_wp_111 = 1
+    OUTER_SET cbk_hlm_wp_112 = 1
+    OUTER_SET cbk_hlm_wp_113 = 1
+    OUTER_SET cbk_hlm_wp_114 = 1
+    LAF cbk_set_weapprof_col INT_VAR col_idx = (helm_prof + 1) STR_VAR prof_map_prefix = ~cbk_hlm_wp~ END
+  END
+  ACTION_IF (helm_ids >= 0) BEGIN
+    OUTER_PATCH ~~ BEGIN SPRINTF helm_dec ~%d~ (helm_ids) END
+    LAF cbk_append_2da_row_unique
+      INT_VAR cols = 6
+      STR_VAR
+        file      = ~CBKWPN.2DA~
+        match_key = ~HELM_P89~
+        row_line  = EVAL ~HELM_P89 * %helm_dec% PROF 89 ALLOW~
+    END
+    OUTER_SET helm_desc = RESOLVE_STR_REF (@2316)
+    LAF cbk_update_kit_desc INT_VAR desc_strref = helm_desc STR_VAR kit_name = ~HELM~ END
+  END
+
+  // 6. Talos: WEAPPROF Spear (98 = 1), Dagger (96 = 1), 2HANDED (111 = 1), CBKWPN, description
+  LAF cbk_get_kit_info STR_VAR kit_name = ~TALOS~ RET talos_ids = kit_ids talos_prof = kit_prof END
+  ACTION_IF (talos_prof >= 0) BEGIN
+    OUTER_SET cbk_tal_wp_98  = 1
+    OUTER_SET cbk_tal_wp_96  = 1
+    OUTER_SET cbk_tal_wp_111 = 1
+    LAF cbk_set_weapprof_col INT_VAR col_idx = (talos_prof + 1) STR_VAR prof_map_prefix = ~cbk_tal_wp~ END
+  END
+  ACTION_IF (talos_ids >= 0) BEGIN
+    OUTER_PATCH ~~ BEGIN SPRINTF talos_dec ~%d~ (talos_ids) END
+    ACTION_FOR_EACH pid IN ~98~ ~96~ BEGIN
+      LAF cbk_append_2da_row_unique
+        INT_VAR cols = 6
+        STR_VAR
+          file      = ~CBKWPN.2DA~
+          match_key = EVAL ~TALOS_P%pid%~
+          row_line  = EVAL ~TALOS_P%pid% * %talos_dec% PROF %pid% ALLOW~
+      END
+    END
+    OUTER_SET talos_desc = RESOLVE_STR_REF (@2322)
+    LAF cbk_update_kit_desc INT_VAR desc_strref = talos_desc STR_VAR kit_name = ~TALOS~ END
+  END
+
+  // 7. Tyr: WEAPPROF Long Sword (90 = 1), CBKWPN, description
+  LAF cbk_get_kit_info STR_VAR kit_name = ~OHTYR~ RET tyr_ids = kit_ids tyr_prof = kit_prof END
+  ACTION_IF (tyr_prof >= 0) BEGIN
+    OUTER_SET cbk_tyr_wp_90 = 1
+    LAF cbk_set_weapprof_col INT_VAR col_idx = (tyr_prof + 1) STR_VAR prof_map_prefix = ~cbk_tyr_wp~ END
+  END
+  ACTION_IF (tyr_ids >= 0) BEGIN
+    OUTER_PATCH ~~ BEGIN SPRINTF tyr_dec ~%d~ (tyr_ids) END
+    LAF cbk_append_2da_row_unique
+      INT_VAR cols = 6
+      STR_VAR
+        file      = ~CBKWPN.2DA~
+        match_key = ~OHTYR_P90~
+        row_line  = EVAL ~OHTYR_P90 * %tyr_dec% PROF 90 ALLOW~
+    END
+    OUTER_SET tyr_desc = RESOLVE_STR_REF (@2334)
+    LAF cbk_update_kit_desc INT_VAR desc_strref = tyr_desc STR_VAR kit_name = ~OHTYR~ END
+  END
+END
